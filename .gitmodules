@@ -1,3 +1,6 @@
 [submodule "nuttx-apps"]
 	path = nuttx-apps
 	url = https://github.com/461911662/nuttx-apps.git
+[submodule "boss1-app/graphics/lvgl"]
+	path = boss1-app/graphics/lvgl
+	url = https://github.com/461911662/lvgl
