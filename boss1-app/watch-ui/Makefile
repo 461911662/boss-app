@@ -1,5 +1,5 @@
 ############################################################################
-# apps/examples/hello/Makefile
+# apps/watch-ui/Makefile
 #
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
@@ -20,15 +20,11 @@
 
 include $(APPDIR)/Make.defs
 
-# Hello, World! built-in application info
+PROGNAME  = $(CONFIG_EXAMPLES_WATCHUI_PROGNAME)
+PRIORITY  = $(CONFIG_EXAMPLES_WATCHUI_PRIORITY)
+STACKSIZE = $(CONFIG_EXAMPLES_WATCHUI_STACKSIZE)
+MODULE    = $(CONFIG_EXAMPLES_WATCHUI)
 
-PROGNAME  = $(CONFIG_EXAMPLES_HELLO_PROGNAME)
-PRIORITY  = $(CONFIG_EXAMPLES_HELLO_PRIORITY)
-STACKSIZE = $(CONFIG_EXAMPLES_HELLO_STACKSIZE)
-MODULE    = $(CONFIG_EXAMPLES_HELLO)
-
-# Hello, World! Example
-
-MAINSRC = hello_main.c
+MAINSRC = watch_main.c
 
 include $(APPDIR)/Application.mk
