@@ -25,6 +25,8 @@
 #include <stdio.h>
 #include <unistd.h>
 
+#include <lvgl.h>
+
 /****************************************************************************
  * Public Functions
  ****************************************************************************/
@@ -35,7 +37,29 @@
 
 int main(int argc, FAR char *argv[])
 {
-  printf("--------------------------->\n");
-  while(1){}
+  lv_nuttx_dsc_t info;
+  lv_nuttx_result_t result;
+
+  lv_init();
+
+  lv_nuttx_dsc_init(&info);
+
+#ifdef CONFIG_LV_USE_NUTTX_LCD
+  info.fb_path = "/dev/lcd0";
+#endif
+  lv_nuttx_init(&info, &result);
+
+  LV_LOG_USER("Hello,World");
+
+  if (result.disp == NULL)
+  {
+    LV_LOG_ERROR("lv_demos initialization failure!");
+    return 1;
+  }
+
+  lv_nuttx_run(&result);
+  lv_disp_remove(result.disp);
+  lv_deinit();
+
   return 0;
 }
