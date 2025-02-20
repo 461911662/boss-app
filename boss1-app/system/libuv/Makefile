@@ -20,34 +20,16 @@
 
 include $(APPDIR)/Make.defs
 
-LIBUV_PATCHS ?= $(sort $(wildcard 000*.patch))
+LIBUV_PATH ?= ${shell pwd}/libuv
 
-LIBUV_VERSION  = 1.46.0
-LIBUV_UNPACK   = libuv
-LIBUV_TARBALL  = v$(LIBUV_VERSION).zip
-LIBUV_URL_BASE = https://github.com/libuv/libuv/archive/refs/tags
-LIBUV_URL      = $(LIBUV_URL_BASE)/$(LIBUV_TARBALL)
-
-
-$(LIBUV_TARBALL):
-	@echo "Downloading: $(LIBUV_TARBALL)"
-	$(Q) curl -L $(LIBUV_URL) -o $(LIBUV_TARBALL)
-
-$(LIBUV_UNPACK): $(LIBUV_TARBALL)
-	@echo "Unpacking: $(LIBUV_TARBALL) -> $(LIBUV_UNPACK)"
-	$(call DELDIR, $(LIBUV_UNPACK))
-	$(Q) unzip $(LIBUV_TARBALL)
-	$(Q) mv libuv-$(LIBUV_VERSION) $(LIBUV_UNPACK)
-	$(Q) cat $(LIBUV_PATCHS) | patch -s -N -d $(LIBUV_UNPACK) -p1
-
-$(LIBUV_UNPACK)/.patch: $(LIBUV_UNPACK)
-	$(Q) touch $(LIBUV_UNPACK)/.patch
+# patch for tag 1.46.0
+# cat 0001-libuv-port-for-nuttx.patch | patch -s -N -d libuv/ -p1
 
 # Build libuv library
 
-CFLAGS += -I$(LIBUV_UNPACK)/src
-CFLAGS += -I$(LIBUV_UNPACK)/src/unix
-CFLAGS += -I$(LIBUV_UNPACK)/test
+CFLAGS += -I$(LIBUV_PATH)/src
+CFLAGS += -I$(LIBUV_PATH)/src/unix
+CFLAGS += -I$(LIBUV_PATH)/test
 CFLAGS += -Wno-shadow
 CFLAGS += -DDEF_THREADPOOL_SIZE=CONFIG_LIBUV_THREADPOOL_SIZE
 CFLAGS += -DDEF_THREADPOOL_STACKSIZE=CONFIG_LIBUV_THREAD_STACKSIZE
@@ -60,13 +42,13 @@ ifeq ($(GCCVER),12)
   CFLAGS += -Wno-dangling-pointer
 endif
 
-VPATH += $(LIBUV_UNPACK)/src
-VPATH += $(LIBUV_UNPACK)/src/unix
-VPATH += $(LIBUV_UNPACK)/test
+VPATH += $(LIBUV_PATH)/src
+VPATH += $(LIBUV_PATH)/src/unix
+VPATH += $(LIBUV_PATH)/test
 
-DEPPATH += --dep-path $(LIBUV_UNPACK)/src
-DEPPATH += --dep-path $(LIBUV_UNPACK)/src/unix
-DEPPATH += --dep-path $(LIBUV_UNPACK)/test
+DEPPATH += --dep-path $(LIBUV_PATH)/src
+DEPPATH += --dep-path $(LIBUV_PATH)/src/unix
+DEPPATH += --dep-path $(LIBUV_PATH)/test
 
 CSRCS += core.c
 CSRCS += poll.c
@@ -170,15 +152,6 @@ CSRCS += benchmark-udp-pummel.c
 CSRCS += blackhole-server.c
 CSRCS += echo-server.c
 
-endif
-
-# Download and unpack tarball if no git repo found
-ifeq ($(wildcard $(LIBUV_UNPACK)/.git),)
-context:: $(LIBUV_UNPACK)/.patch
-
-distclean::
-	$(call DELDIR, $(LIBUV_UNPACK))
-	$(call DELFILE, $(LIBUV_TARBALL))
 endif
 
 include $(APPDIR)/Application.mk
