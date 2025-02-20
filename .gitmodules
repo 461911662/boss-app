@@ -4,3 +4,6 @@
 [submodule "boss1-app/graphics/lvgl"]
 	path = boss1-app/graphics/lvgl
 	url = https://github.com/461911662/lvgl
+[submodule "boss1-app/system/libuv/libuv"]
+	path = boss1-app/system/libuv/libuv
+	url = https://github.com/461911662/libuv
