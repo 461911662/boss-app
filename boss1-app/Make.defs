@@ -144,4 +144,22 @@ $(1) : $(2)
 	cp $(2) $(1)
 endef
 
+# CLEANAROBJS - del AR target files exclusively
 
+ifeq ($(CONFIG_WINDOWS_NATIVE),y)
+define CLEANAROBJS
+	$(call DELFILE,$(subst /,\,$(AROBJS)))
+	$(call DELFILE,$(subst /,\,$(OBJS)))
+	$(eval OBJS :=)
+endef
+else
+define CLEANAROBJS
+	$(call SPLITVARIABLE,CLEAN_AROBJS,${AROBJS},100)
+	$(foreach BATCH, $(CLEAN_AROBJS_TOTAL), \
+		$(shell rm -rf $(CLEAN_AROBJS_$(BATCH))))
+	$(call SPLITVARIABLE,CLEAN_OBJS,${OBJS},100)
+	$(foreach BATCH, $(CLEAN_OBJS_TOTAL), \
+		$(shell rm -rf $(CLEAN_OBJS_$(BATCH))))
+	$(eval OBJS :=)
+endef
+endif
