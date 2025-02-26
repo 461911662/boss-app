@@ -7,3 +7,6 @@
 [submodule "boss1-app/system/libuv/libuv"]
 	path = boss1-app/system/libuv/libuv
 	url = https://github.com/461911662/libuv
+[submodule "boss1-app/watch-ui/apps/base"]
+	path = boss1-app/watch-ui/apps/base
+	url = https://github.com/461911662/mooncake
