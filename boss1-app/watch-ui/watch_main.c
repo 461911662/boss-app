@@ -26,6 +26,7 @@
 #include <unistd.h>
 
 #include <lvgl.h>
+//#include <demos/lv_demos.h>
 
 /****************************************************************************
  * Public Functions
@@ -56,6 +57,15 @@ int main(int argc, FAR char *argv[])
     LV_LOG_ERROR("lv_demos initialization failure!");
     return 1;
   }
+
+  // lv_obj_t * scr = lv_disp_get_scr_act(NULL);
+  // lv_obj_t * label1 =  lv_label_create(scr);
+  // lv_label_set_text(label1, "Hello\nworld");
+  // lv_obj_center(label1);
+  // lv_demo_widgets();
+  // lv_demo_music();
+  lv_demo_keypad_encoder();
+  //lv_demo_stress();
 
   lv_nuttx_run(&result);
   lv_disp_remove(result.disp);
