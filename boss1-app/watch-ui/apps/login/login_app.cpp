@@ -1,0 +1,105 @@
+/**
+ * @file login_app.c
+ * @brief
+ *   watch login main file.
+ */
+
+/****************************************************************************
+ * INCLUDES
+ ****************************************************************************/
+#include "lvgl.h"
+#include "login/watch_app.h"
+
+/****************************************************************************
+ * TYPEDEFS
+ ****************************************************************************/
+typedef enum {
+  Login_App_Page_ShowTime, ///< 显示开机动画或者图片
+  Login_App_Page_Max = 9999,
+} Login_App_Page_E;
+
+/****************************************************************************
+ * STATIC PROTOTYPES
+ ****************************************************************************/
+static AbilityManager* get_ability_manager();
+
+
+/****************************************************************************
+ * CLASS FUNCTIONS
+ ****************************************************************************/
+/**
+ * @details Login_App构造函数，主要用于初始化Login_App的资源
+ * @param name 表示用户传入的App名字
+*/
+Login_App::Login_App(char *name)
+{
+    setAppInfo().name = std::string(name);
+    LV_LOG_USER("Login_App().\n");
+}
+
+/**
+ * @details onOpen函数是Login_App的共有函数。
+ *          通过重写父类AppAbility的onOpen方法来实现自定义的打开操作。
+ *          该方法计划会有如下功能：
+ *          1. 使用页面管理器来创建第一个页面
+ *          2. 使用页面管理器来创建App的后台处理程序
+ *          3. 注册与底层模块通信的句柄
+*/
+void Login_App::onOpen() override
+{
+    LV_LOG_USER("Face_App onOpen.\n");
+
+    // create new UI for UI Application.
+    // 1. create all page that regist in watch app.
+
+
+    // create work ability for other Application.
+}
+
+/**
+ * @details onRunning函数是Login_App的共有函数。
+ *          通过重写父类AppAbility的onRunning方法来实现自定义的消息处理操作。
+ *          该方法计划会有如下功能：
+ *          1. 处理来自系统的消息
+ *          2. 处理底层过来的消息
+ *          3. 处理页面与页面相互传递的消息
+*/
+void Login_App::onRunning() override
+{
+    LV_LOG_USER("Face_App onRunning.\n");
+}
+
+/**
+ * @details onClose函数是Login_App的共有函数。
+ *          onClose的处理正好与onOpen函数处理相反，类似于setup和teardown的关系
+*/
+void Login_App::onClose() override
+{
+    LV_LOG_USER("Face_App onClose.\n");
+
+    // clean UI Page for UI Application.
+
+    // clean work context for other Application.
+}
+
+/****************************************************************************
+ * STATIC VARIABLES
+ ****************************************************************************/
+static std::unique_ptr<AbilityManager> _ability_manager;
+
+/****************************************************************************
+ * STATIC FUNCTIONS
+ ****************************************************************************/
+
+/**
+ * @note Login App私有的函数，静止非Login App调用
+ * @details 获取Login App的页面管理器，该函数定义在cpp文件中
+ * @return 返回页面管理器句柄
+*/
+static AbilityManager* get_ability_manager()
+{
+  if (_ability_manager == nullptr) {
+    _ability_manager = std::make_unique<AbilityManager>();
+  }
+  return _ability_manager.get();
+}

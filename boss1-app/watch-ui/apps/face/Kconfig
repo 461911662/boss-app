@@ -1,0 +1,12 @@
+#
+# For a description of the syntax of this configuration file,
+# see the file kconfig-language.txt in the NuttX tools repository.
+#
+
+config WATCH_UI_FACE
+        tristate "WATCH UI FACE PROGRAM"
+        default y
+        depends on EXAMPLES_WATCHUI
+        ---help---
+                Enable support for Watch ui face.
+
