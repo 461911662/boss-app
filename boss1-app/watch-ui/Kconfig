@@ -19,11 +19,13 @@ config EXAMPLES_WATCHUI_PROGNAME
 		program is installed.
 
 config EXAMPLES_WATCHUI_PRIORITY
-	int "Hello task priority"
+	int "WATCH UI task priority"
 	default 100
 
 config EXAMPLES_WATCHUI_STACKSIZE
-	int "Hello stack size"
+	int "WATCH UI stack size"
 	default DEFAULT_TASK_STACKSIZE
+
+source "vendor/boss/app/boss1-app/watch-ui/apps/Kconfig"
 
 endif
