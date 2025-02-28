@@ -1,5 +1,5 @@
 ############################################################################
-# apps/examples/hello/Make.defs
+# apps/system/Makefile
 #
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
@@ -18,8 +18,6 @@
 #
 ############################################################################
 
-ifneq ($(CONFIG_EXAMPLES_WATCHUI),)
-CONFIGURED_APPS += $(APPDIR)/watch-ui
-endif
+MENUDESC = "Custom Apps for Watch UI"
 
-include $(APPDIR)/watch-ui/apps/Make.defs
+include $(APPDIR)/Directory.mk

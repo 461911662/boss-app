@@ -1,5 +1,5 @@
 ############################################################################
-# apps/examples/hello/Make.defs
+# apps/system/Make.defs
 #
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
@@ -18,8 +18,11 @@
 #
 ############################################################################
 
-ifneq ($(CONFIG_EXAMPLES_WATCHUI),)
-CONFIGURED_APPS += $(APPDIR)/watch-ui
-endif
+include $(wildcard $(APPDIR)/watch-ui/apps/*/Make.defs)
 
-include $(APPDIR)/watch-ui/apps/Make.defs
+CONFIGDIRS += $(wildcard $(APPDIR)/watch-ui/apps)
+CLEANDIRS  += $(dir $(wildcard $(APPDIR)/watch-ui/apps/Makefile))
+
+AFLAGS += ${INCDIR_PREFIX}$(APPDIR)/watch-ui/apps/base/include
+CFLAGS += ${INCDIR_PREFIX}$(APPDIR)/watch-ui/apps/base/include
+CXXFLAGS += ${INCDIR_PREFIX}$(APPDIR)/watch-ui/apps/base/include
