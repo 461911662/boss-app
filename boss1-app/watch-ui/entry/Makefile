@@ -1,5 +1,5 @@
 ############################################################################
-# apps/system/Make.defs
+# apps/watch-ui/Makefile
 #
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
@@ -18,8 +18,15 @@
 #
 ############################################################################
 
-include $(wildcard $(APPDIR)/watch-ui/apps/*/Make.defs)
+include $(APPDIR)/Make.defs
 
-AFLAGS += ${INCDIR_PREFIX}$(APPDIR)/watch-ui/apps/include
-CFLAGS += ${INCDIR_PREFIX}$(APPDIR)/watch-ui/apps/include
-CXXFLAGS += ${INCDIR_PREFIX}$(APPDIR)/watch-ui/apps/include
+CXXEXT := .cpp
+
+PROGNAME  = $(CONFIG_EXAMPLES_WATCHUI_PROGNAME)
+PRIORITY  = $(CONFIG_EXAMPLES_WATCHUI_PRIORITY)
+STACKSIZE = $(CONFIG_EXAMPLES_WATCHUI_STACKSIZE)
+MODULE    = $(CONFIG_EXAMPLES_WATCHUI)
+
+MAINSRC = watch_main.cpp
+
+include $(APPDIR)/Application.mk

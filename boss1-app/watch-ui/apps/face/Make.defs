@@ -21,3 +21,4 @@
 ifneq ($(CONFIG_WATCH_UI_FACE),)
 CONFIGURED_APPS += $(APPDIR)/watch-ui/apps/face
 endif
+

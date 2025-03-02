@@ -1,5 +1,5 @@
 ############################################################################
-# apps/watch-ui/Makefile
+# apps/graphics/Makefile
 #
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
@@ -18,13 +18,6 @@
 #
 ############################################################################
 
-include $(APPDIR)/Make.defs
+MENUDESC = "WATCH UI"
 
-PROGNAME  = $(CONFIG_EXAMPLES_WATCHUI_PROGNAME)
-PRIORITY  = $(CONFIG_EXAMPLES_WATCHUI_PRIORITY)
-STACKSIZE = $(CONFIG_EXAMPLES_WATCHUI_STACKSIZE)
-MODULE    = $(CONFIG_EXAMPLES_WATCHUI)
-
-MAINSRC = watch_main.c
-
-include $(APPDIR)/Application.mk
+include $(APPDIR)/Directory.mk

@@ -8,7 +8,10 @@
  * INCLUDES
  ****************************************************************************/
 #include "lvgl.h"
-#include "face/watch_app.h"
+#include "face/face_app.h"
+#include "ability_manager/ability_manager.h"
+
+using namespace mooncake;
 
 /****************************************************************************
  * TYPEDEFS
@@ -33,7 +36,7 @@ static AbilityManager* get_ability_manager();
 Face_App::Face_App(char *name)
 {
     setAppInfo().name = std::string(name);
-    LV_LOG_USER("Face_App().\n");
+    LV_LOG_USER("Face_App().");
 }
 
 /**
@@ -44,9 +47,9 @@ Face_App::Face_App(char *name)
  *          2. 使用页面管理器来创建App的后台处理程序
  *          3. 注册与底层模块通信的句柄
 */
-void Face_App::onOpen() override
+void Face_App::onOpen()
 {
-    LV_LOG_USER("Face_App onOpen.\n");
+    LV_LOG_USER("Face_App onOpen.");
 
     // create new UI for UI Application.
     // 1. create all page that regist in watch app.
@@ -63,18 +66,18 @@ void Face_App::onOpen() override
  *          2. 处理底层过来的消息
  *          3. 处理页面与页面相互传递的消息
 */
-void Face_App::onRunning() override
+void Face_App::onRunning()
 {
-    LV_LOG_USER("Face_App onRunning.\n");
+    LV_LOG_USER("Face_App onRunning.");
 }
 
 /**
  * @details onClose函数是Face_App的共有函数。
  *          onClose的处理正好与onOpen函数处理相反，类似于setup和teardown的关系
 */
-void Face_App::onClose() override
+void Face_App::onClose()
 {
-    LV_LOG_USER("Face_App onClose.\n");
+    LV_LOG_USER("Face_App onClose.");
 
     // clean UI Page for UI Application.
 

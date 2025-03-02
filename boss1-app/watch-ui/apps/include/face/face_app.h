@@ -13,12 +13,15 @@
 /****************************************************************************
  * CLASS PROTOTYPES
  ****************************************************************************/
+namespace mooncake {
+
 class Face_App : public AppAbility {
-
 public:
-    Face_App(char *name){};
+    Face_App(char *name);
 
-    void onOpen() override;
-    void onRunning() override;
-    void onClose() override;
+    void onOpen();
+    void onRunning();
+    void onClose();
 };
+
+}

@@ -22,17 +22,22 @@ include $(APPDIR)/Make.defs
 
 FACE_PATH = .
 
+CXXEXT := .cpp
+
+CXXSRCS += face_app.cpp
+
 ASRCS += $(shell find $(FACE_PATH)/mode_map -type f -name '*.S')
 CSRCS += $(shell find $(FACE_PATH)/mode_map -type f -name '*.c')
-CXXEXT := .cpp
 CXXSRCS += $(shell find $(FACE_PATH)/mode_map -type f -name '*${CXXEXT}')
 
 ASRCS += $(shell find $(FACE_PATH)/page -type f -name '*.S')
 CSRCS += $(shell find $(FACE_PATH)/page -type f -name '*.c')
-CXXEXT := .cpp
 CXXSRCS += $(shell find $(FACE_PATH)/page -type f -name '*${CXXEXT}')
 
 ASRCS += $(shell find $(FACE_PATH)/work -type f -name '*.S')
 CSRCS += $(shell find $(FACE_PATH)/work -type f -name '*.c')
-CXXEXT := .cpp
 CXXSRCS += $(shell find $(FACE_PATH)/work -type f -name '*${CXXEXT}')
+
+include $(APPDIR)/Application.mk
+
+include $(APPDIR)/tools/MultiDirectoryObj.mk

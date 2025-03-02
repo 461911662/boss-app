@@ -13,12 +13,15 @@
 /****************************************************************************
  * CLASS PROTOTYPES
  ****************************************************************************/
+namespace mooncake {
+
 class Login_App : public AppAbility {
-
 public:
-    Login_App(char *name){};
+    Login_App(char *name);
 
-    void onOpen() override;
-    void onRunning() override;
-    void onClose() override;
+    void onOpen();
+    void onRunning();
+    void onClose();
 };
+
+}

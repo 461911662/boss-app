@@ -22,17 +22,22 @@ include $(APPDIR)/Make.defs
 
 LOGIN_PATH = .
 
+CXXEXT := .cpp
+
+CXXSRCS += login_app.cpp
+
 ASRCS += $(shell find $(LOGIN_PATH)/mode_map -type f -name '*.S')
 CSRCS += $(shell find $(LOGIN_PATH)/mode_map -type f -name '*.c')
-CXXEXT := .cpp
 CXXSRCS += $(shell find $(LOGIN_PATH)/mode_map -type f -name '*${CXXEXT}')
 
 ASRCS += $(shell find $(LOGIN_PATH)/page -type f -name '*.S')
 CSRCS += $(shell find $(LOGIN_PATH)/page -type f -name '*.c')
-CXXEXT := .cpp
 CXXSRCS += $(shell find $(LOGIN_PATH)/page -type f -name '*${CXXEXT}')
 
 ASRCS += $(shell find $(LOGIN_PATH)/work -type f -name '*.S')
 CSRCS += $(shell find $(LOGIN_PATH)/work -type f -name '*.c')
-CXXEXT := .cpp
 CXXSRCS += $(shell find $(LOGIN_PATH)/work -type f -name '*${CXXEXT}')
+
+include $(APPDIR)/Application.mk
+
+include $(APPDIR)/tools/MultiDirectoryObj.mk
