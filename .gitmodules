@@ -9,8 +9,8 @@
 [submodule "boss1-app/system/libuv/libuv"]
 	path = boss1-app/system/libuv/libuv
 	url = https://github.com/461911662/libuv
-	branch = boss1
+	branch = boss1-dev
 [submodule "boss1-app/watch-ui/apps/base"]
 	path = boss1-app/watch-ui/apps/base
 	url = https://github.com/461911662/mooncake
-	branch = boss1
+	branch = boss1-dev
