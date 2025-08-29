@@ -29,7 +29,7 @@
 #include "osi/allocator.h"
 #include <string.h>
 
-#if (BTA_AG_INCLUDED == TRUE)
+#if defined(BTA_AG_INCLUDED) && (BTA_AG_INCLUDED == TRUE)
 
 /*******************************************************************************
  *                                 CONST

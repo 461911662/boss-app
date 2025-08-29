@@ -115,11 +115,11 @@ static bool hci_hal_env_init(const hci_hal_callbacks_t *upper_callbacks, osi_thr
     hci_hal_env.adv_fc_cmd_buf = osi_calloc(HCI_CMD_LINKED_BUF_SIZE(HCIC_PARAM_SIZE_BLE_UPDATE_ADV_FLOW_CONTROL));
     assert(hci_hal_env.adv_fc_cmd_buf != NULL);
     osi_mutex_new(&hci_hal_env.adv_flow_lock);
-    osi_mutex_lock(&hci_hal_env.adv_flow_lock, OSI_MUTEX_MAX_TIMEOUT);
+    osi_mutex_lock(hci_hal_env.adv_flow_lock, OSI_MUTEX_MAX_TIMEOUT);
     hci_hal_env.adv_credits = BLE_ADV_REPORT_FLOW_CONTROL_NUM;
     hci_hal_env.adv_credits_to_release = 0;
     hci_hal_env.cmd_buf_in_use = false;
-    osi_mutex_unlock(&hci_hal_env.adv_flow_lock);
+    osi_mutex_unlock(hci_hal_env.adv_flow_lock);
     hci_hal_env.adv_flow_monitor = osi_alarm_new("adv_fc_mon", hci_adv_flow_monitor, NULL, HCI_ADV_FLOW_MONITOR_PERIOD_MS);
     assert (hci_hal_env.adv_flow_monitor != NULL);
 #endif
@@ -309,10 +309,10 @@ static void hci_adv_flow_monitor(void *context)
 
 static void hci_adv_credits_consumed(uint16_t num)
 {
-    osi_mutex_lock(&hci_hal_env.adv_flow_lock, OSI_MUTEX_MAX_TIMEOUT);
+    osi_mutex_lock(hci_hal_env.adv_flow_lock, OSI_MUTEX_MAX_TIMEOUT);
     assert(hci_hal_env.adv_credits >= num);
     hci_hal_env.adv_credits -= num;
-    osi_mutex_unlock(&hci_hal_env.adv_flow_lock);
+    osi_mutex_unlock(hci_hal_env.adv_flow_lock);
 }
 
 int hci_adv_credits_prep_to_release(uint16_t num)
@@ -321,11 +321,11 @@ int hci_adv_credits_prep_to_release(uint16_t num)
         return hci_hal_env.adv_credits_to_release;
     }
 
-    osi_mutex_lock(&hci_hal_env.adv_flow_lock, OSI_MUTEX_MAX_TIMEOUT);
+    osi_mutex_lock(hci_hal_env.adv_flow_lock, OSI_MUTEX_MAX_TIMEOUT);
     int credits_to_release = hci_hal_env.adv_credits_to_release + num;
     assert(hci_hal_env.adv_credits_to_release <= BLE_ADV_REPORT_FLOW_CONTROL_NUM);
     hci_hal_env.adv_credits_to_release = credits_to_release;
-    osi_mutex_unlock(&hci_hal_env.adv_flow_lock);
+    osi_mutex_unlock(hci_hal_env.adv_flow_lock);
 
     if (credits_to_release == num && num != 0) {
         osi_alarm_cancel(hci_hal_env.adv_flow_monitor);
@@ -336,13 +336,13 @@ int hci_adv_credits_prep_to_release(uint16_t num)
 
 static int hci_adv_credits_release(void)
 {
-    osi_mutex_lock(&hci_hal_env.adv_flow_lock, OSI_MUTEX_MAX_TIMEOUT);
+    osi_mutex_lock(hci_hal_env.adv_flow_lock, OSI_MUTEX_MAX_TIMEOUT);
     int credits_released = hci_hal_env.adv_credits_to_release;
     hci_hal_env.adv_credits += credits_released;
     hci_hal_env.adv_credits_to_release -= credits_released;
     assert(hci_hal_env.adv_credits <= BLE_ADV_REPORT_FLOW_CONTROL_NUM);
     assert(hci_hal_env.adv_credits_to_release >= 0);
-    osi_mutex_unlock(&hci_hal_env.adv_flow_lock);
+    osi_mutex_unlock(hci_hal_env.adv_flow_lock);
 
     if (hci_hal_env.adv_credits_to_release == 0) {
         osi_alarm_cancel(hci_hal_env.adv_flow_monitor);
@@ -352,21 +352,21 @@ static int hci_adv_credits_release(void)
 
 static int hci_adv_credits_release_rollback(uint16_t num)
 {
-    osi_mutex_lock(&hci_hal_env.adv_flow_lock, OSI_MUTEX_MAX_TIMEOUT);
+    osi_mutex_lock(hci_hal_env.adv_flow_lock, OSI_MUTEX_MAX_TIMEOUT);
     hci_hal_env.adv_credits -= num;
     hci_hal_env.adv_credits_to_release += num;
     assert(hci_hal_env.adv_credits >=0);
     assert(hci_hal_env.adv_credits_to_release <= BLE_ADV_REPORT_FLOW_CONTROL_NUM);
-    osi_mutex_unlock(&hci_hal_env.adv_flow_lock);
+    osi_mutex_unlock(hci_hal_env.adv_flow_lock);
 
     return num;
 }
 
 static void hci_adv_flow_cmd_free_cb(pkt_linked_item_t *linked_pkt)
 {
-    osi_mutex_lock(&hci_hal_env.adv_flow_lock, OSI_MUTEX_MAX_TIMEOUT);
+    osi_mutex_lock(hci_hal_env.adv_flow_lock, OSI_MUTEX_MAX_TIMEOUT);
     hci_hal_env.cmd_buf_in_use = false;
-    osi_mutex_unlock(&hci_hal_env.adv_flow_lock);
+    osi_mutex_unlock(hci_hal_env.adv_flow_lock);
     hci_adv_credits_try_release(0);
 }
 
@@ -377,12 +377,12 @@ bool hci_adv_flow_try_send_command(uint16_t credits_released)
 
     /* first try using static buffer, then dynamic buffer */
     if (!hci_hal_env.cmd_buf_in_use) {
-        osi_mutex_lock(&hci_hal_env.adv_flow_lock, OSI_MUTEX_MAX_TIMEOUT);
+        osi_mutex_lock(hci_hal_env.adv_flow_lock, OSI_MUTEX_MAX_TIMEOUT);
         if (!hci_hal_env.cmd_buf_in_use) {
             hci_hal_env.cmd_buf_in_use = true;
             use_static_buffer = true;
         }
-        osi_mutex_unlock(&hci_hal_env.adv_flow_lock);
+        osi_mutex_unlock(hci_hal_env.adv_flow_lock);
     }
 
     if (use_static_buffer) {
@@ -446,12 +446,12 @@ static void hci_hal_h4_hdl_rx_packet(BT_HDR *packet)
     packet->offset++;
     packet->len--;
     if (type == HCI_BLE_EVENT) {
-#if (!CONFIG_BT_STACK_NO_LOG)
+#if (defined(CONFIG_BT_STACK_NO_LOG) && (!CONFIG_BT_STACK_NO_LOG))
         uint8_t len = 0;
         STREAM_TO_UINT8(len, stream);
-#endif
         HCI_TRACE_ERROR("Workaround stream corrupted during LE SCAN: pkt_len=%d ble_event_len=%d\n",
                   packet->len, len);
+#endif
         osi_free(packet);
         return;
     }

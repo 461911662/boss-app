@@ -14,7 +14,7 @@
  * STATIC PROTOTYPES
  ****************************************************************************/
 static pthread_mutex_t *gl_mutex; /* Recursive Type */
-
+static uint32_t gl_mutex_cnt;
 
 /****************************************************************************
  * GLOBAL PROTOTYPES
@@ -96,6 +96,7 @@ int osi_mutex_global_init(void)
 {
     int ret;
 
+    gl_mutex_cnt = 0;
     if (gl_mutex != NULL) {
         return -1;
     }
@@ -145,7 +146,10 @@ void osi_mutex_global_deinit(void)
  */
 void osi_mutex_global_lock(void)
 {
-    pthread_mutex_lock(gl_mutex);
+    struct timespec time;
+    clock_ticks2time(&time, 0);
+    pthread_mutex_timedlock(gl_mutex, &time);
+    gl_mutex_cnt++;
 }
 
 /**
@@ -153,5 +157,15 @@ void osi_mutex_global_lock(void)
  */
 void osi_mutex_global_unlock(void)
 {
-    pthread_mutex_unlock(gl_mutex);
+    if (--gl_mutex_cnt == 0) {
+        pthread_mutex_unlock(gl_mutex);
+    }
+}
+
+/**
+ * @details 用于测试递归互斥锁功能是否正常，其他地方不要调用
+*/
+uint32_t osi_mutex_get_recursive_cnt(void)
+{
+    return gl_mutex_cnt;
 }

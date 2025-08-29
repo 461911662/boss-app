@@ -1606,7 +1606,7 @@ static void btu_hcif_mode_change_evt (UINT8 *p)
 *******************************************************************************/
 static void btu_hcif_ssr_evt (UINT8 *p, UINT16 evt_len)
 {
-#if (BTM_SSR_INCLUDED == TRUE)
+#if (defined(BTM_SSR_INCLUDED) && (BTM_SSR_INCLUDED == TRUE))
     btm_pm_proc_ssr_evt(p, evt_len);
 #endif
 

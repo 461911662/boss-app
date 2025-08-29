@@ -10,7 +10,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "bt_common.h"
 #include "osi/allocator.h"
 
 #if HEAP_MEMORY_DEBUG

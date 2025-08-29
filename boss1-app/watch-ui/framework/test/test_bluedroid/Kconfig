@@ -1,0 +1,113 @@
+#
+# For a description of the syntax of this configuration file,
+# see the file kconfig-language.txt in the NuttX tools repository.
+#
+
+config BT_TEST_OSI_ENABLED
+    bool "OSI Test"
+    help
+        Select this option to enable bt's osi test.
+if BT_TEST_OSI_ENABLED
+
+config BT_TEST_OSI_MEMORY_ENABLED
+    bool "OSI Memory Test"
+    default n
+    help
+        Select this option to enable bt's osi memory test.
+
+config BT_TEST_OSI_ALLOCATOR_ENABLED
+    bool "OSI Allocator Test"
+    default n
+    help
+        Select this option to enable bt's osi allocator test.
+
+config BT_TEST_OSI_BUFFER_ENABLED
+    bool "OSI Buffer Test"
+    default n
+    help
+        Select this option to enable bt's osi buffer test.
+
+config BT_TEST_OSI_LIST_ENABLED
+    bool "OSI List Test"
+    default n
+    help
+        Select this option to enable bt's osi list test.
+
+config BT_TEST_OSI_CONFIG_ENABLED
+    bool "OSI Config Test"
+    default n
+    help
+        Select this option to enable bt's osi config test.
+
+config BT_TEST_OSI_SEM_ENABLED
+    bool "OSI Semaphore Test"
+    default n
+    help
+        Select this option to enable bt's osi Semaphore test.
+
+config BT_TEST_OSI_FUTURE_ENABLED
+    bool "OSI Future Test"
+    default n
+    help
+        Select this option to enable bt's osi Future test.
+
+config BT_TEST_OSI_THREAD_ENABLED
+    bool "OSI Thread Test"
+    default n
+    help
+        Select this option to enable bt's osi Thread test.
+
+config BT_TEST_OSI_EVENT_BITS_GROUPS_ENABLED
+    bool "OSI EventBitGroup Test"
+    default n
+    help
+        Select this option to enable bt's osi EventBitGroup test.
+
+config BT_TEST_OSI_MUTEX_ENABLED
+    bool "OSI Mutex Test"
+    default n
+    help
+        Select this option to enable bt's osi mutex test.
+
+config BT_TEST_OSI_HASH_MAP_ENABLED
+    bool "OSI Hash Map Test"
+    default n
+    help
+        Select this option to enable bt's osi Hash Map test.
+
+config BT_TEST_OSI_FIXED_QUEUE_ENABLED
+    bool "OSI Fiexed Queue Test"
+    default n
+    help
+        Select this option to enable bt's osi Fiexed Queue test.
+
+config BT_TEST_OSI_PKT_QUEUE_ENABLED
+    bool "OSI Pkt Queue Test"
+    default n
+    help
+        Select this option to enable bt's osi Pkt Queue test.
+
+config BT_TEST_OSI_FIXED_PKT_QUEUE_ENABLED
+    bool "OSI Fiexed Pkt Queue Test"
+    default n
+    help
+        Select this option to enable bt's osi Fiexed Pkt Queue test.
+
+config BT_TEST_OSI_ALARM_ENABLED
+    bool "OSI Alarm Test"
+    default n
+    help
+        Select this option to enable bt's osi Alarm test.
+
+endif
+
+config BT_TEST_BT_ENABLED
+    bool "BT Test"
+    help
+        Select this option to enable bt's bt test.
+
+if BT_TEST_OSI_ENABLED
+
+
+
+endif

@@ -103,15 +103,15 @@ static void set_sdp_handle(int id, int handle)
         return;
     }
 
-    osi_mutex_lock(&sdp_local_param.sdp_slot_mutex, OSI_MUTEX_MAX_TIMEOUT);
+    osi_mutex_lock(sdp_local_param.sdp_slot_mutex, OSI_MUTEX_MAX_TIMEOUT);
     slot = sdp_local_param.sdp_slots[id];
     if (slot == NULL) {
-        osi_mutex_unlock(&sdp_local_param.sdp_slot_mutex);
+        osi_mutex_unlock(sdp_local_param.sdp_slot_mutex);
         BTC_TRACE_ERROR("%s() id=%d to handle=0x%08x, set failed", __func__, id, handle);
         return;
     }
     slot->sdp_handle = handle;
-    osi_mutex_unlock(&sdp_local_param.sdp_slot_mutex);
+    osi_mutex_unlock(sdp_local_param.sdp_slot_mutex);
 }
 
 
@@ -119,18 +119,18 @@ static bool get_sdp_record_by_handle(int handle, bluetooth_sdp_record* record)
 {
     sdp_slot_t *slot = NULL;
 
-    osi_mutex_lock(&sdp_local_param.sdp_slot_mutex, OSI_MUTEX_MAX_TIMEOUT);
+    osi_mutex_lock(sdp_local_param.sdp_slot_mutex, OSI_MUTEX_MAX_TIMEOUT);
 
     for (int i = 0; i < SDP_MAX_RECORDS; i++) {
         slot = sdp_local_param.sdp_slots[i];
         if ((slot != NULL) && (slot->sdp_handle == handle)) {
             memcpy(record, slot->record_data, sizeof(bluetooth_sdp_record));
-            osi_mutex_unlock(&sdp_local_param.sdp_slot_mutex);
+            osi_mutex_unlock(sdp_local_param.sdp_slot_mutex);
             return true;
         }
     }
 
-    osi_mutex_unlock(&sdp_local_param.sdp_slot_mutex);
+    osi_mutex_unlock(sdp_local_param.sdp_slot_mutex);
     return false;
 }
 
@@ -138,17 +138,17 @@ static int get_sdp_slot_id_by_handle(int handle)
 {
     sdp_slot_t *slot = NULL;
 
-    osi_mutex_lock(&sdp_local_param.sdp_slot_mutex, OSI_MUTEX_MAX_TIMEOUT);
+    osi_mutex_lock(sdp_local_param.sdp_slot_mutex, OSI_MUTEX_MAX_TIMEOUT);
 
     for (int i = 0; i < SDP_MAX_RECORDS; i++) {
         slot = sdp_local_param.sdp_slots[i];
         if ((slot != NULL) && (slot->sdp_handle == handle)) {
-            osi_mutex_unlock(&sdp_local_param.sdp_slot_mutex);
+            osi_mutex_unlock(sdp_local_param.sdp_slot_mutex);
             return i;
         }
     }
 
-    osi_mutex_unlock(&sdp_local_param.sdp_slot_mutex);
+    osi_mutex_unlock(sdp_local_param.sdp_slot_mutex);
     return -1;
 }
 
@@ -161,7 +161,7 @@ static sdp_slot_t *start_create_sdp(int id)
         return NULL;
     }
 
-    osi_mutex_lock(&sdp_local_param.sdp_slot_mutex, OSI_MUTEX_MAX_TIMEOUT);
+    osi_mutex_lock(sdp_local_param.sdp_slot_mutex, OSI_MUTEX_MAX_TIMEOUT);
     sdp_slot = sdp_local_param.sdp_slots[id];
     if (sdp_slot == NULL) {
         BTC_TRACE_ERROR("%s() id = %d ", __func__, id);
@@ -171,7 +171,7 @@ static sdp_slot_t *start_create_sdp(int id)
         /* The record have been removed before this event occurred - e.g. deinit */
         sdp_slot = NULL;
     }
-    osi_mutex_unlock(&sdp_local_param.sdp_slot_mutex);
+    osi_mutex_unlock(sdp_local_param.sdp_slot_mutex);
 
     return sdp_slot;
 }
@@ -229,13 +229,13 @@ static int alloc_sdp_slot(bluetooth_sdp_record* in_record)
 
     copy_sdp_records(in_record, record, 1);
 
-    osi_mutex_lock(&sdp_local_param.sdp_slot_mutex, OSI_MUTEX_MAX_TIMEOUT);
+    osi_mutex_lock(sdp_local_param.sdp_slot_mutex, OSI_MUTEX_MAX_TIMEOUT);
     for(i = 0; i < SDP_MAX_RECORDS; i++)
     {
         slot = &sdp_local_param.sdp_slots[i];
         if ((*slot) == NULL) {
             if (((*slot) = (sdp_slot_t *)osi_malloc(sizeof(sdp_slot_t))) == NULL) {
-                osi_mutex_unlock(&sdp_local_param.sdp_slot_mutex);
+                osi_mutex_unlock(sdp_local_param.sdp_slot_mutex);
                 BTC_TRACE_ERROR("%s() osi_malloc slot failed!", __func__);
                 osi_free(record);
                 return -1;
@@ -245,7 +245,7 @@ static int alloc_sdp_slot(bluetooth_sdp_record* in_record)
             break;
         }
     }
-    osi_mutex_unlock(&sdp_local_param.sdp_slot_mutex);
+    osi_mutex_unlock(sdp_local_param.sdp_slot_mutex);
     if(i >= SDP_MAX_RECORDS) {
         BTC_TRACE_ERROR("%s() failed - no more free slots!", __func__);
         osi_free(record);
@@ -271,13 +271,13 @@ static int free_sdp_slot(int id)
         return handle;
     }
 
-    osi_mutex_lock(&sdp_local_param.sdp_slot_mutex, OSI_MUTEX_MAX_TIMEOUT);
+    osi_mutex_lock(sdp_local_param.sdp_slot_mutex, OSI_MUTEX_MAX_TIMEOUT);
     handle = slot->sdp_handle;
     if (slot->state != SDP_RECORD_FREE) {
         /* safe a copy of the pointer, and free after unlock() */
         record = slot->record_data;
     }
-    osi_mutex_unlock(&sdp_local_param.sdp_slot_mutex);
+    osi_mutex_unlock(sdp_local_param.sdp_slot_mutex);
 
     if(record != NULL) {
         osi_free(record);

@@ -1462,13 +1462,13 @@ static BOOLEAN retransmit_i_frames (tL2C_CCB *p_ccb, UINT8 tx_seq)
         // the transmit data queue that satisfy the layer and event conditions.
         for (const list_node_t *node = osi_list_begin(p_ccb->p_lcb->link_xmit_data_q);
                 node != osi_list_end(p_ccb->p_lcb->link_xmit_data_q);) {
-            BT_HDR *p_buf = (BT_HDR *)osi_list_node(node);
+            BT_HDR *p_buf1 = (BT_HDR *)osi_list_node(node);
             node = osi_list_next(node);
 
             /* Do not flush other CIDs or partial segments */
-            if ((p_buf->layer_specific == 0) && (p_buf->event == p_ccb->local_cid)) {
-                osi_list_remove(p_ccb->p_lcb->link_xmit_data_q, p_buf);
-                osi_free(p_buf);
+            if ((p_buf1->layer_specific == 0) && (p_buf1->event == p_ccb->local_cid)) {
+                osi_list_remove(p_ccb->p_lcb->link_xmit_data_q, p_buf1);
+                osi_free(p_buf1);
             }
         }
 

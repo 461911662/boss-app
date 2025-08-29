@@ -101,8 +101,9 @@ void btc_to_bta_uuid(tBT_UUID *p_dest, esp_bt_uuid_t *p_src)
 
 void btc_to_bta_gatt_id(tBTA_GATT_ID *p_dest, esp_gatt_id_t *p_src)
 {
+    tBT_UUID dest_uuid = p_dest->uuid;
     p_dest->inst_id = p_src->inst_id;
-    btc_to_bta_uuid(&p_dest->uuid, &p_src->uuid);
+    btc_to_bta_uuid(&dest_uuid, &p_src->uuid);
 }
 
 void btc_to_bta_srvc_id(tBTA_GATT_SRVC_ID *p_dest, esp_gatt_srvc_id_t *p_src)
@@ -134,8 +135,9 @@ void bta_to_btc_uuid(esp_bt_uuid_t *p_dest, tBT_UUID *p_src)
 
 void bta_to_btc_gatt_id(esp_gatt_id_t *p_dest, tBTA_GATT_ID *p_src)
 {
+    tBT_UUID src_uuid = p_src->uuid;
     p_dest->inst_id = p_src->inst_id;
-    bta_to_btc_uuid(&p_dest->uuid, &p_src->uuid);
+    bta_to_btc_uuid(&p_dest->uuid, &src_uuid);
 }
 
 void bta_to_btc_srvc_id(esp_gatt_srvc_id_t *p_dest, tBTA_GATT_SRVC_ID *p_src)

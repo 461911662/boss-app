@@ -12,6 +12,7 @@
 
 #include "esp_err.h"
 #include "esp_bt_defs.h"
+#include "common/bt_target.h"
 
 #ifdef __cplusplus
 extern "C" {

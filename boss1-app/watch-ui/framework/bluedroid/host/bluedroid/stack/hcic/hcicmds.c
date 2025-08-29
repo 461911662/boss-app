@@ -1401,7 +1401,7 @@ BOOLEAN btsnd_hcic_write_cur_iac_lap (UINT8 num_cur_iac, LAP *const iac_lap)
 /******************************************
 **    Lisbon Features
 *******************************************/
-#if BTM_SSR_INCLUDED == TRUE
+#if (defined(BTM_SSR_INCLUDED) && BTM_SSR_INCLUDED == TRUE)
 
 BOOLEAN btsnd_hcic_sniff_sub_rate(UINT16 handle, UINT16 max_lat,
                                   UINT16 min_remote_lat, UINT16 min_local_lat)

@@ -82,7 +82,7 @@
 
 /* Define the packet boundary flags
 */
-#if (L2CAP_NON_FLUSHABLE_PB_INCLUDED == TRUE)
+#if (defined(L2CAP_NON_FLUSHABLE_PB_INCLUDED) && (L2CAP_NON_FLUSHABLE_PB_INCLUDED == TRUE))
 #define L2CAP_PKT_START_FLUSHABLE       2
 #define L2CAP_PKT_START_NON_FLUSHABLE   0
 #endif

@@ -36,11 +36,11 @@
 #include "stack/port_api.h"
 #include "bta/utl.h"
 
-#if BT_HF_AG_BQB_INCLUDED
+#if (defined(BT_HF_AG_BQB_INCLUDED) && BT_HF_AG_BQB_INCLUDED)
 static BOOLEAN s_bta_hf_ag_bqb_brsf_flag = false;
 #endif /* BT_HF_AG_BQB_INCLUDED */
 
-#if (BTA_AG_INCLUDED == TRUE)
+#if (defined(BTA_AG_INCLUDED) && (BTA_AG_INCLUDED == TRUE))
 /*****************************************************************************
 **  Constants
 *****************************************************************************/

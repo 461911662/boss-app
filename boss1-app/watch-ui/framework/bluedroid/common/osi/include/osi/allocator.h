@@ -12,11 +12,16 @@
  ****************************************************************************/
 #include <stddef.h>
 #include <stdlib.h>
+#include "bt_common.h"
 
 /****************************************************************************
  * DEFINES
  ****************************************************************************/
-#if defined HEAP_MEMORY_DEBUG
+#ifndef HEAP_MEMORY_DEBUG
+#define HEAP_MEMORY_DEBUG 0
+#endif
+
+#if HEAP_MEMORY_DEBUG
 void osi_mem_dbg_init(void);
 void osi_mem_dbg_record(void *p, int size, const char *func, int line);
 void osi_mem_dbg_clean(void *p, const char *func, int line);
@@ -51,9 +56,9 @@ do {                                                    \
 } while (0)
 
 #else
-#define osi_malloc(size)                  malloc((size))
+#define osi_malloc(size)                  malloc(size)
 #define osi_calloc(size)                  calloc(1, (size))
-#define osi_free(p)                       free((p))
+#define osi_free(p)                       free(p)
 #endif /* HEAP_MEMORY_DEBUG */
 
 #define FREE_AND_RESET(a)   \

@@ -1505,7 +1505,7 @@ tL2C_CCB *l2cu_allocate_ccb (tL2C_LCB *p_lcb, UINT16 cid)
 
     /* Get a CID for the connection */
     for (tmp_cid = L2CAP_BASE_APPL_CID; tmp_cid < MAX_L2CAP_CHANNELS + L2CAP_BASE_APPL_CID; tmp_cid++) {
-        if (list_foreach(l2cb.p_ccb_pool, l2cu_find_ccb_in_list, &tmp_cid) == NULL) {
+        if (osi_list_foreach(l2cb.p_ccb_pool, l2cu_find_ccb_in_list, &tmp_cid) == NULL) {
             break;
         }
     }
@@ -3276,7 +3276,7 @@ tL2C_CCB *l2cu_find_ccb_by_cid (tL2C_LCB *p_lcb, UINT16 local_cid)
 #endif //(L2CAP_UCD_INCLUDED == FALSE)
     list_node_t *p_node = NULL;
 
-    p_node = (list_foreach(l2cb.p_ccb_pool, l2cu_find_ccb_in_list, &local_cid));
+    p_node = (osi_list_foreach(l2cb.p_ccb_pool, l2cu_find_ccb_in_list, &local_cid));
     if (p_node) {
 	p_ccb = (tL2C_CCB *)osi_list_node(p_node);
 

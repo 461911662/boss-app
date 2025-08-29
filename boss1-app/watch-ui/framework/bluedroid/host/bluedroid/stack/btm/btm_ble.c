@@ -88,7 +88,7 @@ BOOLEAN BTM_SecAddBleDevice (BD_ADDR bd_addr, BD_NAME bd_name, tBT_DEVICE_TYPE d
         if (osi_list_length(btm_cb.p_sec_dev_rec_list) < BTM_SEC_MAX_DEVICE_RECORDS) {
 	    p_dev_rec = (tBTM_SEC_DEV_REC *)osi_malloc(sizeof(tBTM_SEC_DEV_REC));
 	    if(p_dev_rec) {
-		list_append(btm_cb.p_sec_dev_rec_list, p_dev_rec);
+		osi_list_append(btm_cb.p_sec_dev_rec_list, p_dev_rec);
                 BTM_TRACE_DEBUG ("allocate a new dev rec idx=0x%x\n", osi_list_length(btm_cb.p_sec_dev_rec_list));
 
                 /* Mark this record as in use and initialize */

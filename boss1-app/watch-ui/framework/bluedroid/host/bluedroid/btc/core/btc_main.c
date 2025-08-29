@@ -17,6 +17,10 @@
 #include "bta_gatts_int.h"
 #include "bta_dm_int.h"
 
+#ifndef BIT
+#define BIT(nr)            (1ul << (nr))
+#endif
+
 static future_t *main_future[BTC_MAIN_FUTURE_NUM];
 
 extern int bte_main_boot_entry(void *cb);

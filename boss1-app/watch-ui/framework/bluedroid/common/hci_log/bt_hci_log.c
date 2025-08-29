@@ -215,7 +215,7 @@ esp_err_t IRAM_ATTR bt_hci_log_record_data(bt_hci_log_t *p_hci_log_ctl, char *st
     }
 
     mutex_lock = p_hci_log_ctl->mutex_lock;
-    osi_mutex_lock(&mutex_lock, OSI_MUTEX_MAX_TIMEOUT);
+    osi_mutex_lock(mutex_lock, OSI_MUTEX_MAX_TIMEOUT);
 
 #if (1)
     // Add hci data index
@@ -259,7 +259,7 @@ esp_err_t IRAM_ATTR bt_hci_log_record_data(bt_hci_log_t *p_hci_log_ctl, char *st
 
     p_hci_log_ctl->index ++;
 
-    osi_mutex_unlock(&mutex_lock);
+    osi_mutex_unlock(mutex_lock);
 
     return ESP_OK;
 }
@@ -275,7 +275,7 @@ void bt_hci_log_data_show(bt_hci_log_t *p_hci_log_ctl)
 
     osi_mutex_t mutex_lock = p_hci_log_ctl->mutex_lock;
 
-    osi_mutex_lock(&mutex_lock, OSI_MUTEX_MAX_TIMEOUT);
+    osi_mutex_lock(mutex_lock, OSI_MUTEX_MAX_TIMEOUT);
 
     log_record_in  = p_hci_log_ctl->log_record_in;
     log_record_out = p_hci_log_ctl->log_record_out;
@@ -303,7 +303,7 @@ void bt_hci_log_data_show(bt_hci_log_t *p_hci_log_ctl)
     p_hci_log_ctl->log_record_out = log_record_out;
     p_hci_log_ctl->overflow = false;
 
-    osi_mutex_unlock(&mutex_lock);
+    osi_mutex_unlock(mutex_lock);
 }
 
 esp_err_t IRAM_ATTR bt_hci_log_record_hci_data(uint8_t data_type, uint8_t *data, uint8_t data_len)

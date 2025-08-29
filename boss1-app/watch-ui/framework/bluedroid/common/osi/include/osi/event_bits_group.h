@@ -63,4 +63,10 @@ EventBits_t eventBitsGroup_getBits(EventBitsGroupHandle eg);
  * @return 返回清除前的bit位
 */
 EventBits_t eventBitsGroup_waitBits(EventBitsGroupHandle eg, EventBits_t bits_to_wait, int wait_for_all, int clear_on_exit, int timeout);
+
+/**
+ * @brief 删除一个EventBitsGroup对象
+ * @param eg EventBitsGroup对象的指针
+*/
+void eventBitsGroup_delete(EventBitsGroupHandle eg);
 #endif

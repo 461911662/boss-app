@@ -455,8 +455,10 @@ typedef tBTM_GET_PAGE_TIMEOUT_RESULTS tBTA_GET_PAGE_TIMEOUT_RESULTS;
 
 typedef tBTM_SET_ACL_PKT_TYPES_RESULTS tBTA_SET_ACL_PKT_TYPES_RESULTS;
 
+#ifdef ENC_KEY_SIZE_CTRL_MODE
 #if (ENC_KEY_SIZE_CTRL_MODE != ENC_KEY_SIZE_CTRL_MODE_NONE)
 typedef tBTM_SET_MIN_ENC_KEY_SIZE_RESULTS tBTA_SET_MIN_ENC_KEY_SIZE_RESULTS;
+#endif
 #endif
 
 typedef tBTM_REMOTE_DEV_NAME tBTA_REMOTE_DEV_NAME;
@@ -1855,8 +1857,10 @@ void BTA_DmSetAclPktTypes(BD_ADDR remote_addr, UINT16 pkt_types, tBTM_CMPL_CB *p
 ** Returns          void
 **
 *******************************************************************************/
+#ifdef ENC_KEY_SIZE_CTRL_MODE
 #if (ENC_KEY_SIZE_CTRL_MODE != ENC_KEY_SIZE_CTRL_MODE_NONE)
 void BTA_DmSetMinEncKeySize(UINT8 key_size, tBTM_CMPL_CB *p_cb);
+#endif
 #endif
 
 #if (BLE_INCLUDED == TRUE)

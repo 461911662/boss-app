@@ -35,7 +35,7 @@ const char *dump_rc_notification_event_id(UINT8 event_id);
 const char *dump_rc_pdu(UINT8 pdu);
 #endif
 
-#if (BTA_AG_INCLUDED == TRUE)
+#if (defined(BTA_AG_INCLUDED) && (BTA_AG_INCLUDED == TRUE))
 const char *dump_hf_conn_state(UINT16 event);
 const char *dump_hf_event(UINT16 event);
 const char *dump_hf_call_state(esp_hf_call_status_t call_state);

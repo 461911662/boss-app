@@ -10,6 +10,7 @@
 #include "esp_bt_defs.h"
 #include "esp_gatt_defs.h"
 #include "esp_err.h"
+#include "common/bt_target.h"
 
 #ifdef __cplusplus
 extern "C" {

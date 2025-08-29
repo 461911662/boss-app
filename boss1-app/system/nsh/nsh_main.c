@@ -34,6 +34,9 @@
 
 #include "nshlib/nshlib.h"
 
+extern int esp_bluedroid_init(void);
+extern int esp_bluedroid_deinit(void);
+
 /****************************************************************************
  * Public Functions
  ****************************************************************************/
@@ -67,6 +70,10 @@ int main(int argc, FAR char *argv[])
   /* Initialize the NSH library */
 
   nsh_initialize();
+
+  esp_bluedroid_init();
+
+  esp_bluedroid_deinit();
 
 #ifdef CONFIG_NSH_CONSOLE
   /* If the serial console front end is selected, run it on this thread */

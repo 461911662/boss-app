@@ -29,11 +29,11 @@
 #include "hci/hci_audio.h"
 #endif
 
-#if BT_HF_CLIENT_BQB_INCLUDED
+#if (defined(BT_HF_CLIENT_BQB_INCLUDED) && BT_HF_CLIENT_BQB_INCLUDED)
 static BOOLEAN s_bta_hf_client_bqb_esco_s1_flag = false;
 #endif /* BT_HF_CLIENT_BQB_INCLUDED */
 
-#if (BTA_HF_INCLUDED == TRUE)
+#if (defined(BTA_HF_INCLUDED) && (BTA_HF_INCLUDED == TRUE))
 #define BTA_HF_CLIENT_NO_EDR_ESCO  (BTM_SCO_PKT_TYPES_MASK_NO_2_EV3 | \
                                     BTM_SCO_PKT_TYPES_MASK_NO_3_EV3 | \
                                     BTM_SCO_PKT_TYPES_MASK_NO_2_EV5 | \

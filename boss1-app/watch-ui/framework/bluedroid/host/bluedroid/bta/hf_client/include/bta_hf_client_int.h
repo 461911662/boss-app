@@ -22,7 +22,7 @@
 #include "bta/bta_hf_client_api.h"
 #include "bta_hf_client_at.h"
 
-#if (BTA_HF_INCLUDED == TRUE)
+#if (defined(BTA_HF_INCLUDED) && (BTA_HF_INCLUDED == TRUE))
 /*****************************************************************************
 **  Constants
 *****************************************************************************/

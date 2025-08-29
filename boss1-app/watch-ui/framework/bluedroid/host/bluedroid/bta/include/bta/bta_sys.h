@@ -251,7 +251,7 @@ extern void bta_sys_sco_unuse(UINT8 id, UINT8 app_id, BD_ADDR peer_addr);
 extern void bta_sys_idle(UINT8 id, UINT8 app_id, BD_ADDR peer_addr);
 extern void bta_sys_busy(UINT8 id, UINT8 app_id, BD_ADDR peer_addr);
 
-#if (BTM_SSR_INCLUDED == TRUE)
+#if (defined(BTM_SSR_INCLUDED) && (BTM_SSR_INCLUDED == TRUE))
 extern void bta_sys_ssr_cfg_register(tBTA_SYS_SSR_CFG_CBACK *p_cback);
 extern void bta_sys_chg_ssr_config (UINT8 id, UINT8 app_id, UINT16 max_latency, UINT16 min_tout);
 #endif

@@ -38,7 +38,7 @@
 #include "osi/allocator.h"
 
 
-#if (BTA_AG_INCLUDED == TRUE)
+#if (defined(BTA_AG_INCLUDED) && (BTA_AG_INCLUDED == TRUE))
 /* Event mask for RfCOMM port callback */
 #define BTA_AG_PORT_EV_MASK         PORT_EV_RXCHAR
 

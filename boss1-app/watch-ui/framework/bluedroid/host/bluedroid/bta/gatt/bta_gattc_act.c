@@ -552,12 +552,12 @@ void bta_gattc_init_bk_conn(tBTA_GATTC_API_OPEN *p_data, tBTA_GATTC_RCB *p_clreg
         if (!GATT_Connect(p_data->client_if, p_data->remote_bda,
                           p_data->remote_addr_type, FALSE,
                           p_data->transport,  p_data->is_aux)) {
-#if (!CONFIG_BT_STACK_NO_LOG)
+#if (defined(CONFIG_BT_STACK_NO_LOG) && (!CONFIG_BT_STACK_NO_LOG))
             uint8_t *bda = (uint8_t *)p_data->remote_bda;
-#endif
-            status = BTA_GATT_ERROR;
             APPL_TRACE_ERROR("%s unable to connect to remote bd_addr:%02x:%02x:%02x:%02x:%02x:%02x",
                              __func__, bda[0], bda[1], bda[2], bda[3], bda[4], bda[5]);
+#endif
+            status = BTA_GATT_ERROR;
 
         } else {
             status = BTA_GATT_OK;
@@ -1964,9 +1964,17 @@ BOOLEAN bta_gattc_process_srvc_chg_ind(UINT16 conn_id,
     srvc_chg_uuid.len = 2;
     srvc_chg_uuid.uu.uuid16 = GATT_UUID_GATT_SRV_CHGD;
 
+    tBT_UUID temp_server_uuid;
+    tBT_UUID temp_uuid;
     const tBTA_GATTC_CHARACTERISTIC *p_char = bta_gattc_get_characteristic_srcb(p_srcb, p_notify->handle);
-    if (p_char && bta_gattc_uuid_compare(&p_char->service->uuid, &gattp_uuid, TRUE) &&
-        bta_gattc_uuid_compare(&p_char->uuid, &srvc_chg_uuid, TRUE)) {
+    if (p_char)
+    {
+        memcpy(&temp_uuid, &p_char->uuid, sizeof(tBT_UUID));
+        memcpy(&temp_server_uuid, &p_char->service->uuid, sizeof(tBT_UUID));
+    }
+
+    if (p_char && bta_gattc_uuid_compare(&temp_server_uuid, &gattp_uuid, TRUE) &&
+        bta_gattc_uuid_compare(&temp_uuid, &srvc_chg_uuid, TRUE)) {
         if (att_value->len != BTA_GATTC_SERVICE_CHANGED_LEN) {
             APPL_TRACE_ERROR("%s: received malformed service changed indication, skipping", __func__);
             return FALSE;
@@ -2423,7 +2431,9 @@ tBTA_GATTC_FIND_SERVICE_CB bta_gattc_register_service_change_notify(UINT16 conn_
         for (list_node_t *sn = osi_list_begin(p_cache);
              sn != osi_list_end(p_cache); sn = osi_list_next(sn)) {
             p_service = osi_list_node(sn);
-            if (bta_gattc_uuid_compare(&gatt_service_uuid, &p_service->uuid, TRUE)) {
+            tBT_UUID temp_uuid;
+            if (bta_gattc_uuid_compare(&gatt_service_uuid, &temp_uuid, TRUE)) {
+                memcpy(&p_service->uuid, &temp_uuid, sizeof(tBT_UUID));
                 gatt_service_found = TRUE;
                 break;
             }
@@ -2438,8 +2448,14 @@ tBTA_GATTC_FIND_SERVICE_CB bta_gattc_register_service_change_notify(UINT16 conn_
         if (p_service->characteristics) {
             for (list_node_t *cn = osi_list_begin(p_service->characteristics);
                  cn != osi_list_end(p_service->characteristics); cn = osi_list_next(cn)) {
+
                 p_char = osi_list_node(cn);
-                if (bta_gattc_uuid_compare(&gatt_service_change_uuid, &p_char->uuid, TRUE)) {
+                tBT_UUID temp_uuid;
+                if (p_char) {
+                    memcpy(&temp_uuid, &p_char->uuid, sizeof(tBT_UUID));
+                }
+
+                if (bta_gattc_uuid_compare(&gatt_service_change_uuid, &temp_uuid, TRUE)) {
                     gatt_service_change_found = TRUE;
                     break;
                 }
@@ -2455,8 +2471,14 @@ tBTA_GATTC_FIND_SERVICE_CB bta_gattc_register_service_change_notify(UINT16 conn_
         if (p_char->descriptors) {
             for (list_node_t *dn = osi_list_begin(p_char->descriptors);
                  dn != osi_list_end(p_char->descriptors); dn = osi_list_next(dn)) {
+
                 p_desc = osi_list_node(dn);
-                if (bta_gattc_uuid_compare(&gatt_ccc_uuid, &p_desc->uuid, TRUE)) {
+                tBT_UUID temp_uuid;
+                if (p_desc) {
+                    memcpy(&temp_uuid, &p_desc->uuid, sizeof(tBT_UUID));
+                }
+
+                if (bta_gattc_uuid_compare(&gatt_ccc_uuid, &temp_uuid, TRUE)) {
                     gatt_ccc_found = TRUE;
                     break;
                 }

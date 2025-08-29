@@ -30,11 +30,11 @@
 #endif
 #include <assert.h>
 
-#if BT_HF_CLIENT_BQB_INCLUDED
+#if (defined(BT_HF_CLIENT_BQB_INCLUDED) && BT_HF_CLIENT_BQB_INCLUDED)
 static BOOLEAN s_bta_hf_client_bqb_esco_s4_flag = false;
 #endif /* BT_HF_CLIENT_BQB_INCLUDED */
 
-#if (BTC_HF_CLIENT_INCLUDED == TRUE)
+#if (defined(BTC_HF_CLIENT_INCLUDED) && (BTC_HF_CLIENT_INCLUDED == TRUE))
 
 /************************************************************************************
 **  Constants & Macros

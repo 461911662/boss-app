@@ -28,7 +28,7 @@
 #include "bta/bta_ag_api.h"
 #include "common/bt_target.h"
 
-#if (BTA_AG_INCLUDED == TRUE)
+#if (defined(BTA_AG_INCLUDED) && (BTA_AG_INCLUDED == TRUE))
 
 #ifndef BTA_AG_CIND_INFO
 #define BTA_AG_CIND_INFO      "(\"call\",(0,1)),(\"callsetup\",(0-3)),(\"service\",(0-3)),(\"signal\",(0-6)),(\"roam\",(0,1)),(\"battchg\",(0-5)),(\"callheld\",(0-2))"

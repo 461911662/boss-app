@@ -224,6 +224,7 @@ static void btc_gatts_act_create_attr_tab(esp_gatts_attr_db_t *gatts_attr_db,
 {
     uint16_t uuid = 0;
     future_t *future_p;
+    tBT_UUID temp_uuid;
     esp_ble_gatts_cb_param_t param;
     param.add_attr_tab.status = ESP_GATT_OK;
     param.add_attr_tab.num_handle = max_nb_attr;
@@ -271,8 +272,9 @@ static void btc_gatts_act_create_attr_tab(esp_gatts_attr_db_t *gatts_attr_db,
                                               gatts_attr_db[i].att_desc.value);
 
                 btc_to_bta_srvc_id(&srvc_id, &esp_srvc_id);
+                memcpy(&temp_uuid, &srvc_id.id.uuid, sizeof(tBT_UUID));
                 if (btc_creat_tab_env.is_use_svc != true) {
-                    BTA_GATTS_CreateService(gatts_if, &srvc_id.id.uuid,
+                    BTA_GATTS_CreateService(gatts_if, &temp_uuid,
                                             srvc_inst_id, max_nb_attr, true);
                     btc_creat_tab_env.is_use_svc = true;
                 } else {
@@ -298,8 +300,9 @@ static void btc_gatts_act_create_attr_tab(esp_gatts_attr_db_t *gatts_attr_db,
                 btc_gatts_uuid_format_convert(&esp_srvc_id.id.uuid,gatts_attr_db[i].att_desc.length,
                                               gatts_attr_db[i].att_desc.value);
                 btc_to_bta_srvc_id(&srvc_id, &esp_srvc_id);
+                memcpy(&temp_uuid, &srvc_id.id.uuid, sizeof(tBT_UUID));
                 if (btc_creat_tab_env.is_use_svc != true) {
-                    BTA_GATTS_CreateService(gatts_if, &srvc_id.id.uuid,
+                    BTA_GATTS_CreateService(gatts_if, &temp_uuid,
                                             srvc_inst_id, max_nb_attr, false);
                     btc_creat_tab_env.is_use_svc = true;
                 } else {
@@ -615,6 +618,7 @@ static void btc_gatts_inter_cb(tBTA_GATTS_EVT event, tBTA_GATTS *p_data)
 void btc_gatts_call_handler(btc_msg_t *msg)
 {
     btc_ble_gatts_args_t *arg = (btc_ble_gatts_args_t *)msg->arg;
+    tBT_UUID temp_uuid;
 
     switch (msg->act) {
     case BTC_GATTS_ACT_APP_REGISTER: {
@@ -633,7 +637,8 @@ void btc_gatts_call_handler(btc_msg_t *msg)
     case BTC_GATTS_ACT_CREATE_SERVICE: {
         tBTA_GATT_SRVC_ID srvc_id;
         btc_to_bta_srvc_id(&srvc_id, &arg->create_srvc.service_id);
-        BTA_GATTS_CreateService(arg->create_srvc.gatts_if, &srvc_id.id.uuid,
+        memcpy(&temp_uuid, &srvc_id.id.uuid, sizeof(tBT_UUID));
+        BTA_GATTS_CreateService(arg->create_srvc.gatts_if, &temp_uuid,
                                 srvc_id.id.inst_id, arg->create_srvc.num_handle,
                                 srvc_id.is_primary);
         break;

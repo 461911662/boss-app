@@ -23,7 +23,7 @@
 #include "bta/bta_av_api.h"
 #endif  ///BTA_AV_INCLUDED == TRUE
 
-#if (BTA_AG_INCLUDED == TRUE)
+#if (defined(BTA_AG_INCLUDED) &&(BTA_AG_INCLUDED == TRUE))
 #include "bta/bta_ag_api.h"
 #endif  ///BTA_AG_INCLUDED == TRUE
 
@@ -122,7 +122,7 @@ const char  *dump_rc_pdu(UINT8 pdu)
 }
 #endif  ///BTA_AV_INCLUDED == TRUE
 
-#if (BTA_AG_INCLUDED == TRUE)
+#if (defined(BTA_AG_INCLUDED) && (BTA_AG_INCLUDED == TRUE))
 const char* dump_hf_conn_state(UINT16 event)
 {
     switch(event)

@@ -311,7 +311,7 @@ tBTM_STATUS BTM_ReadPowerMode (BD_ADDR remote_bda, tBTM_PM_MODE *p_mode)
 tBTM_STATUS BTM_SetSsrParams (BD_ADDR remote_bda, UINT16 max_lat,
                               UINT16 min_rmt_to, UINT16 min_loc_to)
 {
-#if (BTM_SSR_INCLUDED == TRUE)
+#if (defined(BTM_SSR_INCLUDED) && (BTM_SSR_INCLUDED == TRUE))
     tBTM_PM_MCB *p_cb;
     tACL_CONN *p_acl_cb = NULL;
 
@@ -581,7 +581,7 @@ static tBTM_STATUS btm_pm_snd_md_req(UINT8 pm_id, UINT16 link_hdl, tBTM_PM_PWR_M
     if (p_cb->chg_ind == TRUE) { /* needs to wake first */
         md_res.mode = BTM_PM_MD_ACTIVE;
     }
-#if (BTM_SSR_INCLUDED == TRUE)
+#if (defined(BTM_SSR_INCLUDED) && (BTM_SSR_INCLUDED == TRUE))
     else if (BTM_PM_MD_SNIFF == md_res.mode && p_cb->max_lat) {
         btsnd_hcic_sniff_sub_rate(link_hdl, p_cb->max_lat,
                                   p_cb->min_rmt_to, p_cb->min_loc_to);
@@ -833,7 +833,7 @@ void btm_pm_proc_mode_change (UINT8 hci_status, UINT16 hci_handle, UINT8 mode, U
 ** Returns          none.
 **
 *******************************************************************************/
-#if (BTM_SSR_INCLUDED == TRUE)
+#if (defined(BTM_SSR_INCLUDED) && (BTM_SSR_INCLUDED == TRUE))
 void btm_pm_proc_ssr_evt (UINT8 *p, UINT16 evt_len)
 {
     UINT8       status;

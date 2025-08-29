@@ -494,7 +494,7 @@ void gatt_profile_db_init (void)
     /* start service */
     status = GATTS_StartService (gatt_cb.gatt_if, service_handle, GATTP_TRANSPORT_SUPPORTED );
 
-#if (CONFIG_BT_STACK_NO_LOG)
+#if (defined(CONFIG_BT_STACK_NO_LOG) && (CONFIG_BT_STACK_NO_LOG))
     (void) status;
 #endif
 

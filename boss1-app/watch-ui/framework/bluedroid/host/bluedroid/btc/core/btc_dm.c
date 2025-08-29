@@ -50,10 +50,10 @@ btc_dm_cb_t *btc_dm_cb_ptr;
 extern bt_status_t btc_av_source_execute_service(BOOLEAN b_enable);
 extern bt_status_t btc_av_sink_execute_service(BOOLEAN b_enable);
 #endif
-#if BTC_HF_INCLUDED
+#if (defined(BTC_HF_INCLUDED) && BTC_HF_INCLUDED)
 extern bt_status_t btc_hf_execute_service(BOOLEAN b_enable);
 #endif
-#if BTC_HF_CLIENT_INCLUDED
+#if (defined(BTC_HF_CLIENT_INCLUDED) && BTC_HF_CLIENT_INCLUDED)
 extern bt_status_t btc_hf_client_execute_service(BOOLEAN b_enable);
 #endif
 /******************************************************************************
@@ -608,7 +608,7 @@ static void btc_dm_dev_unpaired_evt(tBTA_DM_LINK_DOWN *p_link_down)
 }
 
 
-#if (BTC_DM_PM_INCLUDED == TRUE)
+#if (defined(BTC_DM_PM_INCLUDED) && (BTC_DM_PM_INCLUDED == TRUE))
 static void btc_dm_pm_mode_chg_evt(tBTA_DM_MODE_CHG *p_mode_chg)
 {
     esp_bt_gap_cb_param_t param;
@@ -660,12 +660,12 @@ static bt_status_t btc_in_execute_service_request(tBTA_SERVICE_ID service_id,
         btc_av_sink_execute_service(b_enable);
         break;
 #endif
-#if BTC_HF_INCLUDED
+#if (defined(BTC_HF_INCLUDED) && BTC_HF_INCLUDED)
     case BTA_HFP_SERVICE_ID:
         btc_hf_execute_service(b_enable);
         break;
 #endif /* #if BTC_HF_INCLUDED */
-#if BTC_HF_CLIENT_INCLUDED
+#if (defined(BTC_HF_CLIENT_INCLUDED) && BTC_HF_CLIENT_INCLUDED)
     case BTA_HFP_HS_SERVICE_ID:
         btc_hf_client_execute_service(b_enable);
         break;
@@ -1051,7 +1051,7 @@ void btc_dm_sec_cb_handler(btc_msg_t *msg)
     }
 #endif
 
-#if (BTC_DM_PM_INCLUDED == TRUE)
+#if (defined(BTC_DM_PM_INCLUDED) && (BTC_DM_PM_INCLUDED == TRUE))
     case BTA_DM_PM_MODE_CHG_EVT:
         BTC_TRACE_DEBUG("BTA_DM_PM_MODE_CHG_EVT mode:%d", p_data->mode_chg.mode);
         btc_dm_pm_mode_chg_evt(&p_data->mode_chg);

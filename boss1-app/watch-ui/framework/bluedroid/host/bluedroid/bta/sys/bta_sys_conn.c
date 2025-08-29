@@ -83,7 +83,7 @@ void bta_sys_role_chg_register(tBTA_SYS_CONN_CBACK *p_cback)
 ** Returns          void
 **
 *******************************************************************************/
-#if (BTM_SSR_INCLUDED == TRUE)
+#if (defined(BTM_SSR_INCLUDED) && (BTM_SSR_INCLUDED == TRUE))
 void bta_sys_ssr_cfg_register(tBTA_SYS_SSR_CFG_CBACK *p_cback)
 {
     bta_sys_cb.p_ssr_cb = p_cback;
@@ -373,7 +373,7 @@ void bta_sys_sco_unuse(UINT8 id, UINT8 app_id, BD_ADDR peer_addr)
 ** Returns          void
 **
 *******************************************************************************/
-#if (BTM_SSR_INCLUDED == TRUE)
+#if (defined(BTM_SSR_INCLUDED) && (BTM_SSR_INCLUDED == TRUE))
 void bta_sys_chg_ssr_config (UINT8 id, UINT8 app_id, UINT16 max_latency, UINT16 min_tout)
 {
     if (bta_sys_cb.p_ssr_cb) {

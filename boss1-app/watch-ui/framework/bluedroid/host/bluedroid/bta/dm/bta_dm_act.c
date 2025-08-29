@@ -331,7 +331,7 @@ void bta_dm_deinit_cb(void)
 #if ( BTA_EIR_CANNED_UUID_LIST != TRUE )
     bta_sys_free_timer(&bta_dm_cb.app_ready_timer);
 #endif
-#if BTM_SSR_INCLUDED == TRUE
+#if (defined(BTM_SSR_INCLUDED) && (BTM_SSR_INCLUDED == TRUE))
     for (size_t i = 0; i < BTA_DM_NUM_PM_TIMER; i++) {
         for (size_t j = 0; j < BTA_DM_PM_MODE_TIMER_MAX; j++) {
             bta_sys_free_timer(&bta_dm_cb.pm_timer[i].timer[j]);

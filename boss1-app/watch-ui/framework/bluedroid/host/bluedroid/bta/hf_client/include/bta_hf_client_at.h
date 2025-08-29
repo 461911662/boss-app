@@ -21,7 +21,7 @@
 **  Data types
 *****************************************************************************/
 #include "common/bt_target.h"
-#if (BTA_HF_INCLUDED == TRUE)
+#if (defined(BTA_HF_INCLUDED) && (BTA_HF_INCLUDED == TRUE))
 
 /* ASCII character string of arguments to the AT command */
 #define BTA_HF_CLIENT_AT_MAX_LEN        512

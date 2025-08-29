@@ -58,7 +58,7 @@ static void smp_process_private_key(tSMP_CB *p_cb);
 static void smp_finish_nonce_generation(tSMP_CB *p_cb);
 static void smp_process_new_nonce(tSMP_CB *p_cb);
 
-static const tSMP_ACT smp_encrypt_action[] = {
+static const tSMP_ACT smp_encrypt_action[] __attribute__((unused)) = {
     smp_generate_compare,           /* SMP_GEN_COMPARE */
     smp_generate_confirm,          /* SMP_GEN_CONFIRM*/
     smp_generate_stk,               /* SMP_GEN_STK*/

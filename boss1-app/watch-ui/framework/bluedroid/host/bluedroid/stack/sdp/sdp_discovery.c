@@ -592,7 +592,7 @@ static void process_service_search_attr_rsp (tCONN_CB *p_ccb, UINT8 *p_reply)
     /* If continuation request (or first time request) */
     if ((cont_request_needed) || (!p_reply)) {
         BT_HDR  *p_msg = (BT_HDR *) osi_malloc(SDP_DATA_BUF_SIZE);
-        UINT8   *p;
+        UINT8   *p1;
 
         if (!p_msg) {
             sdp_disconnect (p_ccb, SDP_NO_RESOURCES);
@@ -600,48 +600,48 @@ static void process_service_search_attr_rsp (tCONN_CB *p_ccb, UINT8 *p_reply)
         }
 
         p_msg->offset = L2CAP_MIN_OFFSET;
-        p = p_start = (UINT8 *)(p_msg + 1) + L2CAP_MIN_OFFSET;
+        p1 = p_start = (UINT8 *)(p_msg + 1) + L2CAP_MIN_OFFSET;
 
         /* Build a service search request packet */
-        UINT8_TO_BE_STREAM  (p, SDP_PDU_SERVICE_SEARCH_ATTR_REQ);
-        UINT16_TO_BE_STREAM (p, p_ccb->transaction_id);
+        UINT8_TO_BE_STREAM  (p1, SDP_PDU_SERVICE_SEARCH_ATTR_REQ);
+        UINT16_TO_BE_STREAM (p1, p_ccb->transaction_id);
         p_ccb->transaction_id++;
 
         /* Skip the length, we need to add it at the end */
-        p_param_len = p;
-        p += 2;
+        p_param_len = p1;
+        p1 += 2;
 
         /* Build the UID sequence. */
 #if (defined(SDP_BROWSE_PLUS) && SDP_BROWSE_PLUS == TRUE)
-        p = sdpu_build_uuid_seq (p, 1, &p_ccb->p_db->uuid_filters[p_ccb->cur_uuid_idx]);
+        p1 = sdpu_build_uuid_seq (p1, 1, &p_ccb->p_db->uuid_filters[p_ccb->cur_uuid_idx]);
 #else
-        p = sdpu_build_uuid_seq (p, p_ccb->p_db->num_uuid_filters, p_ccb->p_db->uuid_filters);
+        p1 = sdpu_build_uuid_seq (p1, p_ccb->p_db->num_uuid_filters, p_ccb->p_db->uuid_filters);
 #endif
 
         /* Max attribute byte count */
-        UINT16_TO_BE_STREAM (p, sdp_cb.max_attr_list_size);
+        UINT16_TO_BE_STREAM (p1, sdp_cb.max_attr_list_size);
 
         /* If no attribute filters, build a wildcard attribute sequence */
         if (p_ccb->p_db->num_attr_filters) {
-            p = sdpu_build_attrib_seq (p, p_ccb->p_db->attr_filters, p_ccb->p_db->num_attr_filters);
+            p1 = sdpu_build_attrib_seq (p1, p_ccb->p_db->attr_filters, p_ccb->p_db->num_attr_filters);
         } else {
-            p = sdpu_build_attrib_seq (p, NULL, 0);
+            p1 = sdpu_build_attrib_seq (p1, NULL, 0);
         }
 
         /* No continuation for first request */
         if (p_reply) {
-            memcpy (p, p_reply, *p_reply + 1);
-            p += *p_reply + 1;
+            memcpy (p1, p_reply, *p_reply + 1);
+            p1 += *p_reply + 1;
         } else {
-            UINT8_TO_BE_STREAM (p, 0);
+            UINT8_TO_BE_STREAM (p1, 0);
         }
 
         /* Go back and put the parameter length into the buffer */
-        param_len = p - p_param_len - 2;
+        param_len = p1 - p_param_len - 2;
         UINT16_TO_BE_STREAM (p_param_len, param_len);
 
         /* Set the length of the SDP data in the buffer */
-        p_msg->len = p - p_start;
+        p_msg->len = p1 - p_start;
 
 
         L2CA_DataWrite (p_ccb->connection_id, p_msg);

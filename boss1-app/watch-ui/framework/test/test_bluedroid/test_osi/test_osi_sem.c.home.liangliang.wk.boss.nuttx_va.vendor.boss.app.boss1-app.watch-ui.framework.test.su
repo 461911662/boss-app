@@ -1,0 +1,11 @@
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_sem.c:22:1:TEST_BT_OSI_SEM_TEST_SETUP	32	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_sem.c:30:1:TEST_BT_OSI_SEM_TEST_osi_sem_new_free_	48	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_sem.c:38:1:TEST_BT_OSI_SEM_TEST_osi_sem_new_take_timeout_	48	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_sem.c:59:1:TEST_BT_OSI_SEM_TEST_osi_sem_new_take_	48	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_sem.c:48:1:TEST_BT_OSI_SEM_TEST_osi_sem_new_give_take_timeout_	48	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_sem.c:26:1:TEST_BT_OSI_SEM_TEST_TEAR_DOWN	32	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_sem.c:30:1:TEST_BT_OSI_SEM_TEST_osi_sem_new_free_run	48	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_sem.c:38:1:TEST_BT_OSI_SEM_TEST_osi_sem_new_take_timeout_run	48	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_sem.c:48:1:TEST_BT_OSI_SEM_TEST_osi_sem_new_give_take_timeout_run	48	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_sem.c:59:1:TEST_BT_OSI_SEM_TEST_osi_sem_new_take_run	48	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_sem.c:70:1:TEST_BT_OSI_SEM_TEST_GROUP_RUNNER	48	static

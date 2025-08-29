@@ -32,7 +32,7 @@
 #include "bta_hf_client_int.h"
 #include "osi/allocator.h"
 
-#if (BTA_HF_INCLUDED == TRUE)
+#if (defined(BTA_HF_INCLUDED) && (BTA_HF_INCLUDED == TRUE))
 /* Number of protocol elements in protocol element list. */
 #define BTA_HF_CLIENT_NUM_PROTO_ELEMS      2
 

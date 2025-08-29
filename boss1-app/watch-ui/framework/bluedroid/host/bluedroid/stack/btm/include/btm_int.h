@@ -98,7 +98,7 @@ typedef struct {
     tBTM_PM_PWR_MD req_mode[BTM_MAX_PM_RECORDS + 1]; /* the desired mode and parameters of the connection*/
     tBTM_PM_PWR_MD set_mode;  /* the mode and parameters sent down to the host controller. */
     UINT16         interval;  /* the interval from last mode change event. */
-#if (BTM_SSR_INCLUDED == TRUE)
+#if (defined(BTM_SSR_INCLUDED) && (BTM_SSR_INCLUDED == TRUE))
     UINT16         max_lat;   /* stored SSR maximum latency */
     UINT16         min_rmt_to;/* stored SSR minimum remote timeout */
     UINT16         min_loc_to;/* stored SSR minimum local timeout */
@@ -1160,8 +1160,10 @@ void btm_delete_stored_link_key_complete (UINT8 *p);
 void btm_report_device_status (tBTM_DEV_STATUS status);
 void btm_set_afh_channels_complete (UINT8 *p);
 void btm_ble_set_channels_complete (UINT8 *p);
+#ifdef ENC_KEY_SIZE_CTRL_MODE
 #if (ENC_KEY_SIZE_CTRL_MODE != ENC_KEY_SIZE_CTRL_MODE_NONE)
 void btm_set_min_enc_key_size_complete(const UINT8 *p);
+#endif
 #endif
 void btm_set_page_timeout_complete (const UINT8 *p);
 void btm_page_to_setup_timeout (void *p_tle);

@@ -33,7 +33,7 @@ typedef struct list_t {
 
 // Hidden constructor, only to be used by the hash map for the allocation tracker.
 // Behaves the same as |osi_list_new|, except you get to specify the allocator.
-static list_t *list_new_internal(list_free_cb callback)
+list_t *list_new_internal(list_free_cb callback)
 {
     list_t *list = (list_t *) osi_calloc(sizeof(list_t));
     if (!list) {
@@ -184,6 +184,9 @@ bool osi_list_append(list_t *list, void *data)
     return true;
 }
 
+/*
+ * @details 移除时，释放当前node内存和data内存
+ */
 bool osi_list_remove(list_t *list, void *data)
 {
     assert(list != NULL);
@@ -214,6 +217,9 @@ bool osi_list_remove(list_t *list, void *data)
     return false;
 }
 
+/*
+ * @details 删除时，仅释放当前node内存
+ */
 bool osi_list_delete(list_t *list, void *data)
 {
     assert(list != NULL);
@@ -244,6 +250,9 @@ bool osi_list_delete(list_t *list, void *data)
     return false;
 }
 
+/*
+ * @details 清空list，释放node内存和data内存
+ */
 void osi_list_clear(list_t *list)
 {
     assert(list != NULL);
@@ -255,6 +264,9 @@ void osi_list_clear(list_t *list)
     list->length = 0;
 }
 
+/*
+ * @details 遍历list，如果回调函数返回0，则停止遍历并返回当前node，没有匹配则返回NULL
+ */
 list_node_t *osi_list_foreach(const list_t *list, list_iter_cb callback, void *context)
 {
   assert(list != NULL);
@@ -294,6 +306,10 @@ void *osi_list_node(const list_node_t *node)
     return node->data;
 }
 
+/*
+ * @details 这个函数用于释放node和node->data内存。
+ * @note 此函数只会释放内存，不维护list
+ */
 list_node_t *osi_list_free_node(list_t *list, list_node_t *node)
 {
     assert(list != NULL);
@@ -310,7 +326,10 @@ list_node_t *osi_list_free_node(list_t *list, list_node_t *node)
     return next;
 }
 
-// remove the element from list but do not free the node data
+/*
+ * @details 这个函数用于释放node内存。
+ * @note 此函数只会释放内存，不维护list
+ */
 list_node_t *osi_list_delete_node(list_t *list, list_node_t *node)
 {
     assert(list != NULL);

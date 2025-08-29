@@ -1,0 +1,16 @@
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_hash_map.c:38:1:TEST_BT_OSI_HASH_MAP_TEST_SETUP	32	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_hash_map.c:46:1:TEST_BT_OSI_HASH_MAP_TEST_mutex_new_free_	32	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_hash_map.c:168:1:TEST_BT_OSI_HASH_MAP_TEST_mutex_new_string_free_	32	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_hash_map.c:54:1:TEST_BT_OSI_HASH_MAP_TEST_mutex_new_native_free_	32	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_hash_map.c:80:1:TEST_BT_OSI_HASH_MAP_TEST_mutex_new_int_free_	32	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_hash_map.c:106:1:TEST_BT_OSI_HASH_MAP_TEST_mutex_new_pointer_free_	64	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_hash_map.c:18:13:key_free	32	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_hash_map.c:26:13:key_equal	32	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_hash_map.c:42:1:TEST_BT_OSI_HASH_MAP_TEST_TEAR_DOWN	32	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_hash_map.c:22:13:data_free	32	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_hash_map.c:46:1:TEST_BT_OSI_HASH_MAP_TEST_mutex_new_free_run	48	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_hash_map.c:54:1:TEST_BT_OSI_HASH_MAP_TEST_mutex_new_native_free_run	48	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_hash_map.c:80:1:TEST_BT_OSI_HASH_MAP_TEST_mutex_new_int_free_run	48	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_hash_map.c:106:1:TEST_BT_OSI_HASH_MAP_TEST_mutex_new_pointer_free_run	48	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_hash_map.c:168:1:TEST_BT_OSI_HASH_MAP_TEST_mutex_new_string_free_run	48	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_hash_map.c:183:1:TEST_BT_OSI_HASH_MAP_TEST_GROUP_RUNNER	48	static

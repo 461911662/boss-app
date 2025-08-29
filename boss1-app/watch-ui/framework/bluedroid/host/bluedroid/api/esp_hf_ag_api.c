@@ -29,7 +29,7 @@
 #include "esp_bt_main.h"
 #include "osi/allocator.h"
 
-#if (BTC_HF_INCLUDED == TRUE)
+#if (defined(BTC_HF_INCLUDED) && (BTC_HF_INCLUDED == TRUE))
 esp_err_t esp_hf_ag_register_callback(esp_hf_cb_t callback)
 {
     if (esp_bluedroid_get_status() != ESP_BLUEDROID_STATUS_ENABLED) {

@@ -15,6 +15,7 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <mqueue.h>
+#include <nuttx/config.h>
 
 #include "osi/allocator.h"
 #include "osi/semaphore.h"
@@ -25,6 +26,8 @@
  * DEFINES
  ****************************************************************************/
 #define BILLION (1000000000L)
+#define MQ_PRIO_VALID_MAX (MQ_PRIO_MAX-1)
+#define MQ_RECIVE_TIMEOUT_MS (0)
 
 /****************************************************************************
  * STRUCTS
@@ -77,7 +80,7 @@ static const size_t DEFAULT_WORK_QUEUE_CAPACITY = 100;
 
 /**
  * @details 创建指定大小的队列
- * @param capacity表示队列的大小
+ * @param capacity 表示队列的大小
  * @return 成功返回队列对象，失败返回NULL
  */
 static struct work_queue *osi_work_queue_create(size_t capacity)
@@ -131,8 +134,8 @@ static void osi_work_queue_delete(struct work_queue *wq)
 
 /**
  * @details 从队列中出队
- * @param wq表示要出队的队列
- * @param item表示接收出队的指针
+ * @param wq 表示要出队的队列
+ * @param item 表示接收出队的指针
  * @return 成功返回TRUE，失败返回FALSE
  */
 static bool osi_thead_work_queue_get(struct work_queue *wq, struct work_item *item)
@@ -142,7 +145,10 @@ static bool osi_thead_work_queue_get(struct work_queue *wq, struct work_item *it
     assert (item != NULL);
 
     ssize_t ret;
-    ret = mq_receive(wq->queue, (char *)item, sizeof(struct work_item), NULL);
+    struct timespec now;
+    now.tv_sec = 0;
+    now.tv_nsec = MQ_RECIVE_TIMEOUT_MS * (BILLION / 1000); // delay ms for recive data
+    ret = mq_timedreceive(wq->queue, (char *)item, sizeof(struct work_item), NULL, &now);
     if (ret < 0)
     {
         return FALSE;
@@ -153,12 +159,12 @@ static bool osi_thead_work_queue_get(struct work_queue *wq, struct work_item *it
 
 /**
  * @details 从队列中入队
- * @param wq表示要入队的队列
- * @param item表示接收出队的指针
- * @param timeout表示队列满时，阻塞的超时时间
+ * @param wq 表示要入队的队列
+ * @param item 表示接收出队的指针
+ * @param timeout 表示队列满时，阻塞的超时时间，单位毫秒
  * @return 成功返回TRUE，失败返回FALSE
  */
-static bool osi_thead_work_queue_put(struct work_queue *wq, const struct work_item *item, uint32_t timeout)
+static bool osi_thead_work_queue_put(struct work_queue *wq, const struct work_item *item, uint32_t timeout_ms)
 {
     assert (wq != NULL);
     assert (wq->queue != 0);
@@ -166,24 +172,16 @@ static bool osi_thead_work_queue_put(struct work_queue *wq, const struct work_it
 
     bool ret = TRUE;
 
-    if (timeout ==  OSI_SEM_MAX_TIMEOUT) {
-        if (mq_send(wq->queue, (const char *)item, sizeof(struct work_item), MQ_PRIO_MAX) < 0) {
+    if (timeout_ms ==  OSI_SEM_MAX_TIMEOUT) {
+        if (mq_send(wq->queue, (const char *)item, sizeof(struct work_item), MQ_PRIO_VALID_MAX) < 0) {
             ret = FALSE;
         }
     } else {
         struct timespec now;
-        long hz = sysconf(_SC_CLK_TCK);
-        if (hz < 0) hz = 1000;
-        clock_gettime(CLOCK_REALTIME, &now);
+        now.tv_sec = timeout_ms / 1000;
+        now.tv_nsec = (timeout_ms % 1000) * (BILLION / 1000);
 
-        now.tv_sec += timeout / hz;
-        now.tv_nsec += (timeout % hz) * (BILLION / hz);
-        if (now.tv_nsec >= BILLION) {
-            now.tv_sec += now.tv_nsec / BILLION;
-            now.tv_nsec %= BILLION;
-        }
-
-        if (mq_timedsend(wq->queue, (const char *)item, sizeof(struct work_item), MQ_PRIO_MAX, &now) < 0) {
+        if (mq_timedsend(wq->queue, (const char *)item, sizeof(struct work_item), MQ_PRIO_VALID_MAX, &now) < 0) {
             ret = FALSE;
         }
     }
@@ -214,7 +212,7 @@ static size_t osi_thead_work_queue_len(struct work_queue *wq)
 
 /**
  * @details 线程回调函数
- * @param arg表示线程的回调函数的参数，里面包含线程结构体
+ * @param arg 表示线程的回调函数的参数，里面包含线程结构体
  * @return 无
  */
 static void *osi_thread_run(void *arg)
@@ -253,8 +251,8 @@ static void *osi_thread_run(void *arg)
 
 /**
  * @details 线程回收函数
- * @param thread表示需要回收的线程
- * @param wait_ms表示需要阻塞等待的超时时间
+ * @param thread 表示需要回收的线程
+ * @param wait_ms 表示需要阻塞等待的超时时间
  * @return 成功返回0，非0表示失败
  */
 static int osi_thread_join(osi_thread_t *thread, uint32_t wait_ms)
@@ -265,7 +263,7 @@ static int osi_thread_join(osi_thread_t *thread, uint32_t wait_ms)
 
 /**
  * @details 线程停止函数
- * @param thread表示需要停止的线程
+ * @param thread 表示需要停止的线程
  * @return 无
  */
 static void osi_thread_stop(osi_thread_t *thread)
@@ -293,19 +291,22 @@ static void osi_thread_stop(osi_thread_t *thread)
 
 /**
  * @details 线程创建函数
- * @param name表示线程的名字
- * @param stack_size表示线程的栈大小
- * @param priority表示线程的优先级
- * @param core表示线程要绑定的核心
- * @param work_queue_num表示线程的队列数量
- * @param work_queue_len表示队列的长度，类型为一个指针数据
+ * @param name 表示线程的名字
+ * @param stack_size 表示线程的栈大小
+ * @param priority 表示线程的优先级
+ * @param core 表示线程要绑定的核心
+ * @param work_queue_num 表示线程的队列数量
+ * @param work_queue_len 表示队列的长度，类型为一个指针数据
  * @return 成功返回线程对象，失败返回NULL
  */
 osi_thread_t *osi_thread_create(const char *name, size_t stack_size, int priority, osi_thread_core_t core, uint8_t work_queue_num, const size_t work_queue_len[])
 {
     int ret;
-    core = core;
     struct osi_thread_start_arg start_arg = {0};
+
+#ifndef CONFIG_SMP
+    core = core;
+#endif
 
     if (stack_size <= 0 ||
             core < OSI_THREAD_CORE_0 || core > OSI_THREAD_CORE_AFFINITY ||
@@ -351,7 +352,6 @@ osi_thread_t *osi_thread_create(const char *name, size_t stack_size, int priorit
     }
 
     pthread_attr_t attr;
-
     ret = pthread_attr_init(&attr);
     if (ret != 0) {
         goto _err;
@@ -363,13 +363,24 @@ osi_thread_t *osi_thread_create(const char *name, size_t stack_size, int priorit
         goto _err;
     }
 
-    if (pthread_create(&thread->thread_handle, &attr, osi_thread_run, (pthread_addr_t)(&start_arg)) != 0) {
+    struct sched_param param;
+    ret = pthread_attr_getschedparam(&attr, &param);
+    if (ret != 0) {
+        (void)pthread_attr_destroy(&attr);
+        goto _err;
+    }
+    param.sched_priority = priority;
+    ret = pthread_attr_setschedparam(&attr, &param);
+    if (ret != 0) {
         (void)pthread_attr_destroy(&attr);
         goto _err;
     }
 
-    ret = pthread_setschedprio(thread->thread_handle, priority);
-    if (ret != 0) {
+#ifdef CONFIG_SMP
+    pthread_attr_setaffinity_np(&attr, sizeof(cpu_set_t), &core);
+#endif
+
+    if (pthread_create(&thread->thread_handle, &attr, osi_thread_run, (pthread_addr_t)(&start_arg)) != 0) {
         (void)pthread_attr_destroy(&attr);
         goto _err;
     }
@@ -385,24 +396,19 @@ osi_thread_t *osi_thread_create(const char *name, size_t stack_size, int priorit
     return thread;
 
 _err:
-
     if (thread) {
-        if (start_arg.start_sem) {
-            osi_sem_free(&start_arg.start_sem);
-        }
-
         if (thread->thread_handle > 0) {
             pthread_cancel(thread->thread_handle);
         }
 
-        for (int i = 0; i < thread->work_queue_num; i++) {
-            if (thread->work_queues[i]) {
-                osi_work_queue_delete(thread->work_queues[i]);
-            }
-            thread->work_queues[i] = NULL;
-        }
-
         if (thread->work_queues) {
+            for (int i = 0; i < thread->work_queue_num; i++) {
+                if (thread->work_queues[i]) {
+                    osi_work_queue_delete(thread->work_queues[i]);
+                }
+                thread->work_queues[i] = NULL;
+            }
+
             osi_free(thread->work_queues);
             thread->work_queues = NULL;
         }
@@ -415,6 +421,10 @@ _err:
             osi_sem_free(&thread->stop_sem);
         }
 
+        if (start_arg.start_sem) {
+            osi_sem_free(&start_arg.start_sem);
+        }
+
         osi_free(thread);
     }
 
@@ -422,9 +432,46 @@ _err:
 }
 
 /**
+ * @details 测试运行线程属性
+*/
+uint8_t osi_thread_attr_test(osi_thread_t *thread, int priority)
+{
+    // step1: check status
+    if (thread->stop) {
+        return 1;
+    }
+
+    // step2: check work queue
+    if ((thread->work_queue_num < 0) || (!thread->work_queues)) {
+        return 2;
+    }
+
+    // step3: check work_sem
+    if (!thread->work_sem) {
+        return 3;
+    }
+
+    // step4: check stop_sem
+    if (!thread->stop_sem) {
+        return 4;
+    }
+
+    // step5: check thread attr
+    int policy;
+    struct sched_param param;
+    if (pthread_getschedparam(thread->thread_handle, &policy, &param) < 0) {
+        return 5;
+    }
+    if (param.sched_priority != priority) {
+        return 5;
+    }
+
+    // finally, return 0
+    return 0;
+}
+
+/**
  * @details 线程释放函数
- * @param thread表示要释放的线程
- * @return 无
  */
 void osi_thread_free(osi_thread_t *thread)
 {
@@ -433,14 +480,14 @@ void osi_thread_free(osi_thread_t *thread)
 
     osi_thread_stop(thread);
 
-    for (int i = 0; i < thread->work_queue_num; i++) {
-        if (thread->work_queues[i]) {
-            osi_work_queue_delete(thread->work_queues[i]);
-            thread->work_queues[i] = NULL;
-        }
-    }
-
     if (thread->work_queues) {
+        for (int i = 0; i < thread->work_queue_num; i++) {
+            if (thread->work_queues[i]) {
+                osi_work_queue_delete(thread->work_queues[i]);
+                thread->work_queues[i] = NULL;
+            }
+        }
+
         osi_free(thread->work_queues);
         thread->work_queues = NULL;
     }
@@ -452,7 +499,6 @@ void osi_thread_free(osi_thread_t *thread)
     if (thread->stop_sem) {
         osi_sem_free(&thread->stop_sem);
     }
-
 
     osi_free(thread);
 }
@@ -466,7 +512,7 @@ void osi_thread_free(osi_thread_t *thread)
  * @param timeout表示提交阻塞的超时时间
  * @return 无
  */
-bool osi_thread_post(osi_thread_t *thread, osi_thread_func_t func, void *context, int queue_idx, uint32_t timeout)
+bool osi_thread_post(osi_thread_t *thread, osi_thread_func_t func, void *context, int queue_idx, uint32_t timeout_ms)
 {
     assert(thread != NULL);
     assert(func != NULL);
@@ -480,7 +526,7 @@ bool osi_thread_post(osi_thread_t *thread, osi_thread_func_t func, void *context
     item.func = func;
     item.context = context;
 
-    if (osi_thead_work_queue_put(thread->work_queues[queue_idx], &item, timeout) == false) {
+    if (osi_thead_work_queue_put(thread->work_queues[queue_idx], &item, timeout_ms) == false) {
         return false;
     }
 
@@ -491,8 +537,8 @@ bool osi_thread_post(osi_thread_t *thread, osi_thread_func_t func, void *context
 
 /**
  * @details 线程优先级设置函数
- * @param thread表示要设置优先级的线程
- * @param priority表示线程的优先级
+ * @param thread 表示要设置优先级的线程
+ * @param priority 表示线程的优先级
  * @return 无
  */
 bool osi_thread_set_priority(osi_thread_t *thread, int priority)
@@ -505,7 +551,7 @@ bool osi_thread_set_priority(osi_thread_t *thread, int priority)
 
 /**
  * @details 获取线程名字函数
- * @param thread表示要获取名字的线程
+ * @param thread 表示要获取名字的线程
  * @return 成功返回线程名字
  */
 const char *osi_thread_name(osi_thread_t *thread)
@@ -517,8 +563,8 @@ const char *osi_thread_name(osi_thread_t *thread)
 
 /**
  * @details 获取指定线程队列等待的长度
- * @param thread表示指定的线程
- * @param wq_idx表示指定的线程队列号
+ * @param thread 表示指定的线程
+ * @param wq_idx 表示指定的线程队列号
  * @return 成功时返回队列等待的长度，失败时返回小于0的数
  */
 int osi_thread_queue_wait_size(osi_thread_t *thread, int wq_idx)
@@ -533,8 +579,8 @@ int osi_thread_queue_wait_size(osi_thread_t *thread, int wq_idx)
 
 /**
  * @details 创建一个事件
- * @param func表示事件的处理函数
- * @param context表示事件的上下文
+ * @param func 表示事件的处理函数
+ * @param context 表示事件的上下文
  * @return 成功返回创建的事件，失败返回NULL
  */
 struct osi_event *osi_event_create(osi_thread_func_t func, void *context)
@@ -554,7 +600,7 @@ struct osi_event *osi_event_create(osi_thread_func_t func, void *context)
 
 /**
  * @details 删除一个事件
- * @param event表示要删除的事件
+ * @param event 表示要删除的事件
  * @return 无
  */
 void osi_event_delete(struct osi_event* event)
@@ -568,9 +614,9 @@ void osi_event_delete(struct osi_event* event)
 
 /**
  * @details 将事件绑定到线程中
- * @param event表示要绑定的事件
- * @param thread表示要绑定的线程
- * @param queue_idx表示绑定的线程队列的序号
+ * @param event 表示要绑定的事件
+ * @param thread 表示要绑定的线程
+ * @param queue_idx 表示绑定的线程队列的序号
  * @return 无
  */
 bool osi_event_bind(struct osi_event* event, osi_thread_t *thread, int queue_idx)
@@ -591,7 +637,7 @@ bool osi_event_bind(struct osi_event* event, osi_thread_t *thread, int queue_idx
 
 /**
  * 线程事件回调函数
- * @param context表示事件对象
+ * @param context 表示事件对象
  * @return 无
  */
 static void osi_thread_generic_event_handler(void *context)
@@ -607,8 +653,8 @@ static void osi_thread_generic_event_handler(void *context)
 
 /**
  * 给绑定的线程提交事件
- * @param event表示需要提交的事件
- * @param timeout表示提交时由于线程队列满而阻塞的超时时间
+ * @param event 表示需要提交的事件
+ * @param timeout 表示提交时由于线程队列满而阻塞的超时时间
  * @return 成功时返回TRUE，失败时返回FALSE
  */
 bool osi_thread_post_event(struct osi_event *event, uint32_t timeout)

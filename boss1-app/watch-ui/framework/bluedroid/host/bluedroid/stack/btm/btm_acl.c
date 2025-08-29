@@ -488,7 +488,7 @@ void btm_acl_removed (BD_ADDR bda, tBT_TRANSPORT transport)
         osi_list_remove(btm_cb.p_pm_mode_db_list, p->p_pm_mode_db);
         /* Clear the ACL connection data */
         memset(p, 0, sizeof(tACL_CONN));
-	if (list_remove(btm_cb.p_acl_db_list, p)) {
+	if (osi_list_remove(btm_cb.p_acl_db_list, p)) {
 	    p = NULL;
 	}
     }

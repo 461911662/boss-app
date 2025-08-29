@@ -1,0 +1,9 @@
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_future.c:21:1:TEST_BT_OSI_FUTURE_TEST_SETUP	32	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_future.c:29:1:TEST_BT_OSI_FUTURE_TEST_future_new_free_	32	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_future.c:37:1:TEST_BT_OSI_FUTURE_TEST_future_new_ready_await_free_	32	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_future.c:48:1:TEST_BT_OSI_FUTURE_TEST_future_new_immediate_await_	32	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_future.c:25:1:TEST_BT_OSI_FUTURE_TEST_TEAR_DOWN	32	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_future.c:29:1:TEST_BT_OSI_FUTURE_TEST_future_new_free_run	48	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_future.c:37:1:TEST_BT_OSI_FUTURE_TEST_future_new_ready_await_free_run	48	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_future.c:48:1:TEST_BT_OSI_FUTURE_TEST_future_new_immediate_await_run	48	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_future.c:57:1:TEST_BT_OSI_FUTURE_TEST_GROUP_RUNNER	48	static

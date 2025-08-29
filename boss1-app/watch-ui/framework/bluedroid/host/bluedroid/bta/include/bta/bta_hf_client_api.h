@@ -28,7 +28,7 @@
 #include "bta_api.h"
 #include "bta_hfp_defs.h"
 
-#if (BTA_HF_INCLUDED == TRUE)
+#if (defined(BTA_HF_INCLUDED) && (BTA_HF_INCLUDED == TRUE))
 /*****************************************************************************
 **  Constants and data types
 *****************************************************************************/

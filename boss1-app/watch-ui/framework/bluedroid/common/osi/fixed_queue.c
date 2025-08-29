@@ -157,7 +157,7 @@ size_t fixed_queue_capacity(fixed_queue_t *queue)
  * @details 固定队列入队
  * @param queue表示需要指定的队列对象
  * @param data表示入队的数据
- * @param timeout表示入队时的超时时间，如果超时则返回
+ * @param timeout表示入队时的超时时间，如果超时则返回，阻塞为 FIXED_QUEUE_MAX_TIMEOUT
  * @return 成功时返回true，失败时返回false
  */
 bool fixed_queue_enqueue(fixed_queue_t *queue, void *data, uint32_t timeout)
@@ -175,7 +175,7 @@ bool fixed_queue_enqueue(fixed_queue_t *queue, void *data, uint32_t timeout)
     status = osi_list_append(queue->list, data); //Check whether enqueued success
     osi_mutex_unlock(queue->lock);
 
-    if(status == true )
+    if(status == true)
         osi_sem_give(queue->dequeue_sem);
 
     return status;

@@ -28,8 +28,9 @@
 #include "bta_api.h"
 #include "bta_hfp_defs.h"
 #include "esp_hf_defs.h"
+#include "common/bt_target.h"
 
-#if (BTA_AG_INCLUDED == TRUE)
+#if (defined(BTA_AG_INCLUDED) && (BTA_AG_INCLUDED == TRUE))
 /*****************************************************************************
 **  Constants and data types
 *****************************************************************************/

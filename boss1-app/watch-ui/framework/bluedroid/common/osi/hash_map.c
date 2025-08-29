@@ -4,7 +4,6 @@
  * @attention 请遵循开源软件协议
  */
 
-
 /****************************************************************************
  * INCLUDES
  ****************************************************************************/
@@ -87,11 +86,11 @@ hash_map_t *hash_map_new_internal(
 
 /**
  * 创建一个hash map对象
- * @param num_bucket表示桶的大小，内存块大小
- * @param hash_fn用于计算键的哈希值并映射到桶索引
- * @param key_fn键释放函数，用于在删除键时清理内存
- * @param data_fn数据释放函数，用于在删除数据时清理内存
- * @param equality_fn键比较函数，用于判断两个键是否相等(如 strcmp)
+ * @param num_bucket 表示桶的大小，内存块大小
+ * @param hash_fn 用于计算键的哈希值并映射到桶索引
+ * @param key_fn 键释放函数，用于在删除键时清理内存
+ * @param data_fn 数据释放函数，用于在删除数据时清理内存
+ * @param equality_fn 键比较函数，用于判断两个键是否相等(如 strcmp)
  * @return 成功时返回hash map对象，失败时返回NULL
  */
 hash_map_t *hash_map_new(
@@ -199,8 +198,8 @@ bool hash_map_set(hash_map_t *hash_map, const void *key, void *data)
 
 /**
  * 在hash map中擦除指定的数据
- * @param hash_map表示指定的hash map对象
- * @param key表示指定的hash key参数
+ * @param hash_map 表示指定的hash map对象
+ * @param key 表示指定的hash key参数
  * @return 成功返回true, 失败返回false
  */
 bool hash_map_erase(hash_map_t *hash_map, const void *key)
@@ -247,8 +246,8 @@ void *hash_map_get(const hash_map_t *hash_map, const void *key)
 }
 
 /**
- * 释放hash map的桶内存
- * @param hash_map表示需要释放的hash map对象
+ * 释放hash map的桶内存中的数据
+ * @param hash_map 表示需要释放的hash map对象
  * @return 无
  */
 void hash_map_clear(hash_map_t *hash_map)
@@ -266,9 +265,9 @@ void hash_map_clear(hash_map_t *hash_map)
 
 /**
  * hash map的遍历
- * @param hash_map表示需要遍历的hash map对象
- * @param callback表示遍历时调用的回调函数
- * @param context表示遍历时回调函数传入的上下文
+ * @param hash_map 表示需要遍历的hash map对象
+ * @param callback 表示遍历时调用的回调函数
+ * @param context 表示遍历时回调函数传入的上下文
  * @return 无
  */
 void hash_map_foreach(hash_map_t *hash_map, hash_map_iter_cb callback, void *context)

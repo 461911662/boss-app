@@ -133,4 +133,13 @@ void osi_event_delete(struct osi_event* event);
  */
 bool osi_thread_post_event(struct osi_event *event, uint32_t timeout);
 
+/**
+ * @brief 测试运行线程属性
+ * @param thread 用于检查的线程句柄
+ * @param priority 用于检查的任务优先等级
+ * @retval 0，测试成功
+ * @retval 其他，返回失败的测试编号
+*/
+uint8_t osi_thread_attr_test(osi_thread_t *thread, int priority);
+
 #endif /* __THREAD_H__ */

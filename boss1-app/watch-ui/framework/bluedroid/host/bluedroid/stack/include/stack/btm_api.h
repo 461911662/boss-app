@@ -862,6 +862,7 @@ typedef struct {
     UINT16      pkt_types;
 } tBTM_SET_ACL_PKT_TYPES_RESULTS;
 
+#ifdef ENC_KEY_SIZE_CTRL_MODE
 #if (ENC_KEY_SIZE_CTRL_MODE != ENC_KEY_SIZE_CTRL_MODE_NONE)
 /* Structure returned with set minimal encryption key size event (in tBTM_CMPL_CB callback function)
 ** in response to BTM_SetMinEncKeySize call.
@@ -869,6 +870,7 @@ typedef struct {
 typedef struct {
     UINT8 hci_status;
 } tBTM_SET_MIN_ENC_KEY_SIZE_RESULTS;
+#endif
 #endif
 
 /* Structure returned with set BLE channels event (in tBTM_CMPL_CB callback function)
@@ -2328,8 +2330,10 @@ tBTM_STATUS BTM_SetAclPktTypes(BD_ADDR remote_bda, UINT16 pkt_types, tBTM_CMPL_C
 **
 *******************************************************************************/
 //extern
+#ifdef ENC_KEY_SIZE_CTRL_MODE
 #if (ENC_KEY_SIZE_CTRL_MODE != ENC_KEY_SIZE_CTRL_MODE_NONE)
 tBTM_STATUS BTM_SetMinEncKeySize(UINT8 key_size, tBTM_CMPL_CB *p_cb);
+#endif
 #endif
 
 /*******************************************************************************

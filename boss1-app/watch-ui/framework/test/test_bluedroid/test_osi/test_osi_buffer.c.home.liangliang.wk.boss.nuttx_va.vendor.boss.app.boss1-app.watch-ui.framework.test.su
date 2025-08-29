@@ -1,0 +1,13 @@
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_buffer.c:21:1:TEST_BT_OSI_BUFFER_TEST_SETUP	32	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_buffer.c:29:1:TEST_BT_OSI_BUFFER_TEST_buffer_new_free_	32	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_buffer.c:38:1:TEST_BT_OSI_BUFFER_TEST_buffer_new_buffer_length_free_	32	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_buffer.c:48:1:TEST_BT_OSI_BUFFER_TEST_buffer_new_ref_free1_	32	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_buffer.c:62:1:TEST_BT_OSI_BUFFER_TEST_buffer_new_ref_free2_	32	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_buffer.c:76:1:TEST_BT_OSI_BUFFER_TEST_buffer_new_buffer_ptr_free_	32	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_buffer.c:25:1:TEST_BT_OSI_BUFFER_TEST_TEAR_DOWN	32	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_buffer.c:29:1:TEST_BT_OSI_BUFFER_TEST_buffer_new_free_run	48	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_buffer.c:38:1:TEST_BT_OSI_BUFFER_TEST_buffer_new_buffer_length_free_run	48	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_buffer.c:48:1:TEST_BT_OSI_BUFFER_TEST_buffer_new_ref_free1_run	48	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_buffer.c:62:1:TEST_BT_OSI_BUFFER_TEST_buffer_new_ref_free2_run	48	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_buffer.c:76:1:TEST_BT_OSI_BUFFER_TEST_buffer_new_buffer_ptr_free_run	48	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_buffer.c:90:1:TEST_BT_OSI_BUFFER_TEST_GROUP_RUNNER	48	static

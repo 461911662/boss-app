@@ -1261,7 +1261,7 @@ void GATT_SetIdleTimeout (BD_ADDR bd_addr, UINT16 idle_tout, tBT_TRANSPORT trans
         }
     }
 
-#if (CONFIG_BT_STACK_NO_LOG)
+#if (defined(CONFIG_BT_STACK_NO_LOG) && (CONFIG_BT_STACK_NO_LOG))
     (void) status;
 #endif
 

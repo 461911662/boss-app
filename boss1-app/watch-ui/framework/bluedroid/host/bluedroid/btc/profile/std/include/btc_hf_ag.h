@@ -23,7 +23,7 @@
 #include "esp_hf_ag_api.h"
 
 
-#if (BTC_HF_INCLUDED == TRUE)
+#if (defined(BTC_HF_INCLUDED) && (BTC_HF_INCLUDED == TRUE))
 
 /*******************************************************************************
 **  Type Defs

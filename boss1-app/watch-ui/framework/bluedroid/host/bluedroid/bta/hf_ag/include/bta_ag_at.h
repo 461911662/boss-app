@@ -30,7 +30,7 @@
 /*****************************************************************************
 **  Constants
 *****************************************************************************/
-#if (BTA_AG_INCLUDED == TRUE)
+#if (defined(BTA_AG_INCLUDED) && (BTA_AG_INCLUDED == TRUE))
 
 /* AT command argument capabilities */
 #define BTA_AG_AT_NONE          0x01        /* no argument */

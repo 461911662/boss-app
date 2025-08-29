@@ -341,14 +341,14 @@ void btc_storage_delete_duplicate_ble_devices(void)
                 {
                     temp_pid_key = (tBTM_LE_PID_KEYS *) temp_buffer;
                     if (memcmp(pid_key->static_addr, temp_pid_key->static_addr, 6) == 0 && pid_key->addr_type == temp_pid_key->addr_type) {
-                        const char *temp_name = btc_config_section_name(temp_iter);
+                        const char *temp_name1 = btc_config_section_name(temp_iter);
                         temp_iter = btc_config_section_next(temp_iter);
                         if (device_type == BT_DEVICE_TYPE_DUMO) {
-                            btc_config_set_int(temp_name, BTC_BLE_STORAGE_DEV_TYPE_STR, BT_DEVICE_TYPE_BREDR);
-                            _btc_storage_remove_all_ble_keys(temp_name);
+                            btc_config_set_int(temp_name1, BTC_BLE_STORAGE_DEV_TYPE_STR, BT_DEVICE_TYPE_BREDR);
+                            _btc_storage_remove_all_ble_keys(temp_name1);
                         } else {
-                            BTC_TRACE_DEBUG("delete %s\n", temp_name);
-                            btc_config_remove_section(temp_name);
+                            BTC_TRACE_DEBUG("delete %s\n", temp_name1);
+                            btc_config_remove_section(temp_name1);
                         }
                     } else {
                         temp_iter = btc_config_section_next(temp_iter);
@@ -891,11 +891,11 @@ static void _btc_read_le_key(const uint8_t key_type, const size_t key_len, bt_bd
                 *device_added = true;
             }
 
-#if (!CONFIG_BT_STACK_NO_LOG)
+#if (defined(CONFIG_BT_STACK_NO_LOG) && (!CONFIG_BT_STACK_NO_LOG))
             char bd_str[20] = {0};
-#endif
             BTC_TRACE_DEBUG("%s() Adding key type %d for %s", __func__,
                 key_type, bdaddr_to_string(&bd_addr, bd_str, sizeof(bd_str)));
+#endif
             BTA_DmAddBleKey(bta_bd_addr, (tBTA_LE_KEY_VALUE *)buffer, key_type);
         }
 

@@ -1,0 +1,17 @@
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_alarm.c:126:1:TEST_BT_OSI_ALARM_TEST_alarm_new_timeout_free_	32	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_alarm.c:40:1:TEST_BT_OSI_ALARM_TEST_SETUP	32	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_alarm.c:46:1:TEST_BT_OSI_ALARM_TEST_TEAR_DOWN	32	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_alarm.c:52:1:TEST_BT_OSI_ALARM_TEST_alarm_new_free_	32	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_alarm.c:18:13:test_alarm_cb	32	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_alarm.c:28:13:test_time_alarm	32	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_alarm.c:60:1:TEST_BT_OSI_ALARM_TEST_alarm_timer1_	80	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_alarm.c:93:1:TEST_BT_OSI_ALARM_TEST_alarm_timer2_	80	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_alarm.c:174:1:TEST_BT_OSI_ALARM_TEST_alarm_new_info_free_	32	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_alarm.c:149:1:TEST_BT_OSI_ALARM_TEST_alarm_new_period_free_	32	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_alarm.c:52:1:TEST_BT_OSI_ALARM_TEST_alarm_new_free_run	48	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_alarm.c:60:1:TEST_BT_OSI_ALARM_TEST_alarm_timer1_run	48	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_alarm.c:93:1:TEST_BT_OSI_ALARM_TEST_alarm_timer2_run	48	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_alarm.c:126:1:TEST_BT_OSI_ALARM_TEST_alarm_new_timeout_free_run	48	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_alarm.c:149:1:TEST_BT_OSI_ALARM_TEST_alarm_new_period_free_run	48	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_alarm.c:174:1:TEST_BT_OSI_ALARM_TEST_alarm_new_info_free_run	48	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_alarm.c:208:1:TEST_BT_OSI_ALARM_TEST_GROUP_RUNNER	48	static

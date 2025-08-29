@@ -67,7 +67,7 @@ typedef struct {
 #if (BTA_EIR_CANNED_UUID_LIST != TRUE)
     tBTA_SYS_EIR_CBACK      *eir_cb;                /* add/remove UUID into EIR */
 #endif
-#if (BTM_SSR_INCLUDED == TRUE)
+#if (defined(BTM_SSR_INCLUDED) && (BTM_SSR_INCLUDED == TRUE))
     tBTA_SYS_SSR_CFG_CBACK      *p_ssr_cb;
 #endif
     /* VS event handler */

@@ -1,0 +1,10 @@
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_event_bits_group.c:33:1:TEST_BT_OSI_EventBitGroup_TEST_SETUP	32	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_event_bits_group.c:41:1:TEST_BT_OSI_EventBitGroup_TEST_eventBitsGroup_create_free_	32	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_event_bits_group.c:49:1:TEST_BT_OSI_EventBitGroup_TEST_eventBitsGroup_create_op_free_	32	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_event_bits_group.c:68:1:TEST_BT_OSI_EventBitGroup_TEST_eventBitsGroup_create_wait_free_	48	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_event_bits_group.c:19:13:osi_thread_post_handle	32	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_event_bits_group.c:37:1:TEST_BT_OSI_EventBitGroup_TEST_TEAR_DOWN	32	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_event_bits_group.c:41:1:TEST_BT_OSI_EventBitGroup_TEST_eventBitsGroup_create_free_run	48	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_event_bits_group.c:49:1:TEST_BT_OSI_EventBitGroup_TEST_eventBitsGroup_create_op_free_run	48	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_event_bits_group.c:68:1:TEST_BT_OSI_EventBitGroup_TEST_eventBitsGroup_create_wait_free_run	48	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_event_bits_group.c:128:1:TEST_BT_OSI_EventBitGroup_TEST_GROUP_RUNNER	48	static

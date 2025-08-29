@@ -817,7 +817,7 @@ tBTM_STATUS BTM_BlePeriodicAdvCreateSync(tBTM_BLE_Periodic_Sync_Params *params)
 
     if ((params->sync_timeout < 0x0a || params->sync_timeout > 0x4000)
         || (params->filter_policy > 0x01)
-        #if (CONFIG_BT_BLE_FEAT_CREATE_SYNC_ENH)
+        #if (defined(CONFIG_BT_BLE_FEAT_CREATE_SYNC_ENH) && (CONFIG_BT_BLE_FEAT_CREATE_SYNC_ENH))
         || (params->reports_disabled > 0x01)
         || (params->filter_duplicates > 0x01)
         #endif
@@ -837,7 +837,7 @@ tBTM_STATUS BTM_BlePeriodicAdvCreateSync(tBTM_BLE_Periodic_Sync_Params *params)
         SET_BIT(option, 0);
     }
 
-    #if (CONFIG_BT_BLE_FEAT_CREATE_SYNC_ENH)
+    #if (defined(CONFIG_BT_BLE_FEAT_CREATE_SYNC_ENH) && (CONFIG_BT_BLE_FEAT_CREATE_SYNC_ENH))
     if (params->reports_disabled) {
         SET_BIT(option, 1);
     }

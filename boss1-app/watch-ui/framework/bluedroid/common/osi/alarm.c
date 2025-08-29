@@ -192,6 +192,7 @@ osi_alarm_t *osi_alarm_new(const char *alarm_name, osi_alarm_callback_t callback
         goto end;
     }
 
+    memset(timer_id, 0, sizeof(osi_alarm_t));
     timer_id->alarm_name = alarm_name;
     timer_id->alarm_cb = (osi_alarm_callback_t)alarm_cb_handler;
     timer_id->cb = callback;
@@ -305,10 +306,11 @@ bool osi_alarm_is_active(osi_alarm_t *alarm)
 
     osi_mutex_lock(alarm_mutex, OSI_MUTEX_MAX_TIMEOUT);
     if (alarm->alarm_cb != NULL) {
+        osi_mutex_unlock(alarm_mutex);
         return TRUE;
     }
-    osi_mutex_lock(alarm_mutex, OSI_MUTEX_MAX_TIMEOUT);
 
+    osi_mutex_unlock(alarm_mutex);
     return FALSE;
 }
 
@@ -427,9 +429,11 @@ static period_ms_t now(void) {
 /**
  * @details 定时器调度函数
  */
+#ifdef CONFIG_SIG_EVTHREAD
 static void reschedule(void) {
     assert(alarms != NULL);
 
+    // 判断定时器在使用，先删除之前的定时器，然后再重新启动定时器
     if (timer_set) {
         timer_delete(timer);
         timer_set = false;
@@ -477,10 +481,10 @@ static void reschedule(void) {
         }
 
         struct itimerspec wakeup_time;
-        memset(&wakeup_time, 0, sizeof(wakeup_time));
-        wakeup_time.it_value.tv_sec = (next_exp / 1000);
-        wakeup_time.it_value.tv_nsec = (next_exp % 1000) * 1000000LL;
-        if (timer_settime(timer, 0, &wakeup_time, NULL) == -1) {
+        memset(&wakeup_time, TIMER_ABSTIME, sizeof(wakeup_time));
+        wakeup_time.it_value.tv_sec = (next->deadline / 1000);
+        wakeup_time.it_value.tv_nsec = (next->deadline % 1000) * 1000000LL;
+        if (timer_settime(timer, TIMER_ABSTIME, &wakeup_time, NULL) == -1) {
             OSI_TRACE_ERROR("%s unable to set timer: %s", __func__, strerror(errno));
             timer_delete(timer);
             return;
@@ -489,6 +493,10 @@ static void reschedule(void) {
 
     timer_set = true;
 }
+#else
+static void reschedule(void) {
+}
+#endif
 
 /**
  * @details 闹钟定时器设置函数

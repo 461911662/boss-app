@@ -30,7 +30,7 @@
 #include "bta/bta_ag_api.h"
 #include "stack/sdp_api.h"
 
-#if (BTA_AG_INCLUDED == TRUE)
+#if (defined(BTA_AG_INCLUDED) && (BTA_AG_INCLUDED == TRUE))
 
 /* Send RING & CLIP in one AT cmd */
 #ifndef BTA_AG_MULTI_RESULT_INCLUDED

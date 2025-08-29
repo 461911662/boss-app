@@ -493,7 +493,7 @@ static bool filter_incoming_event(BT_HDR *packet)
                 HCI_TRACE_WARNING("%s sync_info is NULL. opcode = 0x%x", __func__, opcode);
             } else {
                 if (sync_info->sync_sem && sync_info->opcode == opcode) {
-                    osi_sem_give(&sync_info->sync_sem);
+                    osi_sem_give(sync_info->sync_sem);
                     sync_info->opcode = 0;
                 }
             }

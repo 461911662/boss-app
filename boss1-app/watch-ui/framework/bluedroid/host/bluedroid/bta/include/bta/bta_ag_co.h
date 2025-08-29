@@ -27,7 +27,7 @@
 #include "bta/bta_ag_api.h"
 #include "hci/hci_audio.h"
 
-#if (BTA_AG_INCLUDED == TRUE)
+#if (defined(BTA_AG_INCLUDED) && (BTA_AG_INCLUDED == TRUE))
 #if (BTM_SCO_HCI_INCLUDED == TRUE)
 /*******************************************************************************
 **

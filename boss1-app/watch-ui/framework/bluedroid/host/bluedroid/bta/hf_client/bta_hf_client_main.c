@@ -25,11 +25,11 @@
 #include "bta/bta_hf_client_api.h"
 #include "bta_hf_client_int.h"
 
-#if BT_HF_CLIENT_BQB_INCLUDED
+#if (defined(BT_HF_CLIENT_BQB_INCLUDED) && BT_HF_CLIENT_BQB_INCLUDED)
 static BOOLEAN s_bta_hf_client_bqb_clip_flag = TRUE;
 #endif /* BT_HF_CLIENT_BQB_INCLUDED */
 
-#if (BTA_HF_INCLUDED == TRUE)
+#if (defined(BTA_HF_INCLUDED) && (BTA_HF_INCLUDED == TRUE))
 /* uncomment to enable extra debug */
 /* #define BTA_HF_CLIENT_DEBUG TRUE */
 

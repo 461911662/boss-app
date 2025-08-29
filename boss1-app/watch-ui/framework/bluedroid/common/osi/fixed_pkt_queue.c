@@ -133,17 +133,19 @@ size_t fixed_pkt_queue_capacity(fixed_pkt_queue_t *queue)
 
 /**
  * @details fixed_pkt_queue的入队
- * @param queue指定的队列对象
+ * @param queue 指定的队列对象
+ * @param linked_pkt 指定的数据对象
+ * @param timeout_ms 表示入队的超时时间 FIXED_PKT_QUEUE_MAX_TIMEOUT
  * @return 成功返回true,失败返回false
  */
-bool fixed_pkt_queue_enqueue(fixed_pkt_queue_t *queue, pkt_linked_item_t *linked_pkt, uint32_t timeout)
+bool fixed_pkt_queue_enqueue(fixed_pkt_queue_t *queue, pkt_linked_item_t *linked_pkt, uint32_t timeout_ms)
 {
     bool ret = false;
 
     assert(queue != NULL);
     assert(linked_pkt != NULL);
 
-    if (osi_sem_take(queue->enqueue_sem, timeout) != 0) {
+    if (osi_sem_take(queue->enqueue_sem, timeout_ms) != 0) {
         return false;
     }
 
@@ -157,17 +159,17 @@ bool fixed_pkt_queue_enqueue(fixed_pkt_queue_t *queue, pkt_linked_item_t *linked
 
 /**
  * @details fixed_pkt_queue的出队
- * @param queue指定的队列对象
- * @param timeout表示出队的超时时间
+ * @param queue 指定的队列对象
+ * @param timeout_ms 表示出队的超时时间 FIXED_PKT_QUEUE_MAX_TIMEOUT
  * @return 成功返回pkt_linked_item_t对象,失败返回NULL
  */
-pkt_linked_item_t *fixed_pkt_queue_dequeue(fixed_pkt_queue_t *queue, uint32_t timeout)
+pkt_linked_item_t *fixed_pkt_queue_dequeue(fixed_pkt_queue_t *queue, uint32_t timeout_ms)
 {
     pkt_linked_item_t *ret = NULL;
 
     assert(queue != NULL);
 
-    if (osi_sem_take(queue->dequeue_sem, timeout) != 0) {
+    if (osi_sem_take(queue->dequeue_sem, timeout_ms) != 0) {
         return NULL;
     }
     ret = pkt_queue_dequeue(queue->pkt_list);

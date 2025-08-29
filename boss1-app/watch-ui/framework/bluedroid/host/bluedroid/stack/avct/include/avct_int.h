@@ -143,7 +143,7 @@ typedef struct {
 
 /* LCB function declarations */
 extern void avct_lcb_event(tAVCT_LCB *p_lcb, UINT8 event, tAVCT_LCB_EVT *p_data);
-#if (AVCT_BROWSE_INCLUDED == TRUE)
+#if (defined(AVCT_BROWSE_INCLUDED) && (AVCT_BROWSE_INCLUDED == TRUE))
 extern void avct_bcb_event(tAVCT_BCB *p_bcb, UINT8 event, tAVCT_LCB_EVT *p_data);
 extern void avct_close_bcb(tAVCT_LCB *p_lcb, tAVCT_LCB_EVT *p_data);
 extern tAVCT_LCB *avct_lcb_by_bcb(tAVCT_BCB *p_bcb);
@@ -176,7 +176,7 @@ extern void avct_lcb_msg_ind(tAVCT_LCB *p_lcb, tAVCT_LCB_EVT *p_data);
 extern void avct_lcb_free_msg_ind(tAVCT_LCB *p_lcb, tAVCT_LCB_EVT *p_data);
 
 /* BCB action functions */
-#if (AVCT_BROWSE_INCLUDED == TRUE)
+#if (defined(AVCT_BROWSE_INCLUDED) && (AVCT_BROWSE_INCLUDED == TRUE))
 typedef void (*tAVCT_BCB_ACTION)(tAVCT_BCB *p_bcb, tAVCT_LCB_EVT *p_data);
 extern void avct_bcb_chnl_open(tAVCT_BCB *p_bcb, tAVCT_LCB_EVT *p_data);
 extern void avct_bcb_unbind_disc(tAVCT_BCB *p_bcb, tAVCT_LCB_EVT *p_data);
@@ -226,7 +226,7 @@ extern tAVCT_CB *avct_cb_ptr;
 
 /* L2CAP callback registration structure */
 extern const tL2CAP_APPL_INFO avct_l2c_appl;
-#if (AVCT_BROWSE_INCLUDED == TRUE)
+#if (defined(AVCT_BROWSE_INCLUDED) && (AVCT_BROWSE_INCLUDED == TRUE))
 extern const tL2CAP_APPL_INFO avct_l2c_br_appl;
 #endif
 

@@ -109,7 +109,6 @@
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 
 #if !UC_BT_STACK_NO_LOG
-
 #define BT_LOG_E(format, ... )     {if (LOG_LOCAL_LEVEL >= BT_TRACE_LEVEL_ERROR)       syslog(LOG_ERR, "[%s]" format, "BT_LOG", ##__VA_ARGS__); }
 #define BT_LOG_W(format, ... )     {if (LOG_LOCAL_LEVEL >= BT_TRACE_LEVEL_WARNING)     syslog(LOG_WARNING, "[%s]" format, "BT_LOG", ##__VA_ARGS__); }
 #define BT_LOG_I(format, ... )     {if (LOG_LOCAL_LEVEL >= BT_TRACE_LEVEL_API)         syslog(LOG_INFO, "[%s]" format, "BT_LOG", ##__VA_ARGS__); }

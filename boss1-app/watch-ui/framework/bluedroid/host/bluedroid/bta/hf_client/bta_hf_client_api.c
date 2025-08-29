@@ -29,7 +29,7 @@
 #include "bta_hf_client_int.h"
 #include "osi/allocator.h"
 
-#if (BTA_HF_INCLUDED == TRUE)
+#if (defined(BTA_HF_INCLUDED) && (BTA_HF_INCLUDED == TRUE))
 /*****************************************************************************
 **  Constants and data types
 *****************************************************************************/

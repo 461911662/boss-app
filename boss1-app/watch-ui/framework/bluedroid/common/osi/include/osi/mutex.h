@@ -36,23 +36,23 @@ typedef pthread_mutex_t* osi_mutex_t;
  * GLOBAL PROTOTYPES
  ****************************************************************************/
 /** 创建mutex锁
- * @param mutex 传入一个mutex指针，用于接收创建好的mutex对象
+ * @param mutex 传入一个osi_mutex_t指针，用于接收创建好的mutex对象
  * @return 0表示成功，其他表示失败 */
 int osi_mutex_new(osi_mutex_t *mutex);
 
 /** mutex上锁
- * @param mutex 传入一个mutex指针，进行上锁
+ * @param mutex 传入一个osi_mutex_t指针，进行上锁
  * @param timeout 表示上锁的超时时间，如果timeout为OSI_MUTEX_MAX_TIMEOUT时，表示阻塞上锁
  * @return 0表示成功，其他表示失败 */
 int osi_mutex_lock(osi_mutex_t mutex, uint32_t timeout);
 
 /** mutex解锁
- * @param mutex 传入一个mutex指针，进行解锁
+ * @param mutex 传入一个osi_mutex_t指针，进行解锁
  * @return 无 */
 void osi_mutex_unlock(osi_mutex_t mutex);
 
 /** 释放mutex锁
- * @param mutex 传入一个mutex指针，用于释放mutex对象
+ * @param mutex 传入一个osi_mutex_t指针，用于释放mutex对象
  * @return 无 */
 void osi_mutex_free(osi_mutex_t *mutex);
 
@@ -71,5 +71,12 @@ void osi_mutex_global_lock(void);
 /** 全局mutex解锁
  * @return 无 */
 void osi_mutex_global_unlock(void);
+
+/**
+ * @brief 获取递归锁的计数
+ * @return 递归锁的计数
+ * @note 测试使用
+*/
+uint32_t osi_mutex_get_recursive_cnt(void);
 
 #endif /* __MUTEX_H__ */

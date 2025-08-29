@@ -231,16 +231,16 @@ void bta_gattc_insert_sec_service_to_cache(list_t *services, tBTA_GATTC_SERVICE 
         if(service && p_new_srvc->e_handle < service->s_handle) {
             osi_list_prepend(services, p_new_srvc);
         } else {
-            for (list_node_t *sn = osi_list_begin(services); sn != osi_list_end(services); sn = osi_list_next(sn)) {
-                list_node_t *next_sn = osi_list_next(sn);
+            for (list_node_t *sn1 = osi_list_begin(services); sn1 != osi_list_end(services); sn1 = osi_list_next(sn1)) {
+                list_node_t *next_sn = osi_list_next(sn1);
                 if(next_sn == osi_list_end(services)) {
                     osi_list_append(services, p_new_srvc);
                     return;
                 }
-                tBTA_GATTC_SERVICE *service = osi_list_node(sn);
+                tBTA_GATTC_SERVICE *service1 = osi_list_node(sn1);
                 tBTA_GATTC_SERVICE *next_service = osi_list_node(next_sn);
-                if (p_new_srvc->s_handle > service->e_handle && p_new_srvc->e_handle < next_service->s_handle) {
-                    osi_list_insert_after(services, sn, p_new_srvc);
+                if (p_new_srvc->s_handle > service1->e_handle && p_new_srvc->e_handle < next_service->s_handle) {
+                    osi_list_insert_after(services, sn1, p_new_srvc);
                     return;
                 }
             }
@@ -556,8 +556,8 @@ void bta_gattc_update_include_service(const list_t *services) {
     for (list_node_t *sn = osi_list_begin(services); sn != osi_list_end(services); sn = osi_list_next(sn)) {
         tBTA_GATTC_SERVICE *service = osi_list_node(sn);
         if(!service || !service->included_svc || osi_list_is_empty(service->included_svc)) break;
-        for (list_node_t *sn = osi_list_begin(service->included_svc); sn != osi_list_end(service->included_svc); sn = osi_list_next(sn)) {
-            tBTA_GATTC_INCLUDED_SVC *include_service = osi_list_node(sn);
+        for (list_node_t *sn1 = osi_list_begin(service->included_svc); sn1 != osi_list_end(service->included_svc); sn1 = osi_list_next(sn1)) {
+            tBTA_GATTC_INCLUDED_SVC *include_service = osi_list_node(sn1);
             if(include_service && !include_service->included_service) {
                 //update
                 include_service->included_service = bta_gattc_find_matching_service(services, include_service->incl_srvc_s_handle);
@@ -1108,7 +1108,11 @@ void bta_gattc_search_service(tBTA_GATTC_CLCB *p_clcb, tBT_UUID *p_uuid)
          sn != osi_list_end(p_clcb->p_srcb->p_srvc_cache); sn = osi_list_next(sn)) {
         tBTA_GATTC_SERVICE *p_cache = osi_list_node(sn);
 
-        if (!bta_gattc_uuid_compare(p_uuid, &p_cache->uuid, FALSE)) {
+        tBT_UUID temp_uuid;
+        if (p_cache) {
+            memcpy(&temp_uuid, &p_cache->uuid, sizeof(tBT_UUID));
+        }
+        if (!bta_gattc_uuid_compare(p_uuid, &temp_uuid, FALSE)) {
             continue;
         }
 
@@ -1274,8 +1278,14 @@ void bta_gattc_get_service_with_uuid(UINT16 conn_id, tBT_UUID *svc_uuid,
     db_size = 0;
     for (list_node_t *sn = osi_list_begin(svc);
          sn != osi_list_end(svc); sn = osi_list_next(sn)) {
+
         tBTA_GATTC_SERVICE *p_cur_srvc = osi_list_node(sn);
-        if (svc_uuid == NULL || bta_gattc_uuid_compare(svc_uuid, &p_cur_srvc->uuid, TRUE)) {
+        tBT_UUID temp_uuid;
+        if (p_cur_srvc) {
+            memcpy(&temp_uuid, &p_cur_srvc->uuid, sizeof(tBT_UUID));
+        }
+
+        if (svc_uuid == NULL || bta_gattc_uuid_compare(svc_uuid, &temp_uuid, TRUE)) {
             bta_gattc_fill_gatt_db_el(curr_db_attr,
                                       p_cur_srvc->is_primary ?
                                       BTGATT_DB_PRIMARY_SERVICE :
@@ -1392,7 +1402,11 @@ void bta_gattc_get_db_with_opration(UINT16 conn_id,
                     *count = db_size;
                     return;
                 }
-                if (!incl_uuid || bta_gattc_uuid_compare(&p_isvc->uuid, incl_uuid, TRUE)) {
+                tBT_UUID temp_uuid;
+                if (p_isvc) {
+                    memcpy(&temp_uuid, &p_isvc->uuid, sizeof(tBT_UUID));
+                }
+                if (!incl_uuid || bta_gattc_uuid_compare(&temp_uuid, incl_uuid, TRUE)) {
                     bta_gattc_fill_gatt_db_el(curr_db_attr,
                                               BTGATT_DB_INCLUDED_SERVICE,
                                               p_isvc->handle,
@@ -1426,8 +1440,14 @@ void bta_gattc_get_db_with_opration(UINT16 conn_id,
                 *count = db_size;
                 return;
             }
+
+            tBT_UUID temp_uuid;
+            if (p_char) {
+                memcpy(&temp_uuid, &p_char->uuid, sizeof(tBT_UUID));
+            }
+
             if ((op == GATT_OP_GET_ALL_CHAR || op == GATT_OP_GET_CHAR_BY_UUID) &&
-                (char_uuid == NULL || bta_gattc_uuid_compare(&p_char->uuid, char_uuid, TRUE))) {
+                (char_uuid == NULL || bta_gattc_uuid_compare(&temp_uuid, char_uuid, TRUE))) {
                 APPL_TRACE_DEBUG("%s(), uuid match.", __func__);
                 bta_gattc_fill_gatt_db_el(curr_db_attr,
                                           BTGATT_DB_CHARACTERISTIC,
@@ -1451,7 +1471,7 @@ void bta_gattc_get_db_with_opration(UINT16 conn_id,
             }
 
             if ((op == GATT_OP_GET_DESCRI_BY_UUID) &&
-                !bta_gattc_uuid_compare(&p_char->uuid, char_uuid, TRUE)) {
+                !bta_gattc_uuid_compare(&temp_uuid, char_uuid, TRUE)) {
                 continue;
             }
 
@@ -1468,9 +1488,13 @@ void bta_gattc_get_db_with_opration(UINT16 conn_id,
                         *count = db_size;
                         return;
                     }
+                    tBT_UUID temp_uuid1;
+                    if (p_desc) {
+                        memcpy(&temp_uuid1, &p_desc->uuid, sizeof(tBT_UUID));
+                    }
                     if (((op == GATT_OP_GET_ALL_DESCRI || op == GATT_OP_GET_DESCRI_BY_UUID) &&
-                        (descr_uuid == NULL || bta_gattc_uuid_compare(&p_desc->uuid, descr_uuid, TRUE))) ||
-                        (op == GATT_OP_GET_DESCRI_BY_HANDLE && bta_gattc_uuid_compare(&p_desc->uuid, descr_uuid, TRUE))) {
+                        (descr_uuid == NULL || bta_gattc_uuid_compare(&temp_uuid1, descr_uuid, TRUE))) ||
+                        (op == GATT_OP_GET_DESCRI_BY_HANDLE && bta_gattc_uuid_compare(&temp_uuid1, descr_uuid, TRUE))) {
                         bta_gattc_fill_gatt_db_el(curr_db_attr,
                                                   BTGATT_DB_DESCRIPTOR,
                                                   p_desc->handle,
@@ -1565,12 +1589,17 @@ static size_t bta_gattc_get_db_size_with_type(list_t *services,
                     return db_size;
                 }
 
-                if ((type == BTGATT_DB_CHARACTERISTIC) && bta_gattc_uuid_compare(&p_char->uuid, char_uuid, TRUE)) {
+                tBT_UUID temp_uuid;
+                if (p_char) {
+                    memcpy(&temp_uuid, &p_char->uuid, sizeof(tBT_UUID));
+                }
+
+                if ((type == BTGATT_DB_CHARACTERISTIC) && bta_gattc_uuid_compare(&temp_uuid, char_uuid, TRUE)) {
                     db_size++;
                     continue;
                 }
 
-                if (p_char->descriptors && (type == BTGATT_DB_DESCRIPTOR) && bta_gattc_uuid_compare(&p_char->uuid, char_uuid, TRUE)) {
+                if (p_char->descriptors && (type == BTGATT_DB_DESCRIPTOR) && bta_gattc_uuid_compare(&temp_uuid, char_uuid, TRUE)) {
                     for (list_node_t *dn = osi_list_begin(p_char->descriptors);
                          dn != osi_list_end(p_char->descriptors); dn = osi_list_next(dn)) {
                         tBTA_GATTC_DESCRIPTOR *p_desc = osi_list_node(dn);

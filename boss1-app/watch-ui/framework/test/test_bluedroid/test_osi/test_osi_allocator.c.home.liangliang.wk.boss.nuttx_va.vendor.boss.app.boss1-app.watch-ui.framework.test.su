@@ -1,0 +1,9 @@
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_allocator.c:21:1:TEST_BT_OSI_ALLOCATOR_TEST_SETUP	32	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_allocator.c:29:1:TEST_BT_OSI_ALLOCATOR_TEST_osi_strdup_free_	48	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_allocator.c:37:1:TEST_BT_OSI_ALLOCATOR_TEST_osi_malloc_func_	32	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_allocator.c:44:1:TEST_BT_OSI_ALLOCATOR_TEST_osi_free_func_	32	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_allocator.c:25:1:TEST_BT_OSI_ALLOCATOR_TEST_TEAR_DOWN	32	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_allocator.c:29:1:TEST_BT_OSI_ALLOCATOR_TEST_osi_strdup_free_run	48	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_allocator.c:37:1:TEST_BT_OSI_ALLOCATOR_TEST_osi_malloc_func_run	48	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_allocator.c:44:1:TEST_BT_OSI_ALLOCATOR_TEST_osi_free_func_run	48	static
+/home/liangliang/wk/boss/nuttx_va/vendor/boss/app/boss1-app/watch-ui/framework/test/test_bluedroid/test_osi/test_osi_allocator.c:51:1:TEST_BT_OSI_ALLOCATOR_TEST_GROUP_RUNNER	48	static

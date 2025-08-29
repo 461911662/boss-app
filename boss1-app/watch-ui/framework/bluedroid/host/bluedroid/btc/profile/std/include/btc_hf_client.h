@@ -23,7 +23,7 @@
 #include "btc/btc_common.h"
 #include "bta/bta_hf_client_api.h"
 
-#if (BTC_HF_CLIENT_INCLUDED == TRUE)
+#if (defined(BTC_HF_CLIENT_INCLUDED) && (BTC_HF_CLIENT_INCLUDED == TRUE))
 /*******************************************************************************
 **  Type definitions for callback functions
 ********************************************************************************/

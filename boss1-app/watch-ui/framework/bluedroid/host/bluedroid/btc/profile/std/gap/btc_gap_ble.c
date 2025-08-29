@@ -2536,12 +2536,12 @@ bool btc_check_adv_list(uint8_t * addr, uint8_t addr_type)
 
 void btc_adv_list_lock(void)
 {
-    osi_mutex_lock(&adv_list_lock, OSI_MUTEX_MAX_TIMEOUT);
+    osi_mutex_lock(adv_list_lock, OSI_MUTEX_MAX_TIMEOUT);
 }
 
 void btc_adv_list_unlock(void)
 {
-    osi_mutex_unlock(&adv_list_lock);
+    osi_mutex_unlock(adv_list_lock);
 }
 #endif
 #endif  ///BLE_INCLUDED == TRUE

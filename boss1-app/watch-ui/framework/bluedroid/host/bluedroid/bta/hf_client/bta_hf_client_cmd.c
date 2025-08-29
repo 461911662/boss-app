@@ -21,7 +21,7 @@
 #include "stdio.h"
 #include "common/bt_target.h"
 
-#if (BTA_HF_INCLUDED == TRUE)
+#if (defined(BTA_HF_INCLUDED) && (BTA_HF_INCLUDED == TRUE))
 
 void bta_hf_client_send_at_cmd(tBTA_HF_CLIENT_DATA *p_data)
 {

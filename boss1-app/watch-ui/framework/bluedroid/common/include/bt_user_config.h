@@ -66,7 +66,7 @@
 #ifdef CONFIG_LOG_DEFAULT_LEVEL
 #define UC_LOG_DEFAULT_LEVEL                CONFIG_LOG_DEFAULT_LEVEL
 #else
-#define UC_LOG_DEFAULT_LEVEL                3
+#define UC_LOG_DEFAULT_LEVEL                UC_TRACE_LEVEL_VERBOSE
 #endif
 
 #ifdef CONFIG_BOOTLOADER_LOG_LEVEL

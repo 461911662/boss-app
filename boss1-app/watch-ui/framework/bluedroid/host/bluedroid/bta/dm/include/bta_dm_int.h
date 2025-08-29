@@ -62,8 +62,10 @@ enum {
     BTA_DM_API_PAGE_TO_SET_EVT,
     BTA_DM_API_PAGE_TO_GET_EVT,
     BTA_DM_API_SET_ACL_PKT_TYPES_EVT,
+#ifdef ENC_KEY_SIZE_CTRL_MODE
 #if (ENC_KEY_SIZE_CTRL_MODE != ENC_KEY_SIZE_CTRL_MODE_NONE)
     BTA_DM_API_SET_MIN_ENC_KEY_SIZE_EVT,
+#endif
 #endif
 #endif
     BTA_DM_API_SET_AFH_CHANNELS_EVT,
@@ -324,6 +326,7 @@ typedef struct {
     tBTM_CMPL_CB        *set_acl_pkt_types_cb;
 } tBTA_DM_API_SET_ACL_PKT_TYPES;
 
+#ifdef ENC_KEY_SIZE_CTRL_MODE
 #if (ENC_KEY_SIZE_CTRL_MODE != ENC_KEY_SIZE_CTRL_MODE_NONE)
 /* data type for BTA_DM_API_SET_MIN_ENC_KEY_SIZE_EVT */
 typedef struct {
@@ -331,6 +334,7 @@ typedef struct {
     UINT8               key_size;
     tBTM_CMPL_CB        *set_min_enc_key_size_cb;
 } tBTA_DM_API_SET_MIN_ENC_KEY_SIZE;
+#endif
 #endif
 
 /* data type for BTA_DM_API_GET_REMOTE_NAME_EVT */
@@ -1216,8 +1220,10 @@ typedef union {
     tBTA_DM_API_PAGE_TO_SET set_page_timeout;
     tBTA_DM_API_PAGE_TO_GET get_page_timeout;
     tBTA_DM_API_SET_ACL_PKT_TYPES set_acl_pkt_types;
+#ifdef ENC_KEY_SIZE_CTRL_MODE
 #if (ENC_KEY_SIZE_CTRL_MODE != ENC_KEY_SIZE_CTRL_MODE_NONE)
     tBTA_DM_API_SET_MIN_ENC_KEY_SIZE set_min_enc_key_size;
+#endif
 #endif
 #if (SDP_INCLUDED == TRUE)
     tBTA_DM_API_GET_REMOTE_NAME  get_rmt_name;
@@ -1402,7 +1408,7 @@ typedef struct {
     BOOLEAN                     in_use;
     tBTA_DM_DEV_INFO            info;
     tBTA_DM_ENCRYPT_CBACK      *p_encrypt_cback;
-#if (BTM_SSR_INCLUDED == TRUE)
+#if (defined(BTM_SSR_INCLUDED) && (BTM_SSR_INCLUDED == TRUE))
     tBTM_PM_STATUS              prev_low;   /* previous low power mode used */
 #endif
     tBTA_DM_PM_ACTION           pm_mode_attempted;
@@ -1646,7 +1652,7 @@ typedef struct {
 typedef struct {
 
     UINT8  allow_mask;         /* mask of sniff/hold/park modes to allow */
-#if (BTM_SSR_INCLUDED == TRUE)
+#if (defined(BTM_SSR_INCLUDED) && (BTM_SSR_INCLUDED == TRUE))
     UINT8  ssr;                /* set SSR on conn open/unpark */
 #endif
     tBTA_DM_PM_ACTN actn_tbl [BTA_DM_PM_NUM_EVTS][2];
@@ -1736,8 +1742,10 @@ extern void bta_dm_config_eir (tBTA_DM_MSG *p_data);
 extern void bta_dm_set_page_timeout (tBTA_DM_MSG *p_data);
 extern void bta_dm_get_page_timeout (tBTA_DM_MSG *p_data);
 extern void bta_dm_set_acl_pkt_types (tBTA_DM_MSG *p_data);
+#ifdef ENC_KEY_SIZE_CTRL_MODE
 #if (ENC_KEY_SIZE_CTRL_MODE != ENC_KEY_SIZE_CTRL_MODE_NONE)
 extern void bta_dm_set_min_enc_key_size (tBTA_DM_MSG *p_data);
+#endif
 #endif
 #endif
 extern void bta_dm_set_afh_channels (tBTA_DM_MSG *p_data);

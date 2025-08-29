@@ -474,7 +474,7 @@ static void btc_l2cap_uninit(void)
             }
         }
         BTA_JvDisable((tBTA_JV_L2CAP_CBACK *)btc_l2cap_inter_cb);
-        osi_mutex_unlock(&l2cap_local_param.l2cap_slot_mutex);
+        osi_mutex_unlock(l2cap_local_param.l2cap_slot_mutex);
     } while(0);
 
     if (ret != ESP_BT_L2CAP_SUCCESS) {
@@ -499,7 +499,7 @@ static void btc_l2cap_start_srv(btc_l2cap_args_t *arg)
         l2cap_slot_t *slot = l2cap_malloc_slot();
         if (!slot) {
             BTC_TRACE_ERROR("%s unable to malloc L2CAP slot!", __func__);
-            osi_mutex_unlock(&l2cap_local_param.l2cap_slot_mutex);
+            osi_mutex_unlock(l2cap_local_param.l2cap_slot_mutex);
             ret = ESP_BT_L2CAP_NO_RESOURCE;
             break;
         }
@@ -636,7 +636,7 @@ static void btc_l2cap_connect(btc_l2cap_args_t *arg)
         l2cap_slot_t *slot = l2cap_malloc_slot();
         if (!slot) {
             BTC_TRACE_ERROR("%s unable to malloc L2CAP slot!", __func__);
-            osi_mutex_unlock(&l2cap_local_param.l2cap_slot_mutex);
+            osi_mutex_unlock(l2cap_local_param.l2cap_slot_mutex);
             ret = ESP_BT_L2CAP_NO_RESOURCE;
             break;
         }
@@ -784,7 +784,7 @@ void btc_l2cap_cb_handler(btc_msg_t *msg)
             osi_mutex_lock(l2cap_local_param.l2cap_slot_mutex, OSI_MUTEX_MAX_TIMEOUT);
             slot = l2cap_find_slot_by_handle(p_data->l2c_open.handle);
             if (!slot) {
-                osi_mutex_unlock(&l2cap_local_param.l2cap_slot_mutex);
+                osi_mutex_unlock(l2cap_local_param.l2cap_slot_mutex);
                 BTC_TRACE_ERROR("%s unable to find L2CAP slot, event:%d!", __func__, event);
                 param.open.status = ESP_BT_L2CAP_NO_CONNECTION;
                 break;
@@ -809,7 +809,7 @@ void btc_l2cap_cb_handler(btc_msg_t *msg)
             slot = l2cap_find_slot_by_id(id);
             if (!slot) {
                 param.close.status = ESP_BT_L2CAP_NO_CONNECTION;
-                osi_mutex_unlock(&l2cap_local_param.l2cap_slot_mutex);
+                osi_mutex_unlock(l2cap_local_param.l2cap_slot_mutex);
                 BTC_TRACE_ERROR("%s unable to find RFCOMM slot, event:%d!", __func__, event);
                 break;
             }
@@ -818,7 +818,7 @@ void btc_l2cap_cb_handler(btc_msg_t *msg)
                 tBTA_JV *p_arg = NULL;
                 if ((p_arg = malloc(sizeof(tBTA_JV))) == NULL) {
                     param.close.status = ESP_BT_L2CAP_NO_RESOURCE;
-                    osi_mutex_unlock(&l2cap_local_param.l2cap_slot_mutex);
+                    osi_mutex_unlock(l2cap_local_param.l2cap_slot_mutex);
                     BTC_TRACE_ERROR("%s unable to malloc slot close_alarm arg!", __func__);
                     break;
                 }
@@ -829,7 +829,7 @@ void btc_l2cap_cb_handler(btc_msg_t *msg)
                     free(p_arg);
                     slot->alarm_arg = NULL;
                     param.close.status = ESP_BT_L2CAP_NO_RESOURCE;
-                    osi_mutex_unlock(&l2cap_local_param.l2cap_slot_mutex);
+                    osi_mutex_unlock(l2cap_local_param.l2cap_slot_mutex);
                     BTC_TRACE_ERROR("%s unable to malloc slot close_alarm!", __func__);
                     break;
                 }
@@ -838,7 +838,7 @@ void btc_l2cap_cb_handler(btc_msg_t *msg)
                     slot->alarm_arg = NULL;
                     osi_alarm_free(slot->close_alarm);
                     param.close.status = ESP_BT_L2CAP_BUSY;
-                    osi_mutex_unlock(&l2cap_local_param.l2cap_slot_mutex);
+                    osi_mutex_unlock(l2cap_local_param.l2cap_slot_mutex);
                     BTC_TRACE_ERROR("%s set slot close_alarm failed!", __func__);
                     break;
                 }
@@ -873,14 +873,14 @@ void btc_l2cap_cb_handler(btc_msg_t *msg)
         osi_mutex_lock(l2cap_local_param.l2cap_slot_mutex, OSI_MUTEX_MAX_TIMEOUT);
         slot = l2cap_find_slot_by_handle(p_data->data_ind.handle);
         if (!slot) {
-            osi_mutex_unlock(&l2cap_local_param.l2cap_slot_mutex);
+            osi_mutex_unlock(l2cap_local_param.l2cap_slot_mutex);
             BTC_TRACE_ERROR("%s unable to find L2CAP slot, event:%d!", __func__, event);
             break;
         }
         if (BTA_JvL2capReady(p_data->data_ind.handle, &count) == BTA_JV_SUCCESS && count > 0) {
             BT_HDR *p_data_buf = osi_malloc(count + sizeof(BT_HDR));
             if (p_data_buf == NULL) {
-                osi_mutex_unlock(&l2cap_local_param.l2cap_slot_mutex);
+                osi_mutex_unlock(l2cap_local_param.l2cap_slot_mutex);
                 BTC_TRACE_ERROR("%s, %d count = %d malloc failed!", __func__, __LINE__, count);
                 break; // to do disconnect
             }
@@ -898,7 +898,7 @@ void btc_l2cap_cb_handler(btc_msg_t *msg)
         osi_mutex_lock(l2cap_local_param.l2cap_slot_mutex, OSI_MUTEX_MAX_TIMEOUT);
         slot = l2cap_find_slot_by_handle(p_data->l2c_cong.handle);
         if (!slot) {
-            osi_mutex_unlock(&l2cap_local_param.l2cap_slot_mutex);
+            osi_mutex_unlock(l2cap_local_param.l2cap_slot_mutex);
             BTC_TRACE_ERROR("%s unable to find L2CAP slot, event:%d!", __func__, event);
             break;
         }
@@ -916,14 +916,14 @@ void btc_l2cap_cb_handler(btc_msg_t *msg)
         osi_mutex_lock(l2cap_local_param.l2cap_slot_mutex, OSI_MUTEX_MAX_TIMEOUT);
         slot = l2cap_find_slot_by_handle(p_data->l2c_read.handle);
         if (!slot) {
-            osi_mutex_unlock(&l2cap_local_param.l2cap_slot_mutex);
+            osi_mutex_unlock(l2cap_local_param.l2cap_slot_mutex);
             BTC_TRACE_ERROR("%s unable to find L2CAP slot, event:%d!", __func__, event);
             break;
         }
         if (BTA_JvL2capReady(p_data->l2c_read.handle, &count) == BTA_JV_SUCCESS && count > 0) {
             BT_HDR *p_data_buf = osi_malloc(count + sizeof(BT_HDR));
             if (p_data_buf == NULL) {
-                osi_mutex_unlock(&l2cap_local_param.l2cap_slot_mutex);
+                osi_mutex_unlock(l2cap_local_param.l2cap_slot_mutex);
                 BTC_TRACE_ERROR("%s, %d count = %d malloc failed!", __func__, __LINE__, count);
                 break; // to do disconnect
             }
@@ -947,7 +947,7 @@ void btc_l2cap_cb_handler(btc_msg_t *msg)
             BT_HDR *p_buf;
             serial = slot->serial;
             if ((p_buf = fixed_queue_try_peek_first(slot->tx.queue)) == NULL) {
-                osi_mutex_unlock(&l2cap_local_param.l2cap_slot_mutex);
+                osi_mutex_unlock(l2cap_local_param.l2cap_slot_mutex);
                 break;
             }
             if (p_data->l2c_write.status == BTA_JV_SUCCESS) {
@@ -1001,7 +1001,7 @@ static ssize_t l2cap_vfs_write(int fd, const void * data, size_t size)
     osi_mutex_lock(l2cap_local_param.l2cap_slot_mutex, OSI_MUTEX_MAX_TIMEOUT);
     slot = l2cap_find_slot_by_fd(fd);
     if (!slot) {
-        osi_mutex_unlock(&l2cap_local_param.l2cap_slot_mutex);
+        osi_mutex_unlock(l2cap_local_param.l2cap_slot_mutex);
         BTC_TRACE_ERROR("%s unable to find L2CAP slot!", __func__);
         errno = ENOENT;
         return -1;
@@ -1041,7 +1041,7 @@ static ssize_t l2cap_vfs_write(int fd, const void * data, size_t size)
             enqueue_status = fixed_queue_enqueue(slot->tx.queue, p_buf, 0);
             if (!enqueue_status) {
                 BTC_TRACE_DEBUG("%s tx_len:%d, fd:%d\n", __func__, fixed_queue_length(slot->tx.queue), fd);
-                osi_mutex_unlock(&l2cap_local_param.l2cap_slot_mutex);
+                osi_mutex_unlock(l2cap_local_param.l2cap_slot_mutex);
                 //block until under water level, be closed or time out
                 tx_event_group_val =
                     eventBitsGroup_waitBits(l2cap_local_param.tx_event_group, SLOT_WRITE_BIT(serial) | SLOT_CLOSE_BIT(serial), TRUE,
@@ -1096,7 +1096,7 @@ static int l2cap_vfs_close(int fd)
     osi_mutex_lock(l2cap_local_param.l2cap_slot_mutex, OSI_MUTEX_MAX_TIMEOUT);
     slot = l2cap_find_slot_by_fd(fd);
     if (!slot) {
-        osi_mutex_unlock(&l2cap_local_param.l2cap_slot_mutex);
+        osi_mutex_unlock(l2cap_local_param.l2cap_slot_mutex);
         BTC_TRACE_ERROR("%s unable to find L2CAP slot!", __func__);
         errno = ENOENT;
         return -1;
@@ -1121,13 +1121,13 @@ static ssize_t l2cap_vfs_read(int fd, void * dst, size_t size)
     osi_mutex_lock(l2cap_local_param.l2cap_slot_mutex, OSI_MUTEX_MAX_TIMEOUT);
     slot = l2cap_find_slot_by_fd(fd);
     if (!slot) {
-        osi_mutex_unlock(&l2cap_local_param.l2cap_slot_mutex);
+        osi_mutex_unlock(l2cap_local_param.l2cap_slot_mutex);
         BTC_TRACE_ERROR("%s unable to find L2CAP slot!", __func__);
         errno = ENOENT;
         return -1;
     }
     serial = slot->serial;
-    osi_mutex_unlock(&l2cap_local_param.l2cap_slot_mutex);
+    osi_mutex_unlock(l2cap_local_param.l2cap_slot_mutex);
 
     ssize_t item_size = 0;
     BT_HDR *p_buf;
@@ -1141,7 +1141,7 @@ static ssize_t l2cap_vfs_read(int fd, void * dst, size_t size)
                     p_buf = NULL;
                 }
                 if (size == 0 || (p_buf = (BT_HDR *)fixed_queue_try_peek_first(slot->rx.queue)) == NULL) {
-                    osi_mutex_unlock(&l2cap_local_param.l2cap_slot_mutex);
+                    osi_mutex_unlock(l2cap_local_param.l2cap_slot_mutex);
                     break;
                 }
             } else {
@@ -1163,7 +1163,7 @@ static ssize_t l2cap_vfs_read(int fd, void * dst, size_t size)
             item_size = -1;
             break;
         }
-        osi_mutex_unlock(&l2cap_local_param.l2cap_slot_mutex);
+        osi_mutex_unlock(l2cap_local_param.l2cap_slot_mutex);
 
         if (p_buf->len <= size) {
             memcpy(dst, p_buf->data + p_buf->offset, p_buf->len);

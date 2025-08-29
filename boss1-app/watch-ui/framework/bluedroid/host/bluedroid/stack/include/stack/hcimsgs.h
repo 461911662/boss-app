@@ -414,7 +414,7 @@ BOOLEAN btsnd_hcic_write_def_policy_set(UINT16 settings);
 /******************************************
 **    Lisbon Features
 *******************************************/
-#if BTM_SSR_INCLUDED == TRUE
+#if (defined(BTM_SSR_INCLUDED) && (BTM_SSR_INCLUDED == TRUE))
 /* Sniff Subrating */
 BOOLEAN btsnd_hcic_sniff_sub_rate(UINT16 handle, UINT16 max_lat,
                                   UINT16 min_remote_lat,

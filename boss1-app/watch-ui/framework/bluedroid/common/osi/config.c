@@ -305,11 +305,11 @@ void config_set_bool(config_t *config, const char *section, const char *key, boo
 
 /**
  * @details 在配置对象中的段，指定key和value
- * @param config表示配置的对象
- * @param section表示需要查找的段
- * @param key表示需要查找的key
- * @param value表示设置的值
- * @param insert_b ack表示是否插入后面，1表示插入后面，0表示插入前面
+ * @param config 表示配置的对象
+ * @param section 表示需要查找的段
+ * @param key 表示需要查找的key
+ * @param value 表示设置的值
+ * @param insert_back 表示是否插入后面，1表示插入后面，0表示插入前面
  * @return 无
  */
 void config_set_string(config_t *config, const char *section, const char *key, const char *value, bool insert_back)
@@ -640,15 +640,18 @@ static void config_parse(int fd, config_t *config)
     char *line = osi_calloc(1024);
     char *section = osi_calloc(1024);
     char *buf = NULL;
+    struct stat st;
 
-    total_length = read(fd, buf, CONFIG_FILE_DEFAULE_LENGTH);
-    if (total_length <= 0) {
-        goto error;
+    if (fstat(fd, &st) == 0) {
+        total_length = st.st_size >= CONFIG_FILE_DEFAULE_LENGTH ? CONFIG_FILE_DEFAULE_LENGTH : st.st_size;
     }
-
     buf = osi_calloc(total_length);
     if (!line || !section || !buf) {
         err_code |= 0x01;
+        goto error;
+    }
+
+    if (read(fd, buf, total_length) <= 0) {
         goto error;
     }
 

@@ -31,7 +31,7 @@
 #include "stack/port_api.h"
 #include "osi/allocator.h"
 
-#if (BTA_HF_INCLUDED == TRUE)
+#if (defined(BTA_HF_INCLUDED) && (BTA_HF_INCLUDED == TRUE))
 /*******************************************************************************
 **
 ** Function         bta_hf_client_port_cback

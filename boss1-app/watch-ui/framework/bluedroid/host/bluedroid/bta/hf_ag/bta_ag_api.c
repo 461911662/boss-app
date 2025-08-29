@@ -31,7 +31,7 @@
 #include "bta_ag_int.h"
 #include "osi/allocator.h"
 
-#if (BTA_AG_INCLUDED == TRUE)
+#if (defined(BTA_AG_INCLUDED) && (BTA_AG_INCLUDED == TRUE))
 /*****************************************************************************
 **  Constants
 *****************************************************************************/

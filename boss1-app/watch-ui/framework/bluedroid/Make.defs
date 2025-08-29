@@ -20,9 +20,4 @@
 
 ifneq ($(CONFIG_BT_ENABLED),)
 CONFIGURED_APPS += $(APPDIR)/watch-ui/framework/bluedroid
-
-#添加头文件依赖, 可以共享头文件接口给外部文件
-#CFLAGS += ${INCDIR_PREFIX}$(APPDIR)/watch-ui/apps/base/src
-#CXXFLAGS += ${INCDIR_PREFIX}$(APPDIR)/watch-ui/apps/base/src
-
 endif

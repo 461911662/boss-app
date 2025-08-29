@@ -10,7 +10,7 @@
 #include "osi/allocator.h"
 #include <string.h>
 
-#if (BTA_HF_INCLUDED == TRUE)
+#if (defined(BTA_HF_INCLUDED) && (BTA_HF_INCLUDED == TRUE))
 
 #if (BTM_SCO_HCI_INCLUDED == TRUE)
 

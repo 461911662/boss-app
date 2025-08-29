@@ -34,7 +34,7 @@
 #include "common/bt_trace.h"
 #include "osi/allocator.h"
 
-#if (BTA_AG_INCLUDED == TRUE)
+#if (defined(BTA_AG_INCLUDED) && (BTA_AG_INCLUDED == TRUE))
 
 /* Number of protocol elements in protocol element list. */
 #define BTA_AG_NUM_PROTO_ELEMS      2

@@ -35,7 +35,7 @@
 #include <string.h>
 #include "osi/allocator.h"
 
-#if (BTA_HF_INCLUDED == TRUE)
+#if (defined(BTA_HF_INCLUDED) && (BTA_HF_INCLUDED == TRUE))
 /*****************************************************************************
 **  Constants
 *****************************************************************************/

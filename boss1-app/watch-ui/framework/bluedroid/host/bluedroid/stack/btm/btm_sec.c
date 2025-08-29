@@ -963,7 +963,7 @@ tBTM_STATUS btm_sec_bond_by_transport (BD_ADDR bd_addr, tBT_TRANSPORT transport,
 {
     tBTM_SEC_DEV_REC *p_dev_rec;
     tBTM_STATUS      status;
-#if (!CONFIG_BT_STACK_NO_LOG)
+#if (defined(CONFIG_BT_STACK_NO_LOG) && (!CONFIG_BT_STACK_NO_LOG))
     UINT8            *p_features;
 #endif
     UINT8            ii;
@@ -1063,13 +1063,13 @@ tBTM_STATUS btm_sec_bond_by_transport (BD_ADDR bd_addr, tBT_TRANSPORT transport,
 #endif  ///CLASSIC_BT_INCLUDED == TRUE
 
     for (ii = 0; ii <= HCI_EXT_FEATURES_PAGE_MAX; ii++) {
-#if (!CONFIG_BT_STACK_NO_LOG)
+#if (defined(CONFIG_BT_STACK_NO_LOG) && (!CONFIG_BT_STACK_NO_LOG))
         p_features = p_dev_rec->features[ii];
-#endif
         BTM_TRACE_EVENT("  remote_features page[%1d] = %02x-%02x-%02x-%02x\n",
                         ii, p_features[0], p_features[1], p_features[2], p_features[3]);
         BTM_TRACE_EVENT("                              %02x-%02x-%02x-%02x\n",
                         p_features[4], p_features[5], p_features[6], p_features[7]);
+#endif
     }
 
     BTM_TRACE_EVENT ("BTM_SecBond: Remote sm4: 0x%x  HCI Handle: 0x%04x\n", p_dev_rec->sm4, p_dev_rec->hci_handle);

@@ -29,7 +29,7 @@
  * @brief 获取HAL层与HCI层交互的操作句柄，具体实现在bt\host\bluedroid\hci\vendor目录
  */
 extern esp_err_t
-esp_bluedroid_get_hci_driver_operations(esp_bluedroid_hci_driver_operations_t **operations);
+esp_bluedroid_get_hci_driver_operations(esp_bluedroid_hci_driver_operations_t *operations);
 
 #if USE_ESP_HCI_HAL
 extern void esp_bluedroid_init_hal(void);
@@ -59,10 +59,10 @@ inline void teardown_hci_hal(void)
 /**
  * 用来注册HCI层的回调到厂商的HAL中，其中厂商的HAL实现在bt\host\bluedroid\hci\vendor目录
  */
-esp_err_t esp_hci_host_register_callback(const esp_bluedroid_hci_driver_callbacks_t *callback)
+inline esp_err_t esp_hci_host_register_callback(const esp_bluedroid_hci_driver_callbacks_t *callback)
 {
     esp_err_t ret = ESP_FAIL;
-    esp_bluedroid_hci_driver_operations_t *p_ops = NULL;
+    esp_bluedroid_hci_driver_operations_t p_ops;
 
     // 初始化HAL层
     setup_hci_hal();
@@ -73,11 +73,11 @@ esp_err_t esp_hci_host_register_callback(const esp_bluedroid_hci_driver_callback
         return ret;
     }
     (void)esp_bluedroid_detach_hci_driver();
-    (void)esp_bluedroid_attach_hci_driver(p_ops);
+    (void)esp_bluedroid_attach_hci_driver(&p_ops);
 
     // 注册HCI层的回调
-    if (p_ops->register_host_callback) {
-        ret = p_ops->register_host_callback(callback);
+    if (p_ops.register_host_callback) {
+        ret = p_ops.register_host_callback(callback);
     }
 
     return ret;
@@ -87,7 +87,7 @@ esp_err_t esp_hci_host_register_callback(const esp_bluedroid_hci_driver_callback
 /**
  * 用来注销HCI层的回调到厂商的HAL中，其中厂商的HAL实现在bt\host\bluedroid\hci\vendor目录
  */
-void esp_hci_host_unregister_callback(void)
+inline void esp_hci_host_unregister_callback(void)
 {
     //注销HAL层的操作句柄
     (void)esp_bluedroid_detach_hci_driver();

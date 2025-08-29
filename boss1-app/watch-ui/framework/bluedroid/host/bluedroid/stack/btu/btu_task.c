@@ -433,12 +433,12 @@ void btu_start_timer(TIMER_LIST_ENT *p_tle, UINT16 type, UINT32 timeout_sec)
     assert(p_tle != NULL);
 
     // Get the alarm for the timer list entry.
-    osi_mutex_lock(&btu_general_alarm_lock, OSI_MUTEX_MAX_TIMEOUT);
+    osi_mutex_lock(btu_general_alarm_lock, OSI_MUTEX_MAX_TIMEOUT);
     if (!hash_map_has_key(btu_general_alarm_hash_map, p_tle)) {
         alarm = osi_alarm_new("btu_gen", btu_general_alarm_cb, (void *)p_tle, 0);
         hash_map_set(btu_general_alarm_hash_map, p_tle, alarm);
     }
-    osi_mutex_unlock(&btu_general_alarm_lock);
+    osi_mutex_unlock(btu_general_alarm_lock);
 
     alarm = hash_map_get(btu_general_alarm_hash_map, p_tle);
     if (alarm == NULL) {
@@ -548,12 +548,12 @@ void btu_start_quick_timer(TIMER_LIST_ENT *p_tle, UINT16 type, UINT32 timeout_ti
     assert(p_tle != NULL);
 
     // Get the alarm for the timer list entry.
-    osi_mutex_lock(&btu_l2cap_alarm_lock, OSI_MUTEX_MAX_TIMEOUT);
+    osi_mutex_lock(btu_l2cap_alarm_lock, OSI_MUTEX_MAX_TIMEOUT);
     if (!hash_map_has_key(btu_l2cap_alarm_hash_map, p_tle)) {
         alarm = osi_alarm_new("btu_l2cap", btu_l2cap_alarm_cb, (void *)p_tle, 0);
         hash_map_set(btu_l2cap_alarm_hash_map, p_tle, (void *)alarm);
     }
-    osi_mutex_unlock(&btu_l2cap_alarm_lock);
+    osi_mutex_unlock(btu_l2cap_alarm_lock);
 
     alarm = hash_map_get(btu_l2cap_alarm_hash_map, p_tle);
     if (alarm == NULL) {
@@ -634,12 +634,12 @@ void btu_start_timer_oneshot(TIMER_LIST_ENT *p_tle, UINT16 type, UINT32 timeout_
     assert(p_tle != NULL);
 
     // Get the alarm for the timer list entry.
-    osi_mutex_lock(&btu_oneshot_alarm_lock, OSI_MUTEX_MAX_TIMEOUT);
+    osi_mutex_lock(btu_oneshot_alarm_lock, OSI_MUTEX_MAX_TIMEOUT);
     if (!hash_map_has_key(btu_oneshot_alarm_hash_map, p_tle)) {
         alarm = osi_alarm_new("btu_oneshot", btu_oneshot_alarm_cb, (void *)p_tle, 0);
         hash_map_set(btu_oneshot_alarm_hash_map, p_tle, alarm);
     }
-    osi_mutex_unlock(&btu_oneshot_alarm_lock);
+    osi_mutex_unlock(btu_oneshot_alarm_lock);
 
     alarm = hash_map_get(btu_oneshot_alarm_hash_map, p_tle);
     if (alarm == NULL) {

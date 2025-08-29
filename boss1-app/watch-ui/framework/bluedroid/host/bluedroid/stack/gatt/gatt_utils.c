@@ -1050,7 +1050,7 @@ tGATT_TCB *gatt_tcb_alloc(UINT8 tcb_idx)
 void gatt_tcb_free( tGATT_TCB *p_tcb)
 {
     UINT8 tcb_idx = p_tcb->tcb_idx;
-    if (list_remove(gatt_cb.p_tcb_list, p_tcb)) {
+    if (osi_list_remove(gatt_cb.p_tcb_list, p_tcb)) {
         gatt_tcb_id &= ~(1 << tcb_idx);
     }
 }
@@ -2268,7 +2268,7 @@ void gatt_end_operation(tGATT_CLCB *p_clcb, tGATT_STATUS status, void *p_data)
     UINT8               op = p_clcb->operation, disc_type = GATT_DISC_MAX;
     tGATT_DISC_CMPL_CB  *p_disc_cmpl_cb = (p_clcb->p_reg) ? p_clcb->p_reg->app_cb.p_disc_cmpl_cb : NULL;
     UINT16              conn_id;
-#if (!CONFIG_BT_STACK_NO_LOG)
+#if (defined(CONFIG_BT_STACK_NO_LOG) && (!CONFIG_BT_STACK_NO_LOG))
     UINT8               operation;
 #endif
 
@@ -2312,7 +2312,7 @@ void gatt_end_operation(tGATT_CLCB *p_clcb, tGATT_STATUS status, void *p_data)
         osi_free(p_clcb->p_attr_buf);
     }
 
-#if !CONFIG_BT_STACK_NO_LOG
+#if (defined(CONFIG_BT_STACK_NO_LOG) && !CONFIG_BT_STACK_NO_LOG)
     operation =  p_clcb->operation;
 #endif
 
@@ -2326,8 +2326,10 @@ void gatt_end_operation(tGATT_CLCB *p_clcb, tGATT_STATUS status, void *p_data)
     } else if (p_cmpl_cb && op) {
         (*p_cmpl_cb)(conn_id, op, status, &cb_data);
     } else {
+#if (defined(CONFIG_BT_STACK_NO_LOG) && !CONFIG_BT_STACK_NO_LOG)
         GATT_TRACE_WARNING ("gatt_end_operation not sent out op=%d p_disc_cmpl_cb:%p p_cmpl_cb:%p",
                             operation, p_disc_cmpl_cb, p_cmpl_cb);
+#endif
     }
 }
 

@@ -170,7 +170,7 @@ extern "C" int main(int argc, FAR char *argv[])
   // lv_obj_center(label1);
   // lv_demo_widgets();
   // lv_demo_music();
-  lv_demo_keypad_encoder();
+  //lv_demo_keypad_encoder();
   //lv_demo_stress();
 
   apps_setup();
