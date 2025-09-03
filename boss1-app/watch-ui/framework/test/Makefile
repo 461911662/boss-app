@@ -42,8 +42,9 @@ endif
 CFLAGS += -DUNITY_INCLUDE_CONFIG_H
 CFLAGS += -DUNITY_INCLUDE_DOUBLE
 
-CSRCS += $(FRAMEWORK_TEST_DIR)/common/unity_fixture.c
+VPATH += :common
+CSRCS += unity_fixture.c
 
 include $(APPDIR)/Application.mk
 
-include $(APPDIR)/tools/MultiDirectoryObj.mk
+#include $(APPDIR)/tools/MultiDirectoryObj.mk

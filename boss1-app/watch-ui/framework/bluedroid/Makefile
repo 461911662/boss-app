@@ -20,26 +20,9 @@
 
 include $(APPDIR)/Make.defs
 
-# LVGL graphic library
-
-# add dependencies directories
-DEPPATH += --dep-path common/api
-DEPPATH += --dep-path common/btc
-DEPPATH += --dep-path common/osi
-
-DEPPATH += --dep-path host/bluedroid/hci
-DEPPATH += --dep-path host/bluedroid/hci/vendor
-
-#DEPPATH += --obj-path .
-
-VPATH += :host/bluedroid/hci
-VPATH += :host/bluedroid/hci/vendor
-
 BLUEDROID_DIR = .
 BLUEDROID_PATH ?= ${shell pwd}
 
 -include $(BLUEDROID_DIR)/bluedroid.mk
 
 include $(APPDIR)/Application.mk
-
-include $(APPDIR)/tools/MultiDirectoryObj.mk

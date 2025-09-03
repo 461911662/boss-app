@@ -31,7 +31,7 @@ TEST_TEAR_DOWN(BT_ESP_HAL_INIT_TEST)
 TEST(BT_ESP_HAL_INIT_TEST, alarm_new_free)
 {
     esp_bluedroid_init_hal();
-    esp_bluedroid_init_hal();
+    esp_bluedroid_deinit_hal();
 }
 
 TEST_GROUP_RUNNER(BT_ESP_HAL_INIT_TEST)

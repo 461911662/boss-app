@@ -94,10 +94,19 @@ ifeq ($(CONFIG_BT_TEST_OSI_ALARM_ENABLED),y)
 CSRCS += $(FW_BT_TEST_DIR)$(DELIM)test_osi$(DELIM)test_osi_alarm.c
 endif
 
+VPATH += $(FW_BT_TEST_DIR)$(DELIM)test_osi
+
 endif # CONFIG_BT_TEST_OSI_ENABLED
 
 ifeq ($(CONFIG_BT_TEST_BT_ENABLED),y)
+
+VPATH += :test_bluedroid$(DELIM)test_bt
+
 # CFLAGS += $(INCDIR_PREFIX)$(BLUEDROID_DIR)$(DELIM)host$(DELIM)bluedroid$(DELIM)api$(DELIM)include$(DELIM)api
-CSRCS += $(FW_BT_TEST_DIR)$(DELIM)test_bt$(DELIM)test_bt_main.c
-CSRCS += $(FW_BT_TEST_DIR)$(DELIM)test_bt$(DELIM)test_bt_esp_hal.c
+#CSRCS += $(FW_BT_TEST_DIR)$(DELIM)test_bt$(DELIM)test_bt_main.c
+#CSRCS += $(FW_BT_TEST_DIR)$(DELIM)test_bt$(DELIM)test_bt_esp_hal.c
+
+CSRCS += test_bt_main.c
+CSRCS += test_bt_esp_hal.c
+
 endif
