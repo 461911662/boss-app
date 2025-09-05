@@ -191,7 +191,6 @@ if(CONFIG_BT_ENABLED)
 
         list(APPEND srcs "host/bluedroid/api/esp_a2dp_api.c"
                    "host/bluedroid/api/esp_avrc_api.c"
-                   "host/bluedroid/api/esp_bluedroid_hci.c"
                    "host/bluedroid/api/esp_bt_device.c"
                    "host/bluedroid/api/esp_bt_main.c"
                    "host/bluedroid/api/esp_gap_ble_api.c"

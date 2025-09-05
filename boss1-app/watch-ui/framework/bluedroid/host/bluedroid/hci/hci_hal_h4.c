@@ -23,7 +23,6 @@
 #include "hci/hci_internals.h"
 #include "hci/hci_layer.h"
 #include "hci/hci_trans_int.h"
-#include "hci/hci_vendor_hal.h"
 #include "osi/thread.h"
 #include "osi/pkt_queue.h"
 #if (BLE_ADV_REPORT_FLOW_CONTROL == TRUE)
@@ -33,7 +32,6 @@
 #if (BT_CONTROLLER_INCLUDED == TRUE)
 #include "esp_bt.h"
 #endif
-#include "esp_bluedroid_hci.h"
 #include "stack/hcimsgs.h"
 
 #if (C2H_FLOW_CONTROL_INCLUDED == TRUE)
@@ -89,7 +87,7 @@ typedef struct {
 
 static hci_hal_env_t hci_hal_env;
 static const hci_hal_t interface;
-static const esp_bluedroid_hci_driver_callbacks_t hci_host_cb;
+static const bluedroid_hci_driver_callbacks_t hci_host_cb;
 
 static void host_send_pkt_available_cb(void);
 static int host_recv_pkt_cb(uint8_t *data, uint16_t len);
@@ -631,7 +629,7 @@ static int host_recv_pkt_cb(uint8_t *data, uint16_t len)
     return 0;
 }
 
-static const esp_bluedroid_hci_driver_callbacks_t hci_host_cb = {
+static const bluedroid_hci_driver_callbacks_t hci_host_cb = {
     .notify_host_send_available = host_send_pkt_available_cb,
     .notify_host_recv = host_recv_pkt_cb,
 };

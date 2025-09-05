@@ -25,7 +25,7 @@
 #include "bt_common.h"
 #include "bluedroid_user_config.h"
 #include "stack/bt_types.h"
-
+ 
 static inline void trc_dump_buffer(const char *prefix, uint8_t *data, uint16_t len)
 {
     uint16_t i;
@@ -35,18 +35,32 @@ static inline void trc_dump_buffer(const char *prefix, uint8_t *data, uint16_t l
     }
 
     if (prefix) {
-        printf("%s: len %d\r\n", prefix, len);
+        syslog(LOG_INFO, "%s: len %d\n", prefix, len);
     }
 
     for (i = 0; i < len; i+=16) {
-        printf("%02x, %02x, %02x, %02x, %02x, %02x, %02x, %02x, %02x, %02x, %02x, %02x, %02x, %02x, %02x, %02x\r\n",
-                *(data + i), *(data + i + 1), *(data + i + 2), *(data + i + 3), *(data + i + 4), *(data + i + 5), *(data + i + 6), *(data + i + 7),
-                *(data + i + 8), *(data + i + 9), *(data + i + 10), *(data + i + 11), *(data + i + 12), *(data + i + 13), *(data + i + 14), *(data + i + 15));
+        syslog(LOG_INFO, "    %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\n",
+                i >= len ? 0xFF : *(data + i),
+                i+1 >= len ? 0xFF : *(data + i + 1),
+                i+2 >= len ? 0xFF : *(data + i + 2),
+                i+3 >= len ? 0xFF : *(data + i + 3),
+                i+4 >= len ? 0xFF : *(data + i + 4),
+                i+5 >= len ? 0xFF : *(data + i + 5),
+                i+6 >= len ? 0xFF : *(data + i + 6),
+                i+7 >= len ? 0xFF : *(data + i + 7),
+                i+8 >= len ? 0xFF : *(data + i + 8),
+                i+9 >= len ? 0xFF : *(data + i + 9),
+                i+10 >= len ? 0xFF : *(data + i + 10),
+                i+11 >= len ? 0xFF : *(data + i + 11),
+                i+12 >= len ? 0xFF : *(data + i + 12),
+                i+13 >= len ? 0xFF : *(data + i + 13),
+                i+14 >= len ? 0xFF : *(data + i + 14),
+                i+15 >= len ? 0xFF : *(data + i + 15)
+            );
     }
-    printf("\r\n");
 }
 
-#ifdef BTTRC_DUMP_BUFFER
+#ifndef BTTRC_DUMP_BUFFER
 #define BTTRC_DUMP_BUFFER(_prefix, _data, _len) trc_dump_buffer(_prefix, _data, _len)
 #else
 #define BTTRC_DUMP_BUFFER(_prefix, _data, _len)

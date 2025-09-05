@@ -14,7 +14,7 @@
 #include <sys/ioctl.h>
 #include <arch/chip/bt_ioctl.h>
 #include "common/bt_trace.h"
-#include "api/esp_bluedroid_hci.h"
+#include "hci/hci_trans_int.h"
 
 /****************************************************************************
  * DEFINES
@@ -30,8 +30,7 @@
 
 static int hci_fd = ESP_HAL_HCI_FD_INVALID;
 static pthread_t receiver_thread;
-static esp_bluedroid_hci_driver_operations_t operations;
-static esp_bluedroid_hci_driver_callbacks_t callbacks;
+static bluedroid_hci_driver_callbacks_t callbacks;
 
 /****************************************************************************
  * STATIC FUNCTIONS
@@ -40,10 +39,11 @@ static esp_bluedroid_hci_driver_callbacks_t callbacks;
 /**
  * @details 用来通知上层数据包收到了或者控制器已经做好接收数据的准备了
  */
-static esp_err_t register_host_callback(const esp_bluedroid_hci_driver_callbacks_t *callback)
+static int register_host_callback(const bluedroid_hci_driver_callbacks_t *callback)
 {
     callbacks.notify_host_recv = callback->notify_host_recv;
     callbacks.notify_host_send_available = callback->notify_host_send_available;
+    HCI_TRACE_DEBUG("%s: register_host_callback", __func__);
     return ESP_OK;
 }
 
@@ -86,7 +86,7 @@ static void* hci_read_thread(void *arg)
     pfd.events = POLLIN; // 监控可读事件
     uint8_t buffer[HCI_RECV_PACKET_SIZE];
 
-    pthread_setname_np(pthread_self(), __func__);
+    pthread_setname_np(pthread_self(), "esp_hal_hci_read");
     assert(hci_fd != ESP_HAL_HCI_FD_INVALID);
     while (1) {
         int ret = poll(&pfd, 1, -1); // 阻塞等待事件
@@ -126,39 +126,23 @@ static void* hci_read_thread(void *arg)
  * GLOBAL FUNCTIONS
  ****************************************************************************/
 /**
- * @details 获取vendor HAL的操作句柄
- */
-esp_err_t esp_bluedroid_get_hci_driver_operations(esp_bluedroid_hci_driver_operations_t *operation)
-{
-    esp_err_t ret = ESP_FAIL;
-
-    if (hci_fd != ESP_HAL_HCI_FD_INVALID) {
-        operation->send = operations.send;
-        operation->check_send_available = operations.check_send_available;
-        operation->register_host_callback = operations.register_host_callback;
-    }
-
-    return ret;
-}
-
-/**
  * @details esp的hal初始化函数
  */
-void esp_bluedroid_init_hal(void)
+int esp_bluedroid_init_hal(bluedroid_hci_driver_operations_t *ops)
 {
     // 设置线程属性
     pthread_attr_t attr;
     int ret = pthread_attr_init(&attr);
     if (ret != 0) {
         HCI_TRACE_ERROR("pthread_attr_init failed!");
-        return;
+        return -1;
     }
 
     ret = pthread_attr_setstacksize(&attr, 3072);
     if (ret != 0) {
         (void)pthread_attr_destroy(&attr);
         HCI_TRACE_ERROR("pthread_attr_setstacksize failed!");
-        return;
+        return -1;
     }
 
     struct sched_param param;
@@ -166,34 +150,34 @@ void esp_bluedroid_init_hal(void)
     if (ret != 0) {
         (void)pthread_attr_destroy(&attr);
         HCI_TRACE_ERROR("pthread_attr_getschedparam failed!");
-        return;
+        return -1;
     }
     param.sched_priority = 100;
     ret = pthread_attr_setschedparam(&attr, &param);
     if (ret != 0) {
         (void)pthread_attr_destroy(&attr);
         HCI_TRACE_ERROR("pthread_attr_setschedparam failed!");
-        return;
+        return -1;
     }
 
     // 打开设备
     hci_fd = open(ESP_HAL_HCI_NAME, O_RDWR);
     if (hci_fd < 0) {
         HCI_TRACE_ERROR("%s open %s failed!", __func__, ESP_HAL_HCI_NAME);
-        return;
+        return -1;
     }
 
     // 初始化HCI operations
-    operations.send = write_data;
-    operations.check_send_available = check_send_available;
-    operations.register_host_callback = register_host_callback;
+    ops->send = write_data;
+    ops->check_send_available = check_send_available;
+    ops->register_host_callback = register_host_callback;
 
     // 启动读线程
     if (pthread_create(&receiver_thread, &attr, hci_read_thread, NULL) != 0) {
         HCI_TRACE_ERROR("Create receiver thread failed!");
         close(hci_fd);
         hci_fd = ESP_HAL_HCI_FD_INVALID;
-        return;
+        return -1;
     }
 
     if (ioctl(hci_fd, BIOC_POWERON, NULL) == -1) {
@@ -203,6 +187,7 @@ void esp_bluedroid_init_hal(void)
     struct btparam_s bt_param;
     if (ioctl(hci_fd, BIOC_GETSENDOK, &bt_param) == -1) {
         HCI_TRACE_ERROR("%s check_send_available ioctl failed", __func__);
+        return -1;
     }
     HCI_TRACE_DEBUG("bt send status:%d\n", bt_param.resp.is_host_send);
 
@@ -214,11 +199,6 @@ void esp_bluedroid_init_hal(void)
  */
 void esp_bluedroid_deinit_hal(void)
 {
-    // 注销当前的操作句柄，等待下次初始化时再重新赋值
-    operations.send = NULL;
-    operations.check_send_available = NULL;
-    operations.register_host_callback = NULL;
-
     if (hci_fd != ESP_HAL_HCI_FD_INVALID) {
         if (ioctl(hci_fd, BIOC_POWEROFF, NULL) == -1) {
             HCI_TRACE_ERROR("%s check_send_available ioctl failed", __func__);

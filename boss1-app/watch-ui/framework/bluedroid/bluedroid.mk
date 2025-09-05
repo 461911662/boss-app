@@ -75,7 +75,7 @@ PRIV_INCDIR += $(INCDIR_PREFIX)$(BLUEDROID_PATH)$(DELIM)host$(DELIM)bluedroid$(D
 PRIV_INCDIR += $(INCDIR_PREFIX)$(BLUEDROID_PATH)$(DELIM)host$(DELIM)bluedroid$(DELIM)config$(DELIM)include
 
 VPATH += :host$(DELIM)bluedroid$(DELIM)api
-CSRCS += esp_a2dp_api.c esp_avrc_api.c esp_bluedroid_hci.c esp_bt_device.c esp_bt_main.c esp_gap_ble_api.c \
+CSRCS += esp_a2dp_api.c esp_avrc_api.c esp_bt_device.c esp_bt_main.c esp_gap_ble_api.c \
          esp_gap_bt_api.c esp_gatt_common_api.c esp_gattc_api.c esp_gatts_api.c esp_hidd_api.c esp_hidh_api.c \
          esp_hf_ag_api.c esp_hf_client_api.c esp_spp_api.c esp_sdp_api.c esp_l2cap_bt_api.c
 
@@ -166,7 +166,7 @@ VPATH += :host$(DELIM)bluedroid$(DELIM)external$(DELIM)sbc$(DELIM)plc
 CSRCS += sbc_plc.c
 
 VPATH += :host$(DELIM)bluedroid$(DELIM)hci$(DELIM)vendor
-CSRCS += esp_hci_hal_h4.c
+CSRCS += esp_hci_hal_h4.c hw_hci_hal_h4.c
 
 VPATH += :host$(DELIM)bluedroid$(DELIM)hci
 CSRCS += hci_audio.c hci_hal_h4.c hci_layer.c hci_packet_factory.c hci_packet_parser.c packet_fragmenter.c
