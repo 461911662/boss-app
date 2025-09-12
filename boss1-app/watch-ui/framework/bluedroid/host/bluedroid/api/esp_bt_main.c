@@ -66,6 +66,7 @@ esp_err_t esp_bluedroid_enable(void)
         BT_LOG_E("Bluedroid enable failed\n");
         return ESP_FAIL;
     }
+    BT_LOG_I("Bluedroid enable success\n");
 
     bd_already_enable = true;
 

@@ -24,6 +24,11 @@
 #define HCI_RECV_PACKET_SIZE (2048)
 #define ESP_HAL_HCI_NAME "/dev/ttyHCI0"
 
+#define H4_DATA_TYPE_COMMAND   1
+#define H4_DATA_TYPE_ACL       2
+#define H4_DATA_TYPE_SCO       3
+#define H4_DATA_TYPE_EVENT     4
+
 /****************************************************************************
  * STATIC PROTOTYPES
  ****************************************************************************/
@@ -31,6 +36,7 @@
 static int hci_fd = ESP_HAL_HCI_FD_INVALID;
 static pthread_t receiver_thread;
 static bluedroid_hci_driver_callbacks_t callbacks;
+static volatile int reserve_pkt_len = 0;
 
 /****************************************************************************
  * STATIC FUNCTIONS
@@ -77,6 +83,71 @@ static bool check_send_available(void)
 }
 
 /**
+ * @details 检查并处理数据包
+ */
+static void handle_hci_data(char *buffer, uint16_t len)
+{
+    size_t send_size = 0;
+    size_t hdr_size = 0;
+    uint8_t type = 0;
+    uint8_t *stream = buffer;
+
+    while (len > 0) {
+        STREAM_TO_UINT8(type, stream);
+        switch (type)
+        {
+            case H4_DATA_TYPE_COMMAND:
+                hdr_size = 3; // 2 bytes for opcode, 1 byte for parameter length (Volume 2, Part E, 5.4.1)
+                break;
+            case H4_DATA_TYPE_ACL:
+                hdr_size = 4; // 2 bytes for handle, 2 bytes for data length (Volume 2, Part E, 5.4.2)
+                break;
+            case H4_DATA_TYPE_SCO:
+                hdr_size = 3; // 2 bytes for handle, 1 byte for data length (Volume 2, Part E, 5.4.3
+                break;
+            case H4_DATA_TYPE_EVENT:
+                hdr_size = 2; // 1 byte for event code, 1 byte for parameter length (Volume 2, Part E, 5.4.4)
+                break;
+            default:
+                HCI_TRACE_ERROR("Unknown data type %d", type);
+                while(1){}
+                break;
+        }
+
+        if (type == H4_DATA_TYPE_ACL) {
+            stream += hdr_size - 2;
+            STREAM_TO_UINT16(send_size, stream);
+        } else {
+            stream += hdr_size - 1;
+            STREAM_TO_UINT8(send_size, stream);
+        }
+        stream += send_size;
+
+        send_size += hdr_size + 1;
+
+        if (send_size <= len) {
+            len -= send_size;
+
+            // 解析HCI事件并触发回调
+            if (callbacks.notify_host_recv) {
+                callbacks.notify_host_recv(stream - send_size, send_size);
+            }
+
+            // 通知host发送有效
+            if (callbacks.notify_host_send_available) {
+                callbacks.notify_host_send_available();
+            }
+            reserve_pkt_len = 0;
+        } else {
+            memcpy(buffer, stream - send_size, len);
+            reserve_pkt_len = len;
+            break;
+        }
+        send_size = 0;
+    }
+}
+
+/**
  * @details 蓝牙读取线程
  */
 static void* hci_read_thread(void *arg)
@@ -95,21 +166,15 @@ static void* hci_read_thread(void *arg)
             break;
         }
         if (pfd.revents & POLLIN) {
-            ssize_t bytes_read = read(hci_fd, buffer, sizeof(buffer));
+            ssize_t bytes_read = read(hci_fd, buffer + reserve_pkt_len, sizeof(buffer));
             if (bytes_read <= 0) {
                 HCI_TRACE_ERROR("hci_read_thread Read error or device closed");
                 break;
             }
-            printf("%s: bytes_read:%d\n", __func__, bytes_read);
-            // 解析HCI事件并触发回调
-            if (callbacks.notify_host_recv) {
-                callbacks.notify_host_recv(buffer, bytes_read);
-            }
 
-            // 通知host发送有效
-            if (callbacks.notify_host_send_available) {
-                callbacks.notify_host_send_available();
-            }
+            // 将数据包传递给上层
+            handle_hci_data(buffer, bytes_read);
+
         } else if (pfd.revents & (POLLERR | POLLHUP)) {
             HCI_TRACE_ERROR("hci_read_thread Device error or disconnected");
             break;
@@ -138,7 +203,7 @@ int esp_bluedroid_init_hal(bluedroid_hci_driver_operations_t *ops)
         return -1;
     }
 
-    ret = pthread_attr_setstacksize(&attr, 3072);
+    ret = pthread_attr_setstacksize(&attr, 4096);
     if (ret != 0) {
         (void)pthread_attr_destroy(&attr);
         HCI_TRACE_ERROR("pthread_attr_setstacksize failed!");
@@ -192,6 +257,8 @@ int esp_bluedroid_init_hal(bluedroid_hci_driver_operations_t *ops)
     HCI_TRACE_DEBUG("bt send status:%d\n", bt_param.resp.is_host_send);
 
     HCI_TRACE_DEBUG("ESP Bluedroid HAL initialized successfully");
+
+    return 0;
 }
 
 /**

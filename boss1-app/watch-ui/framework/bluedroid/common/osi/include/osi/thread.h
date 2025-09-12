@@ -74,6 +74,15 @@ void osi_thread_free(osi_thread_t *thread);
  */
 bool osi_thread_post(osi_thread_t *thread, osi_thread_func_t func, void *context, int queue_idx, uint32_t timeout);
 
+/**
+ * @brief 独占的线程提交函数
+ * @param thread 表示要提交的线程
+ * @param func 表示线程队列的回调函数
+ * @param context 表示表示要入队的上下文
+ * @return true 表示成功，false表示失败
+ */
+bool osi_thread_post_alarm(osi_thread_t *thread, osi_thread_func_t func, void *context);
+
 /*
  * brief: Set the priority of thread
  * param thread: point of thread handler

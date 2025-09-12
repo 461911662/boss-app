@@ -341,7 +341,7 @@ static void alarm_cb_handler(void *data)
 {
     osi_mutex_lock(alarm_mutex, OSI_MUTEX_MAX_TIMEOUT);
     struct alarm_t *alarm = (struct alarm_t *)data;
-    OSI_TRACE_DEBUG("TimerID %p\n", alarm->alarm_name);
+    OSI_TRACE_DEBUG("TimerName: %s\n", alarm->alarm_name);
     if (alarm_state != ALARM_STATE_OPEN) {
         OSI_TRACE_WARNING("%s, invalid state %d\n", __func__, alarm_state);
         return;
@@ -384,7 +384,7 @@ static void alarm_cb_handler(void *data)
     }
     osi_mutex_unlock(alarm_mutex);
 
-    btc_transfer_context(&msg, &arg, sizeof(btc_alarm_args_t), NULL, NULL);
+    btc_transfer_context_from_alarm(&msg, &arg, sizeof(btc_alarm_args_t), NULL, NULL);
 }
 
 /**

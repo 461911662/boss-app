@@ -335,6 +335,56 @@ bt_status_t btc_transfer_context(btc_msg_t *msg, void *arg, int arg_len, btc_arg
 
     ret = btc_task_post(lmsg, OSI_THREAD_MAX_TIMEOUT);
     if (ret != BT_STATUS_SUCCESS) {
+        BTC_TRACE_WARNING("%s btc_task_post fail, ret=%d\n", __func__, ret);
+        if (copy_func && free_func) {
+            free_func(lmsg);
+        }
+        osi_free(lmsg);
+    }
+
+    return ret;
+}
+
+/**
+ * transfer an message to another module from the alarm.
+ * @param  msg       message
+ * @param  arg       paramter
+ * @param  arg_len   length of paramter
+ * @param  copy_func deep copy function
+ * @param  free_func deep free function
+ * @return           BT_STATUS_SUCCESS: success
+ *                   others: fail
+ */
+bt_status_t btc_transfer_context_from_alarm(btc_msg_t *msg, void *arg, int arg_len, btc_arg_deep_copy_t copy_func,
+                                    btc_arg_deep_free_t free_func)
+{
+    btc_msg_t* lmsg;
+    bt_status_t ret;
+    //                              arg XOR arg_len
+    if ((msg == NULL) || ((arg == NULL) == !(arg_len == 0))) {
+        BTC_TRACE_WARNING("%s Invalid parameters\n", __func__);
+        return BT_STATUS_PARM_INVALID;
+    }
+
+    BTC_TRACE_DEBUG("%s msg %u %u %u %p\n", __func__, msg->sig, msg->pid, msg->act, arg);
+
+    lmsg = (btc_msg_t *)osi_malloc(sizeof(btc_msg_t) + arg_len);
+    if (lmsg == NULL) {
+        BTC_TRACE_WARNING("%s No memory\n", __func__);
+        return BT_STATUS_NOMEM;
+    }
+
+    memcpy(lmsg, msg, sizeof(btc_msg_t));
+    if (arg) {
+        memset(lmsg->arg, 0x00, arg_len);    //important, avoid arg which have no length
+        memcpy(lmsg->arg, arg, arg_len);
+        if (copy_func) {
+            copy_func(lmsg, lmsg->arg, arg);
+        }
+    }
+
+    ret = osi_thread_post_alarm(btc_thread, btc_thread_handler, lmsg) ? BT_STATUS_SUCCESS : BT_STATUS_BUSY;
+    if (ret != BT_STATUS_SUCCESS) {
         if (copy_func && free_func) {
             free_func(lmsg);
         }

@@ -29,7 +29,7 @@ static bluedroid_hci_driver_operations_t s_hci_driver_ops = { 0 }; // 需要加�
  */
 static int setup_hci_hal(bluedroid_hci_driver_operations_t *ops)
 {
-#ifdef USE_ESP32_HCI_H4
+#if USE_ESP32_HCI_H4 == 1
     extern int esp_bluedroid_init_hal(bluedroid_hci_driver_operations_t *ops);
     return esp_bluedroid_init_hal(ops);
 #endif
@@ -40,7 +40,7 @@ static int setup_hci_hal(bluedroid_hci_driver_operations_t *ops)
  */
 static void teardown_hci_hal(void)
 {
-#ifdef USE_ESP32_HCI_H4
+#if USE_ESP32_HCI_H4 == 1
     void esp_bluedroid_deinit_hal(void);
     esp_bluedroid_deinit_hal();
 #endif
@@ -56,8 +56,8 @@ bool hci_host_check_send_available(void)
 {
     bool can_send = false;
     if (s_hci_driver_ops.check_send_available) {
-        HCI_TRACE_DEBUG("%s check_send_available is not NULL", __func__);
         can_send = s_hci_driver_ops.check_send_available();
+        HCI_TRACE_DEBUG("%s check_send_available %s send\n", __func__, can_send ? "can" : "can't");
     }
     return can_send;
 }

@@ -34,12 +34,26 @@
 
 #include "nshlib/nshlib.h"
 
+#include <pthread.h>
 extern int esp_bluedroid_init(void);
 extern int esp_bluedroid_deinit(void);
+extern int esp_bluedroid_enable(void);
 
 /****************************************************************************
  * Public Functions
  ****************************************************************************/
+pthread_t g_nsh_task;
+void blue_test(void *arg)
+{
+  esp_bluedroid_init();
+
+  esp_bluedroid_enable();
+
+  while(1) {
+    sleep(2);
+  };
+}
+
 
 /****************************************************************************
  * Name: nsh_main
@@ -71,9 +85,7 @@ int main(int argc, FAR char *argv[])
 
   nsh_initialize();
 
-  esp_bluedroid_init();
-
-  esp_bluedroid_deinit();
+  pthread_create(&g_nsh_task, NULL, blue_test, NULL);
 
 #ifdef CONFIG_NSH_CONSOLE
   /* If the serial console front end is selected, run it on this thread */

@@ -19,6 +19,7 @@
 
 #include "osi/allocator.h"
 #include "osi/semaphore.h"
+#include "osi/pkt_queue.h"
 #include "osi/thread.h"
 #include "osi/mutex.h"
 
@@ -46,6 +47,7 @@ struct work_queue {
 struct osi_thread {
   pthread_t thread_handle;           /*!< Store the thread Handle */
   bool stop;
+  struct pkt_queue *alarm_queue;
   uint8_t work_queue_num;               /*!< Work queue number */
   struct work_queue **work_queues;      /*!< Point to queue array, and the priority inverse array index */
   osi_sem_t work_sem;
@@ -67,7 +69,6 @@ struct osi_event {
     osi_thread_t *thread;
 };
 
-
 /****************************************************************************
  * STATIC PROTOTYPES
  ****************************************************************************/
@@ -77,6 +78,7 @@ static const size_t DEFAULT_WORK_QUEUE_CAPACITY = 100;
 /****************************************************************************
  * STATIC FUNCTIONS
  ****************************************************************************/
+static void osi_thread_generic_alarm_handler(struct pkt_queue *queue);
 
 /**
  * @details 创建指定大小的队列
@@ -91,8 +93,7 @@ static struct work_queue *osi_work_queue_create(size_t capacity)
 
     struct work_queue *wq = (struct work_queue *)osi_calloc(sizeof(struct work_queue));
     if (wq != NULL) {
-        uintptr_t low32 = (uintptr_t)wq & 0xFFFFFFFF;
-        snprintf(wq->name, sizeof(wq->name), "/tmp/%08x", low32);
+        snprintf(wq->name, sizeof(wq->name), "btq_%p", wq);
 
         struct mq_attr attr;
         attr.mq_maxmsg = capacity;
@@ -103,6 +104,7 @@ static struct work_queue *osi_work_queue_create(size_t capacity)
         wq->queue = mq_open(wq->name, O_RDWR | O_CREAT, 0644, &attr);
         if (wq->queue < 0)
         {
+            OSI_TRACE_ERROR("mq_open(%s) failed, ret=%d\n", wq->name, wq->queue);
             osi_free(wq);
             return NULL;
         } else {
@@ -174,6 +176,7 @@ static bool osi_thead_work_queue_put(struct work_queue *wq, const struct work_it
 
     if (timeout_ms ==  OSI_SEM_MAX_TIMEOUT) {
         if (mq_send(wq->queue, (const char *)item, sizeof(struct work_item), MQ_PRIO_VALID_MAX) < 0) {
+            OSI_TRACE_ERROR("mq_send failed\n");
             ret = FALSE;
         }
     } else {
@@ -182,6 +185,7 @@ static bool osi_thead_work_queue_put(struct work_queue *wq, const struct work_it
         now.tv_nsec = (timeout_ms % 1000) * (BILLION / 1000);
 
         if (mq_timedsend(wq->queue, (const char *)item, sizeof(struct work_item), MQ_PRIO_VALID_MAX, &now) < 0) {
+            OSI_TRACE_ERROR("mq_timedsend failed\n");
             ret = FALSE;
         }
     }
@@ -230,6 +234,10 @@ static void *osi_thread_run(void *arg)
 
         if (thread->stop) {
             break;
+        }
+
+        while(!pkt_queue_is_empty(thread->alarm_queue)) {
+            osi_thread_generic_alarm_handler(thread->alarm_queue);
         }
 
         struct work_item item;
@@ -318,6 +326,8 @@ osi_thread_t *osi_thread_create(const char *name, size_t stack_size, int priorit
     if (thread == NULL) {
         goto _err;
     }
+
+    thread->alarm_queue = pkt_queue_create();
 
     thread->name = name;
     thread->stop = false;
@@ -425,6 +435,8 @@ _err:
             osi_sem_free(&start_arg.start_sem);
         }
 
+        pkt_queue_destroy(thread->alarm_queue, NULL);
+
         osi_free(thread);
     }
 
@@ -479,7 +491,6 @@ void osi_thread_free(osi_thread_t *thread)
         return;
 
     osi_thread_stop(thread);
-
     if (thread->work_queues) {
         for (int i = 0; i < thread->work_queue_num; i++) {
             if (thread->work_queues[i]) {
@@ -500,6 +511,8 @@ void osi_thread_free(osi_thread_t *thread)
         osi_sem_free(&thread->stop_sem);
     }
 
+    pkt_queue_destroy(thread->alarm_queue, NULL);
+
     osi_free(thread);
 }
 
@@ -518,6 +531,7 @@ bool osi_thread_post(osi_thread_t *thread, osi_thread_func_t func, void *context
     assert(func != NULL);
 
     if (queue_idx >= thread->work_queue_num) {
+        OSI_TRACE_ERROR("queue_idx is out of range\n");
         return false;
     }
 
@@ -527,12 +541,75 @@ bool osi_thread_post(osi_thread_t *thread, osi_thread_func_t func, void *context
     item.context = context;
 
     if (osi_thead_work_queue_put(thread->work_queues[queue_idx], &item, timeout_ms) == false) {
+        OSI_TRACE_ERROR("work queue put failed\n");
         return false;
     }
 
     osi_sem_give(thread->work_sem);
 
     return true;
+}
+
+/**
+ * @details 独占的线程提交函数
+ * @param thread表示要提交的线程
+ * @param func表示线程队列的回调函数
+ * @param context表示表示要入队的上下文
+ * @return true 表示成功，false表示失败
+ */
+bool osi_thread_post_alarm(osi_thread_t *thread, osi_thread_func_t func, void *context)
+{
+    assert(thread != NULL);
+    assert(func != NULL);
+
+    pkt_linked_item_t *item = osi_calloc(sizeof(struct work_item)+sizeof(pkt_linked_item_t));
+    if (item == NULL)
+    {
+        OSI_TRACE_ERROR("malloc failed\n");
+        return false;
+    }
+
+    struct work_item *data = item->data;
+    data->func = func;
+    data->context = context;
+
+    OSI_TRACE_DEBUG("post alram.\n");
+    if (pkt_queue_enqueue(thread->alarm_queue, item) == false) {
+        OSI_TRACE_ERROR("pkt_queue_enqueue failed\n");
+        osi_free(item);
+        return false;
+    }
+
+    osi_sem_give(thread->work_sem);
+
+    return true;
+}
+
+/**
+ * @details 线程定时器事件处理函数
+*/
+static void osi_thread_generic_alarm_handler(struct pkt_queue *queue)
+{
+    assert(queue != NULL);
+
+    pkt_linked_item_t *linked_pkt = pkt_queue_dequeue(queue);
+    if (linked_pkt == NULL) {
+        OSI_TRACE_DEBUG("pkt_queue_dequeue is null\n");
+        return;
+    }
+
+    OSI_TRACE_DEBUG("handle alram.\n");
+    struct work_item *data = linked_pkt->data;
+    if (data == NULL) {
+        OSI_TRACE_ERROR("data is null\n");
+        return;
+    }
+
+    if (data->func) {
+        data->func(data->context);
+    }
+
+    osi_free(linked_pkt);
 }
 
 /**

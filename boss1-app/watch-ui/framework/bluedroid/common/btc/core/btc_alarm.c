@@ -12,9 +12,9 @@ void btc_alarm_handler(btc_msg_t *msg)
 {
     btc_alarm_args_t *arg = (btc_alarm_args_t *)msg->arg;
 
-    BTC_TRACE_DEBUG("%s act %d\n", __FUNCTION__, msg->act);
-
+    BTC_TRACE_WARNING("%s act %d\n", __FUNCTION__, msg->act);
     if (arg->cb) {
+        BTC_TRACE_WARNING("time out, start handle %p(%p)\n", arg->cb, arg->cb_data);
         arg->cb(arg->cb_data);
     }
 }

@@ -322,6 +322,7 @@ static future_t *transmit_command_futured(BT_HDR *command)
     command->event = MSG_STACK_TO_HC_HCI_CMD;
 
     fixed_pkt_queue_enqueue(hci_host_env.command_queue, linked_pkt, FIXED_PKT_QUEUE_MAX_TIMEOUT);
+    HCI_TRACE_DEBUG("HCI Enqueue Command futured opcode=0x%x\n", metadata->opcode);
     hci_downstream_data_post(OSI_THREAD_MAX_TIMEOUT);
     return future;
 }
@@ -602,6 +603,7 @@ static pkt_linked_item_t *get_waiting_command(command_opcode_t opcode)
         if (wait_entry) {
             hci_cmd_metadata_t *metadata = (hci_cmd_metadata_t *)(wait_entry->data);
             if (metadata->opcode == opcode) {
+                HCI_TRACE_DEBUG("del opcode=%x entry from cmd wait queue\n", opcode);
                 osi_list_remove(cmd_wait_q->commands_pending_response, wait_entry);
                 osi_mutex_unlock(cmd_wait_q->commands_pending_response_lock);
                 return wait_entry;
