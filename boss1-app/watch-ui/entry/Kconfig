@@ -3,27 +3,34 @@
 # see the file kconfig-language.txt in the NuttX tools repository.
 #
 
-config EXAMPLES_WATCHUI
-	tristate "\"Watch UI\" example"
+config EXAMPLES_WATCHUI_NSH
+	tristate "\"Watch UI NSH\" program"
 	default n
+	select NSH_LIBRARY
+	select SYSTEM_READLINE
+	select EXAMPLES_WATCHUI
 	---help---
-		Enable the \"Watch UI\" example
+		Enable the \"Watch UI NSH\" program
 
-if EXAMPLES_WATCHUI
+if EXAMPLES_WATCHUI_NSH
 
-config EXAMPLES_WATCHUI_PROGNAME
+config EXAMPLES_WATCHUI_NSH_PROGNAME
 	string "Program name"
-	default "watch_ui"
+	default "nsh"
 	---help---
 		This is the name of the program that will be used when the NSH ELF
 		program is installed.
 
-config EXAMPLES_WATCHUI_PRIORITY
-	int "WATCH UI task priority"
+config EXAMPLES_WATCHUI_NSH_PRIORITY
+	int "WATCH UI NSH task priority"
 	default 100
 
-config EXAMPLES_WATCHUI_STACKSIZE
-	int "WATCH UI stack size"
+config EXAMPLES_WATCHUI_NSH_STACKSIZE
+	int "WATCH UI NSH stack size"
 	default DEFAULT_TASK_STACKSIZE
 
 endif
+
+config WATCHUI_DEBUG_LOG
+	bool "Enable debug log"
+	default n

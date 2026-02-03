@@ -1,5 +1,5 @@
 ############################################################################
-# apps/watch-ui/Makefile
+# apps/testing/cxxtest/Makefile
 #
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
@@ -20,11 +20,16 @@
 
 include $(APPDIR)/Make.defs
 
-PROGNAME  = $(CONFIG_EXAMPLES_WATCHUI_NSH_PROGNAME)
-PRIORITY  = $(CONFIG_EXAMPLES_WATCHUI_NSH_PRIORITY)
-STACKSIZE = $(CONFIG_EXAMPLES_WATCHUI_NSH_STACKSIZE)
-MODULE    = $(CONFIG_EXAMPLES_WATCHUI_NSH)
+# CXX test program
 
-MAINSRC = nsh_entry.c
+MAINSRC = cxxtest_main.cxx
+
+# cxxtest built-in application info
+
+PROGNAME = cxxtest
+PRIORITY = SCHED_PRIORITY_DEFAULT
+# STACKSIZE = $(CONFIG_DEFAULT_TASK_STACKSIZE)
+STACKSIZE = 16384
+MODULE = $(CONFIG_TESTING_CXXTEST)
 
 include $(APPDIR)/Application.mk

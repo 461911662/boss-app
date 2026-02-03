@@ -5,8 +5,8 @@
 
 config WATCH_UI_FACE
         tristate "WATCH UI FACE PROGRAM"
-        default y
-        depends on EXAMPLES_WATCHUI
+        default n
+        depends on WATCHUI
         ---help---
                 Enable support for Watch ui face.
 

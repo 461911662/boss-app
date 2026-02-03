@@ -1,5 +1,5 @@
 ############################################################################
-# apps/watch-ui/Makefile
+# apps/testing/Makefile
 #
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
@@ -18,13 +18,6 @@
 #
 ############################################################################
 
-include $(APPDIR)/Make.defs
+MENUDESC = "Testing"
 
-PROGNAME  = $(CONFIG_EXAMPLES_WATCHUI_NSH_PROGNAME)
-PRIORITY  = $(CONFIG_EXAMPLES_WATCHUI_NSH_PRIORITY)
-STACKSIZE = $(CONFIG_EXAMPLES_WATCHUI_NSH_STACKSIZE)
-MODULE    = $(CONFIG_EXAMPLES_WATCHUI_NSH)
-
-MAINSRC = nsh_entry.c
-
-include $(APPDIR)/Application.mk
+include $(APPDIR)/Directory.mk

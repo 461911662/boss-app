@@ -98,7 +98,6 @@ staging:
 	$(Q) mkdir -p $@
 
 context: | staging
-	$(Q) echo "app context: $(CONFIGURED_APPS)"
 	$(Q) $(MAKE) context_all
 	$(Q) $(MAKE) register_all
 

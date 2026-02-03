@@ -1,5 +1,5 @@
 ############################################################################
-# apps/watch-ui/Makefile
+# apps/watch-ui/apps/login/Makefile
 #
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
@@ -20,11 +20,29 @@
 
 include $(APPDIR)/Make.defs
 
-PROGNAME  = $(CONFIG_EXAMPLES_WATCHUI_NSH_PROGNAME)
-PRIORITY  = $(CONFIG_EXAMPLES_WATCHUI_NSH_PRIORITY)
-STACKSIZE = $(CONFIG_EXAMPLES_WATCHUI_NSH_STACKSIZE)
-MODULE    = $(CONFIG_EXAMPLES_WATCHUI_NSH)
+CXXEXT := .cpp
 
-MAINSRC = nsh_entry.c
+CXXSRCS += watchui.cpp
+
+ifeq ($(CONFIG_OFFLINE_CXX_LIB),y)
+
+LIBCXX_PATH = $(TOPDIR)$(DELIM)libs$(DELIM)libxx
+OFFLINE_CXX_LIB_PATH = $(TOPDIR)$(DELIM)$(CONFIG_OFFLINE_CXX_LIB_PATH)
+
+LIBCXX = $(LIBCXX_PATH)$(DELIM)libcxx-$(CONFIG_LIBCXX_VERSION).src.tar.xz
+LIBCXXABI = $(LIBCXX_PATH)$(DELIM)libcxxabi-$(CONFIG_LIBCXXABI_VERSION).src.tar.xz
+
+$(LIBCXX):
+	$(Q) echo "GEN libcxx-$(CONFIG_LIBCXX_VERSION).src.tar.xz"
+	$(Q) $(call COPYDIR, $(OFFLINE_CXX_LIB_PATH)$(DELIM)libcxx-$(CONFIG_LIBCXX_VERSION).src.tar.xz, $@)
+
+$(LIBCXXABI):
+	$(Q) echo "GEN libcxxabi-$(CONFIG_LIBCXXABI_VERSION).src.tar.xz"
+	$(Q) $(call COPYDIR, $(OFFLINE_CXX_LIB_PATH)$(DELIM)libcxxabi-$(CONFIG_LIBCXXABI_VERSION).src.tar.xz, $@)
+
+context:: | $(LIBCXX) $(LIBCXXABI)
+	@:
+
+endif
 
 include $(APPDIR)/Application.mk

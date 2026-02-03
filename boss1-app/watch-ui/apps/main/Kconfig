@@ -1,0 +1,46 @@
+#
+# For a description of the syntax of this configuration file,
+# see the file kconfig-language.txt in the NuttX tools repository.
+#
+
+config WATCHUI
+	tristate "\"Watch UI\" program"
+	select OFFLINE_CXX_LIB
+	default n
+	---help---
+		Enable the \"Watch UI\" program as init process.
+
+if WATCHUI
+
+config WATCHUI_PROGNAME
+	string "Entry point of \"Watch UI\" program"
+	default "watchui"
+	---help---
+		Entry point of \"Watch UI\" program.
+
+config WATCHUI_PROGNAME_PRIORITY
+	int "WATCH UI task priority"
+	default 100
+
+config WATCHUI_PROGNAME_STACKSIZE
+	int "WATCH UI stack size"
+	default DEFAULT_TASK_STACKSIZE
+
+config OFFLINE_CXX_LIB
+	bool "Offline C++ library"
+	depends on LIBCXX
+	default n
+	---help---
+		Enable the offline C++ library.
+
+if OFFLINE_CXX_LIB
+
+config OFFLINE_CXX_LIB_PATH
+	string "Offline C++ library path"
+	default "vendor/boss/xtensa/libcxx"
+	---help---
+		Offline C++ library path.
+
+endif
+
+endif
