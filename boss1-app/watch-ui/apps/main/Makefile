@@ -29,16 +29,20 @@ ifeq ($(CONFIG_OFFLINE_CXX_LIB),y)
 LIBCXX_PATH = $(TOPDIR)$(DELIM)libs$(DELIM)libxx
 OFFLINE_CXX_LIB_PATH = $(TOPDIR)$(DELIM)$(CONFIG_OFFLINE_CXX_LIB_PATH)
 
-LIBCXX = $(LIBCXX_PATH)$(DELIM)libcxx-$(CONFIG_LIBCXX_VERSION).src.tar.xz
-LIBCXXABI = $(LIBCXX_PATH)$(DELIM)libcxxabi-$(CONFIG_LIBCXXABI_VERSION).src.tar.xz
+LIBCXX_VERSION=$(patsubst "%",%,$(CONFIG_LIBCXX_VERSION))
+LIBCXXABI_VERSION=$(patsubst "%",%,$(CONFIG_LIBCXXABI_VERSION))
+LIBCXX = $(LIBCXX_PATH)$(DELIM)libcxx-$(LIBCXX_VERSION).src.tar.xz
+LIBCXXABI = $(LIBCXX_PATH)$(DELIM)libcxxabi-$(LIBCXXABI_VERSION).src.tar.xz
 
 $(LIBCXX):
-	$(Q) echo "GEN libcxx-$(CONFIG_LIBCXX_VERSION).src.tar.xz"
-	$(Q) $(call COPYDIR, $(OFFLINE_CXX_LIB_PATH)$(DELIM)libcxx-$(CONFIG_LIBCXX_VERSION).src.tar.xz, $@)
+	$(Q) echo "GEN libcxx-$(LIBCXXABI_VERSION).src.tar.xz"
+	$(Q) flock $(LIBCXX_PATH)$(DELIM)libcxx.lock \
+			cp -rf $(OFFLINE_CXX_LIB_PATH)$(DELIM)libcxx-$(LIBCXXABI_VERSION).src.tar.xz $@
 
 $(LIBCXXABI):
-	$(Q) echo "GEN libcxxabi-$(CONFIG_LIBCXXABI_VERSION).src.tar.xz"
-	$(Q) $(call COPYDIR, $(OFFLINE_CXX_LIB_PATH)$(DELIM)libcxxabi-$(CONFIG_LIBCXXABI_VERSION).src.tar.xz, $@)
+	$(Q) echo "GEN libcxxabi-$(LIBCXXABI_VERSION).src.tar.xz"
+	$(Q) flock $(LIBCXX_PATH)$(DELIM)libcxxabi.lock \
+			cp -rf  $(OFFLINE_CXX_LIB_PATH)$(DELIM)libcxxabi-$(LIBCXXABI_VERSION).src.tar.xz $@
 
 context:: | $(LIBCXX) $(LIBCXXABI)
 	@:

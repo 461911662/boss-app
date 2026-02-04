@@ -9,55 +9,104 @@
 #include <cstdio>
 #include <iostream>
 
-#ifdef CONFIG_LIBUV
-#include <uv.h>
-#else
-#include <unistd.h>
-#endif
-
 #include <mooncake.h>
 
 #include "watchui.h"
 #include "watchui/log.h"
 #include "watchui_c2cxx.h"
+#include <csignal>
+
+static std::unique_ptr<WatchUI> _watchui_instance = nullptr;
+
+/**
+ * @brief watchui 主线程异步触发
+ */
+void watchui_async_send() {
+    appinfo("watchui_async_send called");
+    
+    if (!_watchui_instance) {
+        appwarn("_watchui_instance is null in watchui_async_send");
+        return;
+    }
 
 #ifdef CONFIG_LIBUV
-static uv_loop_t *loop;
-static uv_async_t async;
+    auto handle = _watchui_instance->get_async_handle();
+    if (!handle) {
+        appwarn("Async handle is null");
+        return;
+    }
+    
+    if (!handle->loop) {
+        appwarn("Async handle has no loop (event loop not running?)");
+        return;
+    }
+    
+    if (!uv_loop_alive(handle->loop)) {
+        appwarn("Event loop is not alive");
+        return;
+    }
+
+    int ret = uv_async_send(handle);
+    if (ret != 0) {
+        appwarn("uv_async_send failed, ret: %d", ret);
+    }
 #endif
-
-void mooncake::WatchUI::setup()
-{
 }
 
-void mooncake::WatchUI::update()
-{
-}
+static void setSignalHandler() {
+    auto handler = [](int sig) {
+        appinfo("sinal[%d] received, exiting", sig);
+        if (_watchui_instance) {
+            _watchui_instance->_destory();
+        }
+        DestroyWatchUI();
+        exit(0);
+    };
 
-void mooncake::WatchUI::destroy()
-{
+    signal(SIGHUP, handler);
+    signal(SIGINT, handler); // ctrl+c
+    signal(SIGQUIT, handler);
+    signal(SIGTERM, handler); // default exit program
 }
 
 /**
- * @brief: watchui_main 应用入口函数
- * @param: argc 参数数量
- * @param: argv 参数数组
- * @return: 0
-*/
-int watchui_main(int argc, char *argv[]) {
-    appinfo("Entry:\n");
-
-    mooncake::WatchUI watchui = mooncake::WatchUI();
-#ifdef CONFIG_LIBUV
-    loop = uv_default_loop();
-
-    uv_async_init(loop, &async, watchui.update);
-
-    return uv_run(loop, UV_RUN_DEFAULT);
-#else
-    while(1) {
-        watchui.update();
-        sleep(1);
+ * @brief 获取 WatchUI 单例
+ */
+WatchUI& GetWatchUI() {
+    if (!_watchui_instance) {
+        _watchui_instance = std::make_unique<WatchUI>();
     }
-#endif
+    return *_watchui_instance;
+}
+
+/**
+ * @brief 销毁 WatchUI 单例
+ */
+void DestroyWatchUI() {
+    if (_watchui_instance) {
+        _watchui_instance.reset();
+    }
+}
+
+/**
+ * @brief watchui_main 应用入口函数
+ */
+int watchui_main(int argc, char *argv[]) {
+    setSignalHandler();
+    GetWatchUI().run(); // forever
+    DestroyWatchUI();
+    return 0;
+}
+
+void WatchUI::setup() {
+    appinfo("setup");
+    set_loop_cnt(1);
+}
+
+void WatchUI::update() {
+    appinfo("update");
+}
+
+void WatchUI::destroy() {
+    appinfo("destroy");
 }

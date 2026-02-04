@@ -38,15 +38,11 @@ extern "C"
 */
 EXTERN int watchui_main(int argc, char *argv[]);
 
-/*
- * @brief: nsh_main 应用入口函数
- * @param: argc 参数数量
- * @param: argv 参数数组
- * @return: 0
+/**
+ * @brief watchui 主线程异步触发
+ * @return 无
 */
-EXTERN int nsh_main(int argc, char *argv[]);
-
-EXTERN int system(FAR const char *cmd);
+EXTERN void watchui_async_send();
 
 #undef EXTERN
 #ifdef __cplusplus

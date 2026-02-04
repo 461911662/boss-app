@@ -37,6 +37,11 @@
 #include "watchui/log.h"
 #include "watchui_c2cxx.h"
 
+void nsh_main11()
+{
+  while(1){}
+}
+
 /****************************************************************************
  * Public Functions
  ****************************************************************************/
@@ -119,7 +124,6 @@ int main(int argc, FAR char *argv[])
   }
 #endif
 
-  appinfo("1%s started, pid=%d\n", CONFIG_WATCHUI_PROGNAME, pid);
   pid = task_spawn(CONFIG_WATCHUI_PROGNAME, watchui_main, NULL, &attr, NULL, environ);
   if (pid < 0) {
       apperr("task_spawn for nsh.\n");

@@ -265,7 +265,6 @@ static void test_exception()
 
 extern "C" int main(int argc, char *argv[])
 {
-  std::cout << "main" << std::endl;
   test_ofstream();
   test_iostream();
   test_stl();
