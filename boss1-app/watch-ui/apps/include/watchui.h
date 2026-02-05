@@ -118,11 +118,11 @@ public:
         destroy();
     #ifdef CONFIG_LIBUV
         uv_close((uv_handle_t*)&async_update_handle, [](uv_handle_t* handle) {
-            appinfo("Async handle closed");
+            appinfo("async handle closed");
         });
 
         uv_close((uv_handle_t*)&heartbeat_req, [](uv_handle_t* handle) {
-            appinfo("Heartbeat handle closed");
+            appinfo("heartbeat handle closed");
         });
 
         uv_stop(loop);

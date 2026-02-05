@@ -37,10 +37,6 @@
 #include "watchui/log.h"
 #include "watchui_c2cxx.h"
 
-void nsh_main11()
-{
-  while(1){}
-}
 
 /****************************************************************************
  * Public Functions
