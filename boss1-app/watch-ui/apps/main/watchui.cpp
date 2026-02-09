@@ -16,6 +16,8 @@
 #include "watchui_c2cxx.h"
 #include <csignal>
 
+#include "include/pwm.h"
+
 static std::unique_ptr<WatchUI> _watchui_instance = nullptr;
 
 /**
@@ -55,7 +57,7 @@ void watchui_async_send() {
 
 static void setSignalHandler() {
     auto handler = [](int sig) {
-        appinfo("sinal[%d] received, exiting", sig);
+        appinfo("signal[%d] received, exiting", sig);
         if (_watchui_instance) {
             _watchui_instance->_destory();
         }
@@ -83,6 +85,7 @@ WatchUI& GetWatchUI() {
  * @brief 销毁 WatchUI 单例
  */
 void DestroyWatchUI() {
+    appinfo("destory");
     if (_watchui_instance) {
         _watchui_instance.reset();
     }
@@ -92,6 +95,7 @@ void DestroyWatchUI() {
  * @brief watchui_main 应用入口函数
  */
 int watchui_main(int argc, char *argv[]) {
+    appdbg("Entry");
     setSignalHandler();
     GetWatchUI().run(); // forever
     DestroyWatchUI();
@@ -99,14 +103,15 @@ int watchui_main(int argc, char *argv[]) {
 }
 
 void WatchUI::setup() {
-    appinfo("setup");
-    set_loop_cnt(1);
+    appdbg("setup");
+
+    get_mooncake().createExtension(std::make_unique<PwmWorker>());
 }
 
 void WatchUI::update() {
-    appinfo("update");
 }
 
 void WatchUI::destroy() {
-    appinfo("destroy");
+    appinfo("destroy - cleaning up extensions");
+    get_mooncake().resetExtensionManager();
 }

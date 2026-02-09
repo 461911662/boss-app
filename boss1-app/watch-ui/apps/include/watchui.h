@@ -58,16 +58,16 @@ public:
     Mooncake& get_mooncake() { return *mc; };
 
 #ifdef CONFIG_LIBUV
-    void set_loop_cnt(int32_t cnt) {
-        uv_timer_stop(&heartbeat_req);
-
-        heartbeat_cnt = cnt;
-        if (cnt != 0) {
-            uv_timer_start(&heartbeat_req, heartbeat_handler_internal, 0, 1000);
+    void set_refresh_rate(uint32_t fps) {
+        if (fps > 0) {
+            _refresh_rate = fps;
         }
     }
+
+    uint32_t get_refresh_rate() { return _refresh_rate; }
+
     uv_loop_t* get_loop() { return loop; }
-    uv_async_t* get_async_handle() { return &async_update_handle; }
+    uv_async_t* get_async_handle() { return &async_handle; }
 #endif
 
     void setup();
@@ -78,16 +78,16 @@ public:
         // 1. pre setup
     #ifdef CONFIG_LIBUV
         loop = uv_default_loop();
-        async_update_handle.data = this;
-        int ret = uv_async_init(loop, &async_update_handle, async_handler_internal);
+        async_handle.data = this;
+        int ret = uv_async_init(loop, &async_handle, async_handler_internal);
         if (ret != 0) {
-            apperr("uv_async_init failed, ret: %d", ret);
+            apperr("async_handle failed, ret: %d", ret);
             return;
         }
-        heartbeat_req.data = this;
-        ret = uv_timer_init(loop, &heartbeat_req);
+        periodic_timer.data = this;
+        ret = uv_timer_init(loop, &periodic_timer);
         if (ret != 0) {
-            apperr("uv_timer_init failed, ret: %d", ret);
+            apperr("periodic_timer failed, ret: %d", ret);
             return;
         }
     #endif
@@ -95,17 +95,17 @@ public:
         // 2. setup
         setup();
 
-        // 3. loop
+        // 3. start loop
     #ifdef CONFIG_LIBUV
-        if (heartbeat_cnt != 0) {
-            uv_timer_start(&heartbeat_req, heartbeat_handler_internal, 0, 1000);
-        }
+        uint32_t period_ms = 1000 / _refresh_rate;
+        uv_timer_start(&periodic_timer, periodic_handler_internal, 0, period_ms);
         uv_run(loop, UV_RUN_DEFAULT);
     #else
-        while(1) {
+        while(true) {
             update();
             mc->update();
-            sleep(1);
+            uint32_t period_ms = 1000 / _refresh_rate;
+            usleep(period_ms * 1000);
         }
     #endif
 
@@ -117,12 +117,12 @@ public:
     {
         destroy();
     #ifdef CONFIG_LIBUV
-        uv_close((uv_handle_t*)&async_update_handle, [](uv_handle_t* handle) {
+        uv_close((uv_handle_t*)&async_handle, [](uv_handle_t* handle) {
             appinfo("async handle closed");
         });
 
-        uv_close((uv_handle_t*)&heartbeat_req, [](uv_handle_t* handle) {
-            appinfo("heartbeat handle closed");
+        uv_close((uv_handle_t*)&periodic_timer, [](uv_handle_t* handle) {
+            appinfo("periodic timer closed");
         });
 
         uv_stop(loop);
@@ -133,33 +133,24 @@ public:
     #endif
     }
 
-private:
+ private:
 #ifdef CONFIG_LIBUV
     uv_loop_t* loop = nullptr;
-    int32_t heartbeat_cnt = -1; // forever loop
-    uv_timer_t heartbeat_req;
-    uv_async_t async_update_handle;
+    uint32_t _refresh_rate = 50;  // 默认 50Hz
+    uv_timer_t periodic_timer;
+    uv_async_t async_handle;
 
-    void heartbeat() {
-        if (heartbeat_cnt == -1 || heartbeat_cnt > 0)
-        {
-            (void)uv_async_send(&async_update_handle);
-
-            if (heartbeat_cnt > 0) {
-                heartbeat_cnt--;
-            }
-            if (heartbeat_cnt == 0) {
-                uv_timer_stop(&heartbeat_req);
-            }
-        }
+    void periodic_handler() {
+        update();
+        mc->update();
     }
 #endif
     std::unique_ptr<mooncake::Mooncake> mc = nullptr;
 
 #ifdef CONFIG_LIBUV
-    static void heartbeat_handler_internal(uv_timer_t* handle) {
+    static void periodic_handler_internal(uv_timer_t* handle) {
         if (!handle || !handle->data) {
-            appwarn("Invalid heartbeat handle or data is null");
+            appwarn("Invalid periodic handle or data is null");
             return;
         }
 
@@ -169,7 +160,7 @@ private:
             return;
         }
 
-        ui_instance->heartbeat();
+        ui_instance->periodic_handler();
     }
 
     static void async_handler_internal(uv_async_t* handle) {
@@ -184,8 +175,7 @@ private:
             return;
         }
 
-        ui_instance->update();
-        ui_instance->get_mooncake().update();
+        ui_instance->periodic_handler();
     }
 #endif
 };

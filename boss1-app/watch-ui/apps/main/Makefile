@@ -24,6 +24,10 @@ CXXEXT := .cpp
 
 CXXSRCS += watchui.cpp
 
+DEPPATH += --dep-path work
+VPATH += :work
+CXXSRCS += pwm.cpp
+
 ifeq ($(CONFIG_OFFLINE_CXX_LIB),y)
 
 LIBCXX_PATH = $(TOPDIR)$(DELIM)libs$(DELIM)libxx
