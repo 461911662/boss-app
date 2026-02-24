@@ -1,0 +1,7 @@
+*.kconfig
+*.built
+*.depend
+*.o
+*.su
+*.hobj
+*.dep

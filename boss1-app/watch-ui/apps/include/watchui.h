@@ -26,6 +26,7 @@
 
 #include "ability/ability.h"
 #include <memory>
+#include <netinet/in.h>
 
 #include "watchui/log.h"
 
@@ -48,6 +49,10 @@ class WatchUI {
 public:
     WatchUI() {
         mc = std::make_unique<mooncake::Mooncake>();
+        _ap_ipaddr = 0x0164a8c0;      // 192.168.100.1 in network byte order
+        _ap_netmask = 0x00ffffff;     // 255.255.255.0 in network byte order
+        _dhcp_start_ipaddr = 0x6464a8c0; // 192.168.100.100 in network byte order
+        _dhcp_end_ipaddr = 0xff64a8c0; // 192.168.100.255 in network byte order
     }
     ~WatchUI() {
         if (mc) {
@@ -77,6 +82,7 @@ public:
     void run() {
         // 1. pre setup
     #ifdef CONFIG_LIBUV
+        (void)mkdir(CONFIG_DEV_PIPE_VFS_PATH, 0777);
         loop = uv_default_loop();
         async_handle.data = this;
         int ret = uv_async_init(loop, &async_handle, async_handler_internal);
@@ -130,10 +136,23 @@ public:
             uv_run(loop, UV_RUN_ONCE);
         }
         uv_loop_close(loop);
+        (void)rmdir(CONFIG_DEV_PIPE_VFS_PATH);
     #endif
     }
 
  private:
+    // WiFi AP 配置
+    char _ap_ssid[33] = "BOSS1-AP";
+    char _ap_password[65] = "12345678";
+    in_addr_t _ap_ipaddr;
+    in_addr_t _ap_netmask;
+    in_addr_t _dhcp_start_ipaddr;
+    in_addr_t _dhcp_end_ipaddr;
+
+    // WiFi STA 配置
+    char _sta_ssid[33] = "";
+    char _sta_password[65] = "";
+
 #ifdef CONFIG_LIBUV
     uv_loop_t* loop = nullptr;
     uint32_t _refresh_rate = 50;  // 默认 50Hz
@@ -146,6 +165,94 @@ public:
     }
 #endif
     std::unique_ptr<mooncake::Mooncake> mc = nullptr;
+
+public:
+    // WiFi AP SSID 和 Password 的 getter/setter
+    void set_ap_ssid(const char* ssid) {
+        if (ssid) {
+            strncpy(_ap_ssid, ssid, sizeof(_ap_ssid) - 1);
+            _ap_ssid[sizeof(_ap_ssid) - 1] = '\0';
+        }
+    }
+
+    const char* get_ap_ssid() const {
+        return _ap_ssid;
+    }
+
+    void set_ap_password(const char* password) {
+        if (password) {
+            strncpy(_ap_password, password, sizeof(_ap_password) - 1);
+            _ap_password[sizeof(_ap_password) - 1] = '\0';
+        }
+    }
+
+    const char* get_ap_password() const {
+        return _ap_password;
+    }
+
+    // WiFi AP IP Address 的 getter/setter
+    void set_ap_ipaddr(in_addr_t ipaddr) {
+        _ap_ipaddr = ipaddr;
+    }
+
+    in_addr_t get_ap_ipaddr() const {
+        return _ap_ipaddr;
+    }
+
+    // WiFi AP Netmask 的 getter/setter
+    void set_ap_netmask(in_addr_t netmask) {
+        _ap_netmask = netmask;
+    }
+
+    in_addr_t get_ap_netmask() const {
+        return _ap_netmask;
+    }
+
+    // WiFi AP DHCP 起始 IP 地址的 getter/setter
+    void set_dhcp_start_ipaddr(in_addr_t ipaddr) {
+        _dhcp_start_ipaddr = ipaddr;
+    }
+
+    in_addr_t get_dhcp_start_ipaddr() const {
+        return _dhcp_start_ipaddr;
+    }
+
+    // WiFi AP DHCP 结束 IP 地址的 getter/setter
+    void set_dhcp_end_ipaddr(in_addr_t ipaddr) {
+        _dhcp_end_ipaddr = ipaddr;
+    }
+
+    in_addr_t get_dhcp_end_ipaddr() const {
+        return _dhcp_end_ipaddr;
+    }
+
+    // WiFi STA SSID 和 Password 的 getter/setter
+    void set_sta_ssid(const char* ssid) {
+        if (ssid) {
+            strncpy(_sta_ssid, ssid, sizeof(_sta_ssid) - 1);
+            _sta_ssid[sizeof(_sta_ssid) - 1] = '\0';
+        }
+    }
+
+    const char* get_sta_ssid() const {
+        return _sta_ssid;
+    }
+
+    void set_sta_password(const char* password) {
+        if (password) {
+            strncpy(_sta_password, password, sizeof(_sta_password) - 1);
+            _sta_password[sizeof(_sta_password) - 1] = '\0';
+        }
+    }
+
+    const char* get_sta_password() const {
+        return _sta_password;
+    }
+
+#ifdef CONFIG_WIRELESS_WAPI
+    void test_wifi_ap_start();
+    void test_wifi_sta_connect();
+#endif
 
 #ifdef CONFIG_LIBUV
     static void periodic_handler_internal(uv_timer_t* handle) {
@@ -177,6 +284,7 @@ public:
 
         ui_instance->periodic_handler();
     }
+
 #endif
 };
 
