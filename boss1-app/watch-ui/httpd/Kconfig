@@ -215,6 +215,13 @@ config MY_HTTPD_MEMDEBUG
 	---help---
 		Enable HTTPD memory usage debug output.  Default: n
 
+config MY_HTTPD_IDLE_NEW_LIMIT_SEC
+	int "Idle new time limit (sec)"
+	default 5
+	---help---
+		How many seconds to allow for wait for the initial request on a new connection.
+		Default: 5
+
 config MY_HTTPD_IDLE_READ_LIMIT_SEC
 	int "Idle read time limit (sec)"
 	default 300

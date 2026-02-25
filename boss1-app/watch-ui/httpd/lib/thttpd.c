@@ -82,6 +82,7 @@
 #define CNST_READING   1
 #define CNST_SENDING   2
 #define CNST_LINGERING 3
+#define CNST_NEW       4
 
 #define SPARE_FDS      2
 #define AVAILABLE_FDS  (CONFIG_MY_HTTPD_NFILE_DESCRIPTORS - SPARE_FDS)
@@ -240,7 +241,7 @@ static int handle_newconnect(FAR struct timeval *tv, int listen_fd)
 
       /* Remove the connection entry from the free list */
 
-      conn->conn_state        = CNST_READING;
+      conn->conn_state        = CNST_NEW;
       free_connections        = conn->next;
       conn->next              = NULL;
 
@@ -604,12 +605,27 @@ static void idle(ClientData client_data, struct timeval *nowp)
       conn = &connects[cnum];
       switch (conn->conn_state)
         {
+        case CNST_NEW:
+          if (nowp->tv_sec - conn->active_at >=
+              CONFIG_MY_HTTPD_IDLE_NEW_LIMIT_SEC)
+            {
+              nerr("ERROR: %s connection timed out new (active_at=%ld, now=%ld, idle=%ds)\n",
+                   httpd_ntoa(&conn->hc->client_addr),
+                   (long)conn->active_at, (long)nowp->tv_sec,
+                   (int)(nowp->tv_sec - conn->active_at));
+              httpd_send_err(conn->hc, 408, httpd_err408title, "",
+                             httpd_err408form, "");
+              finish_connection(conn, nowp);
+            }
+          break;
         case CNST_READING:
           if (nowp->tv_sec - conn->active_at >=
               CONFIG_MY_HTTPD_IDLE_READ_LIMIT_SEC)
             {
-              nerr("ERROR: %s connection timed out reading\n",
-                   httpd_ntoa(&conn->hc->client_addr));
+              nerr("ERROR: %s connection timed out reading (active_at=%ld, now=%ld, idle=%ds)\n",
+                   httpd_ntoa(&conn->hc->client_addr),
+                   (long)conn->active_at, (long)nowp->tv_sec,
+                   (int)(nowp->tv_sec - conn->active_at));
               httpd_send_err(conn->hc, 408, httpd_err408title, "",
                              httpd_err408form, "");
               finish_connection(conn, nowp);
@@ -620,8 +636,10 @@ static void idle(ClientData client_data, struct timeval *nowp)
           if (nowp->tv_sec - conn->active_at >=
               CONFIG_MY_HTTPD_IDLE_SEND_LIMIT_SEC)
             {
-              nerr("ERROR: %s connection timed out sending\n",
-                   httpd_ntoa(&conn->hc->client_addr));
+              nerr("ERROR: %s connection timed out sending (active_at=%ld, now=%ld, idle=%ds)\n",
+                   httpd_ntoa(&conn->hc->client_addr),
+                   (long)conn->active_at, (long)nowp->tv_sec,
+                   (int)(nowp->tv_sec - conn->active_at));
               clear_connection(conn, nowp);
             }
           break;
@@ -811,6 +829,7 @@ int thttpd_main(int argc, char **argv)
                   ninfo("Handle conn_state %d\n", conn->conn_state);
                   switch (conn->conn_state)
                     {
+                      case CNST_NEW:
                       case CNST_READING:
                         {
                           handle_read(conn, &tv);
