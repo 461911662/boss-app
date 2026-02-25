@@ -146,7 +146,7 @@ static node_result_t node_ap_config_ssid(pipeline_node_t *node, int event_id, vo
     (void)event_data;
     
     int ret;
-    static ap_start_cnt = 0;
+    static int ap_start_cnt = 0;
 
     ppdbg("Node: %s\n", node->name);
 
@@ -155,7 +155,7 @@ static node_result_t node_ap_config_ssid(pipeline_node_t *node, int event_id, vo
         int sock = wapi_make_socket();
         if (sock < 0) {
             pperr("Failed to create socket: %d\n", errno);
-            return;
+            return NODE_FAILED;
         }
 
         /* Set SSID */
@@ -230,7 +230,7 @@ static node_result_t node_ap_set_ip(pipeline_node_t *node, int event_id, void *e
         int sock = wapi_make_socket();
         if (sock < 0) {
             pperr("Failed to create socket: %d\n", errno);
-            return;
+            return NODE_FAILED;
         }
 
         ret = wapi_set_ip(sock, WIFI_AP_DEVNAME, &conn->local_ip);

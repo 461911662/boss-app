@@ -163,7 +163,7 @@ static node_result_t node_set_ssid(pipeline_node_t *node, int event_id, void *ev
         int sock = wapi_make_socket();
         if (sock < 0) {
             paerr("Failed to create socket: %d\n", errno);
-            return;
+            return NODE_FAILED;
         }
 
         /* Set SSID */
