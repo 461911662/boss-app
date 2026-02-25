@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WiFi 状态 - BOSS1</title>
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        body { display: block; }
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin: 20px 0;
+        }
+        .status-item {
+            background: var(--card-bg);
+            padding: 16px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+        .status-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+        .status-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+        .status-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        .signal-bars {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 3px;
+            height: 20px;
+        }
+        .signal-bar {
+            width: 4px;
+            background: var(--text-secondary);
+            border-radius: 2px;
+        }
+        .signal-bar.active {
+            background: var(--success-color);
+        }
+        .signal-bar:nth-child(1) { height: 4px; }
+        .signal-bar:nth-child(2) { height: 8px; }
+        .signal-bar:nth-child(3) { height: 12px; }
+        .signal-bar:nth-child(4) { height: 16px; }
+        .connected-info {
+            background: var(--success-bg);
+            border: 1px solid var(--success-color);
+            color: var(--success-color);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .disconnected-info {
+            background: var(--error-bg);
+            border: 1px solid var(--error-color);
+            color: var(--error-color);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .refresh-btn {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+    
+    <div class="container">
+        <div class="card">
+            <h1>WiFi 状态</h1>
+            
+            <div id="connection-status">
+                <div class="status-item" style="grid-column: span 2;">
+                    <div class="status-icon">🔄</div>
+                    <div class="status-label">加载中...</div>
+                </div>
+            </div>
+            
+            <div class="status-grid" id="status-grid" style="display: none;">
+                <div class="status-item">
+                    <div class="status-icon">📶</div>
+                    <div class="status-label">信号强度</div>
+                    <div class="status-value" id="signal-strength">
+                        <div class="signal-bars">
+                            <div class="signal-bar"></div>
+                            <div class="signal-bar"></div>
+                            <div class="signal-bar"></div>
+                            <div class="signal-bar"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="status-item">
+                    <div class="status-icon">📡</div>
+                    <div class="status-label">频段</div>
+                    <div class="status-value" id="band">--</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-icon">📺</div>
+                    <div class="status-label">频道</div>
+                    <div class="status-value" id="channel">--</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-icon">💾</div>
+                    <div class="status-label">IP 地址</div>
+                    <div class="status-value" id="ip-address">--</div>
+                </div>
+            </div>
+            
+            <div class="btn-group">
+                <a href="/" class="btn btn-primary">返回首页</a>
+                <button class="btn btn-secondary refresh-btn" onclick="refreshStatus()">刷新</button>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>已连接设备</h2>
+            <div id="device-list">
+                <p style="text-align: center; color: var(--text-secondary);">暂无设备信息</p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function toggleTheme() {
+            const body = document.body;
+            const btn = document.querySelector('.theme-toggle');
+            
+            if (body.classList.contains('dark-theme')) {
+                body.classList.remove('dark-theme');
+                body.classList.add('light-theme');
+                btn.textContent = '🌙';
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.classList.remove('light-theme');
+                body.classList.add('dark-theme');
+                btn.textContent = '☀️';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+        
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-theme');
+            document.querySelector('.theme-toggle').textContent = '☀️';
+        } else if (savedTheme === 'light') {
+            document.body.classList.add('light-theme');
+            document.querySelector('.theme-toggle').textContent = '🌙';
+        }
+        
+        function refreshStatus() {
+            fetch('/cgi-bin/cgi/status')
+                .then(response => response.json())
+                .then(data => {
+                    const statusDiv = document.getElementById('connection-status');
+                    const gridDiv = document.getElementById('status-grid');
+                    
+                    if (data.connected) {
+                        statusDiv.innerHTML = '<div class="connected-info">✓ 已连接到 ' + data.ssid + '</div>';
+                        gridDiv.style.display = 'grid';
+                        
+                        document.getElementById('channel').textContent = data.channel || '--';
+                        document.getElementById('ip-address').textContent = data.ip || '--';
+                        
+                        const band = data.band || '2.4G';
+                        document.getElementById('band').textContent = band;
+                        
+                        const signal = data.rssi || -60;
+                        const bars = document.querySelectorAll('.signal-bar');
+                        bars.forEach((bar, i) => {
+                            if (signal > -50 + i * 15) {
+                                bar.classList.add('active');
+                            } else {
+                                bar.classList.remove('active');
+                            }
+                        });
+                    } else {
+                        statusDiv.innerHTML = '<div class="disconnected-info">✗ 未连接</div>';
+                        gridDiv.style.display = 'none';
+                    }
+                    
+                    if (data.devices && data.devices.length > 0) {
+                        const listDiv = document.getElementById('device-list');
+                        let html = '<table class="data-table"><thead><tr><th>设备</th><th>IP</th></tr></thead><tbody>';
+                        data.devices.forEach(dev => {
+                            html += '<tr><td>' + dev.name + '</td><td>' + dev.ip + '</td></tr>';
+                        });
+                        html += '</tbody></table>';
+                        listDiv.innerHTML = html;
+                    }
+                })
+                .catch(err => {
+                    console.error('Failed to fetch status:', err);
+                });
+        }
+        
+        refreshStatus();
+        setInterval(refreshStatus, 10000);
+    </script>
+</body>
+</html>

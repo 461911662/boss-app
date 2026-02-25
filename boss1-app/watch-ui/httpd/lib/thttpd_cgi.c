@@ -1028,6 +1028,8 @@ int cgi(httpd_conn *hc)
   pid_t child;
   int   retval = ERROR;
 
+  nerr("CGI called for: %s\n", hc->expnfilename);
+
   /* Set up a semaphore to hold off the make THTTPD thread until the CGI
    * threads are configured (basically until the file descriptors are all
    * dup'ed and can be closed by the main thread).

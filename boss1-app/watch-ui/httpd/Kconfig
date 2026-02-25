@@ -88,10 +88,9 @@ config MY_HTTPD_CGI_PRIORITY
 
 config MY_HTTPD_CGI_STACKSIZE
 	int "CGI child stack size"
-	default DEFAULT_TASK_STACKSIZE
+	default 4096
 	---help---
-		Provides the default stack size of CGI child task (will be overridden
-		by the stack size in the NXFLAT header)
+		Provides the default stack size of CGI child task
 
 config MY_HTTPD_PRIORITY
 	int "HTTPD main task priority"
@@ -350,4 +349,11 @@ config MY_HTTPD_CAPTIVE_PORTAL
 		will be redirected to /index.html until the client is authenticated.
 		Use captive_portal_authenticate() to authenticate clients.
 
-endif
+config MY_HTTPD_CGI_MAIN
+	tristate "My HTTPD CGI programs"
+	default n
+	depends on FS_BINFS && MY_THTTPD
+	---help---
+		Enable CGI programs for captive portal
+
+endif # MY_THTTPD

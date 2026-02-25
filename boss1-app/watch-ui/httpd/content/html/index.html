@@ -1,32 +1,111 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-  <head>
-    <title>NuttX examples/thttpd</title>
-    <link rel="stylesheet" type="text/css" href="style.css">
-  </head>
-  <body bgcolor="#fffeec" text="black">
-
-  <div class="menu">
-  <div class="menubox"><a href="index.html">Front page</a></div>
-  <div class="menubox"><a href="cgi-bin/hello">Say Hello</a></div>
-  <div class="menubox"><a href="cgi-bin/tasks">Tasks</a></div>
-  <br>
-  </div>
-
-  <div class="contentblock">
-  <p>
-    These web pages are served by a port of <a href="http://acme.com/software/thttpd/">THTTPD</a>
-    running on top of <a href="http://www.nuttx.org">NuttX</a>.
-    NuttX includes an embedded TCP/IP state that derives from the <a href="http://www.sics.se/~adam/uip/">uIP</a>.
-  </p>
-  <p>
-    Click on the links above to exercise THTTPD's CGI capability under NuttX.
-    Depending on the configuration, clicking the links will execute the CGI program from either:
-  </p>
-  <ol>
-    <li>An <a href="https://bitbucket.org/nuttx/documentation/src/master/NuttXNxFlat.html">NXFLAT</a> program residing
-    in a NuttX ROMFS file system, or</li>
-    <li>A built-in application managed by a NuttX BINFS file system.</li>
-  </ol>
-  </body>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>欢迎使用 BOSS1 WiFi</title>
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        body { display: block; }
+        .hero-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+    
+    <div class="container">
+        <div class="card">
+            <svg class="hero-icon" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="32" cy="32" r="30" stroke="var(--primary-color)" stroke-width="2" fill="none"/>
+                <path d="M20 40 L32 20 L44 40" stroke="var(--primary-color)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                <circle cx="32" cy="44" r="3" fill="var(--primary-color)"/>
+            </svg>
+            
+            <h1>欢迎连接 BOSS1</h1>
+            <p>智能手表WiFi认证系统</p>
+            
+            <div class="wifi-status">
+                <svg class="wifi-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 12.55a11 11 0 0114.08 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M1.42 9a16 16 0 0121.16 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M8.53 16.11a6 6 0 016.95 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <circle cx="12" cy="20" r="1" fill="currentColor"/>
+                </svg>
+                <span>BOSS1</span>
+            </div>
+            
+            <a href="/login.html" class="btn btn-primary">
+                立即连接
+            </a>
+            
+            <button class="btn btn-secondary" onclick="checkStatus()">
+                查看状态
+            </button>
+            
+            <div class="footer">
+                <p>已连接设备: <span id="device-count">0</span></p>
+            </div>
+        </div>
+        
+        <div class="card" style="margin-top: 16px;">
+            <h2>使用说明</h2>
+            <div style="text-align: left; padding: 0 8px;">
+                <p style="text-align: left; margin-bottom: 12px;">
+                    1. 点击"立即连接"按钮进入登录页面
+                </p>
+                <p style="text-align: left; margin-bottom: 12px;">
+                    2. 输入WiFi密码进行认证
+                </p>
+                <p style="text-align: left;">
+                    3. 认证成功后即可上网
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Theme toggle
+        function toggleTheme() {
+            const body = document.body;
+            const btn = document.querySelector('.theme-toggle');
+            
+            if (body.classList.contains('dark-theme')) {
+                body.classList.remove('dark-theme');
+                body.classList.add('light-theme');
+                btn.textContent = '🌙';
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.classList.remove('light-theme');
+                body.classList.add('dark-theme');
+                btn.textContent = '☀️';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+        
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-theme');
+            document.querySelector('.theme-toggle').textContent = '☀️';
+        } else if (savedTheme === 'light') {
+            document.body.classList.add('light-theme');
+            document.querySelector('.theme-toggle').textContent = '🌙';
+        }
+        
+        // Check status
+        function checkStatus() {
+            window.location.href = '/status.html';
+        }
+        
+        // Simulated device count (in real app, this would come from CGI)
+        setInterval(() => {
+            // This would normally fetch from server
+        }, 5000);
+    </script>
+</body>
 </html>

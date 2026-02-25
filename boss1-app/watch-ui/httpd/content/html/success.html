@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>连接成功 - BOSS1</title>
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        body { display: block; }
+        .success-animation { text-align: center; padding: 20px 0; }
+        .checkmark {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+        }
+        .checkmark circle {
+            stroke-dasharray: 166;
+            stroke-dashoffset: 166;
+            stroke-width: 2;
+            stroke-miterlimit: 10;
+            stroke: var(--success-color);
+            fill: none;
+            animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+        }
+        .checkmark path {
+            stroke-dasharray: 48;
+            stroke-dashoffset: 48;
+            stroke-width: 3;
+            stroke-linecap: round;
+            stroke: var(--success-color);
+            fill: none;
+            animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+        }
+        @keyframes stroke {
+            100% { stroke-dashoffset: 0; }
+        }
+        @keyframes scale {
+            0%, 100% { transform: none; }
+            50% { transform: scale(1.1); }
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+    
+    <div class="container">
+        <div class="card">
+            <div class="success-animation">
+                <svg class="checkmark" viewBox="0 0 52 52">
+                    <circle cx="26" cy="26" r="25"/>
+                    <path fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+                </svg>
+            </div>
+            
+            <h1>连接成功</h1>
+            <p>您已成功连接到网络</p>
+            
+            <div class="status-info">
+                <div class="status-row">
+                    <span class="status-label">网络名称</span>
+                    <span class="status-value" id="ssid-display">BOSS1</span>
+                </div>
+                <div class="status-row">
+                    <span class="status-label">连接时间</span>
+                    <span class="status-value" id="connect-time">--:--</span>
+                </div>
+            </div>
+            
+            <div class="btn-group">
+                <a href="/" class="btn btn-primary">返回首页</a>
+                <a href="/status.html" class="btn btn-secondary">查看状态</a>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function toggleTheme() {
+            const body = document.body;
+            const btn = document.querySelector('.theme-toggle');
+            
+            if (body.classList.contains('dark-theme')) {
+                body.classList.remove('dark-theme');
+                body.classList.add('light-theme');
+                btn.textContent = '🌙';
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.classList.remove('light-theme');
+                body.classList.add('dark-theme');
+                btn.textContent = '☀️';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+        
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-theme');
+            document.querySelector('.theme-toggle').textContent = '☀️';
+        } else if (savedTheme === 'light') {
+            document.body.classList.add('light-theme');
+            document.querySelector('.theme-toggle').textContent = '🌙';
+        }
+        
+        const urlParams = new URLSearchParams(window.location.search);
+        const ssid = urlParams.get('ssid');
+        if (ssid) {
+            document.getElementById('ssid-display').textContent = decodeURIComponent(ssid);
+        }
+        
+        function updateTime() {
+            const now = new Date();
+            const time = now.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+            document.getElementById('connect-time').textContent = time;
+        }
+        updateTime();
+        
+        setTimeout(function() {
+            window.location.href = '/';
+        }, 3000);
+    </script>
+</body>
+</html>

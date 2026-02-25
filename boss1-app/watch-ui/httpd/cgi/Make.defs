@@ -18,4 +18,6 @@
 #
 ############################################################################
 
-include $(wildcard $(APPDIR)/watch-ui/httpd/*/Make.defs)
+ifneq ($(CONFIG_MY_HTTPD_CGI_MAIN),)
+CONFIGURED_APPS += $(APPDIR)/watch-ui/httpd/cgi
+endif
