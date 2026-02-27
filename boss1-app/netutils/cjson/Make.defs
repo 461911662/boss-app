@@ -20,4 +20,7 @@
 
 ifneq ($(CONFIG_NETUTILS_CJSON),)
 CONFIGURED_APPS += $(APPDIR)/netutils/cjson
+
+CFLAGS += ${INCDIR_PREFIX}$(APPDIR)/netutils/cjson/cJSON
+CXXFLAGS += ${INCDIR_PREFIX}$(APPDIR)/netutils/cjson/cJSON
 endif
