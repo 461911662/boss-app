@@ -43,8 +43,11 @@ APPS_INCDIR = $(APPDIR)$(DELIM)include$(DELIM)netutils
 CFLAGS += ${INCDIR_PREFIX}$(APPS_INCDIR)
 CFLAGS += -DCJSON_INCLUDE_CONFIG_H
 
-CSRCS = $(CJSON_SRCDIR)$(DELIM)cJSON.c
-CSRCS += $(CJSON_SRCDIR)$(DELIM)cJSON_Utils.c
+VPATH += :$(CJSON_SRCDIR)
+DEPPATH += --dep-path $(CJSON_SRCDIR)
+
+CSRCS = cJSON.c
+CSRCS += cJSON_Utils.c
 
 # Use local cJSON source directory (offline build)
 # Source: https://github.com/DaveGamble/cJSON/archive/v1.7.12.tar.gz
@@ -52,22 +55,14 @@ ifeq ($(wildcard $(CJSON_UNPACKNAME)/cJSON.c),)
 $(error cJSON source not found. Please unpack cJSON source to $(CJSON_UNPACKNAME) directory)
 endif
 
+# cJSON test (without unity framework)
 ifneq ($(CONFIG_NETUTILS_CJSON_TEST),)
+VPATH += :tests
+DEPPATH += --dep-path tests
+CSRCS += parse_tests.c print_tests.c misc_tests.c
+
 PROGNAME += cjson_test
-MAINSRC += $(CJSON_SRCDIR)$(DELIM)test.c
-
-UNITY_CJSONTESTS := parse_examples parse_number parse_hex4 parse_string parse_array \
-	parse_object parse_value print_string print_number print_array print_object \
-	print_value cjson_add parse_with_opts compare_tests readme_examples minify_tests \
-	misc_tests json_patch_tests old_utils_tests misc_utils_tests
-UNITY_CJSONTESTCS := $(foreach n, $(UNITY_CJSONTESTS), $(CJSON_SRCDIR)$(DELIM)tests$(DELIM)$(n).c)
-CJSONTEST_MAIN := $(foreach n, $(UNITY_CJSONTESTS), cjson_$(n))
-PROGNAME += $(CJSONTEST_MAIN)
-MAINSRC += $(UNITY_CJSONTESTCS)
-
-CSRCS += $(CJSON_SRCDIR)/tests/unity_setup.c
-CFLAGS += -Wno-unused-function
-
+MAINSRC += test.c
 PRIORITY  = $(CONFIG_CJSON_TEST_PRIORITY)
 STACKSIZE = $(CONFIG_CJSON_TEST_STACKSIZE)
 endif
@@ -85,11 +80,6 @@ $(APPS_INCDIR)$(DELIM)cJSON_Utils.h: $(CJSON_SRCDIR)$(DELIM)cJSON_Utils.h
 context:: $(APPS_INCDIR)$(DELIM)cJSON.h $(APPS_INCDIR)$(DELIM)cJSON_Utils.h
 
 distclean::
-ifeq ($(wildcard $(CJSON_UNPACKNAME)/.git),)
-	$(call DELDIR, $(CJSON_UNPACKNAME))
-	$(call DELFILE, $(CJSON_TARBALL))
-endif
-	$(call DELFILE, $(APPDIR)/include/netutils/cJSON.h)
-	$(call DELFILE, $(APPDIR)/include/netutils/cJSON_Utils.h)
+	@:
 
 include $(APPDIR)/Application.mk
