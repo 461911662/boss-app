@@ -12,13 +12,10 @@ config NETUTILS_CJSON
 
 if NETUTILS_CJSON
 
-config NETUTILS_CJSON_URL
-	string "URL where cJSON library can be downloaded"
-	default "https://github.com/DaveGamble/cJSON/archive"
-
-config NETUTILS_CJSON_VERSION
-	string "Version number"
-	default "1.7.12"
+# Offline build - cJSON source must be pre-extracted
+# Source URL: https://github.com/DaveGamble/cJSON/archive/v1.7.12.tar.gz
+# Source location: $(CJSON_DIR)/cJSON.c (extracted from v1.7.12.tar.gz)
+# To update: Download new version tarball, extract to cJSON directory
 
 config NETUTILS_CJSON_TEST
 	bool "Enable cJSON test"

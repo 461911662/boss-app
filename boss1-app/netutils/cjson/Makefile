@@ -46,17 +46,10 @@ CFLAGS += -DCJSON_INCLUDE_CONFIG_H
 CSRCS = $(CJSON_SRCDIR)$(DELIM)cJSON.c
 CSRCS += $(CJSON_SRCDIR)$(DELIM)cJSON_Utils.c
 
-# Download and unpack tarball if no git repo found
-ifeq ($(wildcard $(CJSON_UNPACKNAME)/.git),)
-$(CJSON_TARBALL):
-	@echo "Downloading: $(CJSON_TARBALL)"
-	$(Q) curl -O -L $(CONFIG_NETUTILS_CJSON_URL)/$(CJSON_TARBALL)
-
-$(CJSON_UNPACKNAME): $(CJSON_TARBALL)
-	@echo "Unpacking: $(CJSON_TARBALL) -> $(CJSON_UNPACKNAME)"
-	$(Q) $(UNPACK) $(CJSON_TARBALL)
-	$(Q) mv cJSON-$(CJSON_VERSION) $(CJSON_UNPACKNAME)
-	$(Q) touch $(CJSON_UNPACKNAME)
+# Use local cJSON source directory (offline build)
+# Source: https://github.com/DaveGamble/cJSON/archive/v1.7.12.tar.gz
+ifeq ($(wildcard $(CJSON_UNPACKNAME)/cJSON.c),)
+$(error cJSON source not found. Please unpack cJSON source to $(CJSON_UNPACKNAME) directory)
 endif
 
 ifneq ($(CONFIG_NETUTILS_CJSON_TEST),)
