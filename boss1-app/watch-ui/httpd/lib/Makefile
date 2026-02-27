@@ -24,7 +24,7 @@ CONTENT_MAKE := $(MAKE) -C $(CONTENT_DIR)
 VPATH += :$(CONTENT_DIR)
 DEPPATH += --dep-path $(CONTENT_DIR)
 
-CSRCS += $(CONTENT_DIR)/romfs.c
+CSRCS += romfs.c
 
 
 $(CONTENT_DIR)/romfs.c: build

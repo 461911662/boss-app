@@ -74,11 +74,20 @@ config MY_HTTPD_CGI_PATH
 
 config MY_HTTPD_CGI_PATTERN
 	string "CGI match pattern"
-	default "/mnt/www/cgi-bin/*"
+	default "/cgi/*"
 	---help---
 		Only CGI programs matching this pattern will be executed.  In
 		fact, if this value is not defined then no CGI logic will be built.
-		Default: "/mnt/www/cgi-bin/*"
+		Default: "/cgi/*"
+
+config MY_HTTPD_CGI_BIN
+	string "CGI binary path (for BINFS routing)"
+	default "/cgi"
+	---help---
+		For BINFS, this specifies the CGI binary to execute. When set,
+		all CGI requests matching the pattern will be routed to this
+		binary. The original URL path is passed via PATH_INFO.
+		Default: "/cgi"
 
 config MY_HTTPD_CGI_PRIORITY
 	int "CGI child priority"
@@ -119,10 +128,10 @@ config MY_HTTPD_CGI_TIMELIMIT
 
 config MY_HTTPD_CHARSET
 	string "Default character set"
-	default "iso-8859-1"
+	default "utf-8"
 	---help---
 		The default character set name to use with text MIME types.
-		Default: "iso-8859-1"
+		Default: "utf-8"
 
 config MY_HTTPD_IOBUFFERSIZE
 	int "Initial I/O buffer size"

@@ -8,7 +8,5 @@
 #
 ############################################################################
 
-include $(APPDIR)/Make.defs
-
-MENUDESC = "HTTPD"
+MENUDESC = "MY HTTPD"
 include $(APPDIR)/Directory.mk

@@ -21,8 +21,10 @@ $(ROMFS_SRC): $(ROMFS_IMG)
 	$(Q) (cd $(CONTENT_DIR) && echo "#include <nuttx/compiler.h>" >$@ && \
 	      xxd -i romfs.img | sed -e "s/^unsigned char/const unsigned char aligned_data(4)/g" >>$@)
 
-$(ROMFS_DIR)/%: $(HTML_DIR)/%
-	$(Q) mkdir -p $(ROMFS_DIR)
+$(ROMFS_DIR):
+	$(Q) mkdir -p $@
+
+$(ROMFS_DIR)/%: $(HTML_DIR)/% |$(ROMFS_DIR)
 	$(Q) cp -a $< $@
 
 $(ROMFS_IMG): $(ROMFS_TARGETS)
@@ -32,12 +34,12 @@ $(ROMFS_IMG): $(ROMFS_TARGETS)
 all: $(ROMFS_SRC)
 
 context:
-	@
+	@:
 
 clean:
-distclean:
 	$(call DELFILE, $(ROMFS_SRC))
 	$(call DELFILE, $(ROMFS_IMG))
-	$(Q) rm -rf $(ROMFS_DIR)
+distclean: clean
+	$(call DELDIR, $(ROMFS_DIR))
 
 .PHONY: all context clean distclean
