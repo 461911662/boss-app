@@ -62,7 +62,7 @@ DEPPATH += --dep-path tests
 CSRCS += parse_tests.c print_tests.c misc_tests.c
 
 PROGNAME += cjson_test
-MAINSRC += test.c
+MAINSRC = main.c
 PRIORITY  = $(CONFIG_CJSON_TEST_PRIORITY)
 STACKSIZE = $(CONFIG_CJSON_TEST_STACKSIZE)
 endif

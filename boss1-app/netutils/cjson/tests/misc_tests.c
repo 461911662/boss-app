@@ -187,7 +187,7 @@ static void test_detach_item(void)
     TEST_ASSERT_NOT_NULL(item);
     TEST_ASSERT_EQUAL_INT(2, (int)item->valuedouble);
 
-    TEST_ASSERT_EQUAL_INT(2, cJSON_GetArraySize(item));
+    TEST_ASSERT_EQUAL_INT(2, cJSON_GetArraySize(array));
 
     cJSON_Delete(item);
     cJSON_Delete(array);
@@ -341,8 +341,8 @@ static void test_cjson_add_object_to_object(void)
 static void test_cjson_add_to_array(void)
 {
     cJSON *array = cJSON_CreateArray();
-    cJSON_AddNumberToObject(array, NULL, 1);
-    cJSON_AddStringToObject(array, NULL, "test");
+    cJSON_AddItemToArray(array, cJSON_CreateNumber(1));
+    cJSON_AddItemToArray(array, cJSON_CreateString("test"));
     
     TEST_ASSERT_EQUAL_INT(2, cJSON_GetArraySize(array));
     

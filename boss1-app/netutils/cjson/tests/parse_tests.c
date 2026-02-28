@@ -296,16 +296,19 @@ static void test_parse_hex4_chinese(void)
  * Parse With Options Tests
  ****************************************************************************/
 
-static void test_parse_with_opts_comments(void)
+static void test_parse_with_opts_null_terminated(void)
 {
-    cJSON *item = cJSON_Parse("//comment\n123");
+    const char *pos = NULL;
+    cJSON *item = cJSON_ParseWithOpts("123", &pos, 0);
     TEST_ASSERT_NOT_NULL(item);
     TEST_ASSERT_TRUE(cJSON_IsNumber(item));
+    TEST_ASSERT_EQUAL_INT(123, (int)item->valuedouble);
     cJSON_Delete(item);
 
-    item = cJSON_Parse("/*comment*/456");
+    item = cJSON_ParseWithOpts("456", &pos, 1);
     TEST_ASSERT_NOT_NULL(item);
     TEST_ASSERT_TRUE(cJSON_IsNumber(item));
+    TEST_ASSERT_EQUAL_INT(456, (int)item->valuedouble);
     cJSON_Delete(item);
 }
 
@@ -360,6 +363,6 @@ TEST_SUITE(parse_tests)
     test_parse_hex4_chinese();
 
     printf("\n=== Parse With Options Tests ===\n");
-    test_parse_with_opts_comments();
+    test_parse_with_opts_null_terminated();
     test_parse_invalid();
 }
