@@ -25,4 +25,7 @@
     --error-color: #f85149;
     --error-bg: rgba(248, 81, 73, 0.15);
     --code-bg: #161b22;
+    --btn-bg: #c9d1d9;
+    --btn-hover: #8b949e;
+    --btn-text: #0d1117;
 }

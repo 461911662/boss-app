@@ -7,228 +7,222 @@
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-    <div class="container">
-        <!-- Flash Animation -->
-        <div class="flash-container" id="flash">
-            <div class="flash-ring"></div>
-            <div class="flash-ring delay-1"></div>
-            <div class="flash-ring delay-2"></div>
-            <div class="flash-logo">
-                <svg viewBox="0 0 48 48" fill="none">
-                    <circle cx="24" cy="24" r="22" stroke="currentColor" stroke-width="2"/>
-                    <path d="M16 28 L24 16 L32 28" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    <circle cx="24" cy="32" r="2" fill="currentColor"/>
+    <!-- Flash Animation -->
+    <div class="flash-container" id="flash">
+        <div class="flash-ring"></div>
+        <div class="flash-ring delay-1"></div>
+        <div class="flash-ring delay-2"></div>
+        <div class="flash-logo">
+            <svg viewBox="0 0 48 48" fill="none">
+                <circle cx="24" cy="24" r="22" stroke="currentColor" stroke-width="2"/>
+                <path d="M16 28 L24 16 L32 28" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="24" cy="32" r="2" fill="currentColor"/>
+            </svg>
+        </div>
+    </div>
+
+    <!-- Header / Navbar -->
+    <header class="header">
+        <div class="header-left">
+            <svg class="header-logo" viewBox="0 0 48 48" fill="none">
+                <circle cx="24" cy="24" r="22" stroke="currentColor" stroke-width="2"/>
+                <path d="M16 28 L24 16 L32 28" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="24" cy="32" r="2" fill="currentColor"/>
+            </svg>
+            <span class="logo-text">BOSS1</span>
+        </div>
+        <div class="header-right">
+            <button class="header-btn" id="theme-toggle" title="切换主题">
+                <svg class="theme-icon sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="5"/>
+                    <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
                 </svg>
-            </div>
-        </div>
-
-        <!-- Header -->
-        <div class="hero">
-            <div class="logo-container">
-                <svg class="logo-large" viewBox="0 0 80 80" fill="none">
-                    <circle cx="40" cy="40" r="38" stroke="currentColor" stroke-width="3" fill="none"/>
-                    <path d="M24 48 L40 24 L56 48" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-                    <circle cx="40" cy="54" r="4" fill="currentColor"/>
-                    <circle cx="40" cy="40" r="6" fill="currentColor"/>
+                <svg class="theme-icon moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
                 </svg>
-            </div>
-            <h1 class="hero-title">BOSS1</h1>
-            <p class="hero-subtitle">智能穿戴 · 无限可能</p>
+            </button>
+            <button class="header-btn" id="menu-toggle" title="菜单">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 12h18M3 6h18M3 18h18"/>
+                </svg>
+            </button>
         </div>
+    </header>
 
-        <!-- Product Intro -->
-        <div class="card intro-card">
-            <p class="intro-text">
-                BOSS1 智能手表集健康管理、运动追踪、消息提醒于一身。<br>
-                轻盈设计，强劲续航，为您带来全新的智能穿戴体验。
-            </p>
-        </div>
+    <!-- Main Content -->
+    <main class="main">
+        <!-- Table of Contents (Desktop) -->
+        <nav class="toc">
+            <div class="toc-header">目录</div>
+            <a href="#intro" class="toc-item">介绍</a>
+            <a href="#auth" class="toc-item">认证</a>
+            <a href="#help" class="toc-item">使用帮助</a>
+            <a href="#about" class="toc-item">关于我</a>
+            <a href="#statement" class="toc-item">声明</a>
+        </nav>
 
-        <!-- Auth Form -->
-        <div class="card auth-card">
-            <h2 class="auth-title">注册 / 登录</h2>
-            <div id="error-msg" class="message message-error" style="display: none;"></div>
-            <div id="success-msg" class="message message-success" style="display: none;"></div>
-            <form id="auth-form">
-                <div class="form-group">
-                    <label class="form-label" for="username">账号</label>
-                    <input type="text" id="username" class="form-input" placeholder="请输入账号" required>
+        <div class="container">
+            <!-- Hero / Product Demo -->
+            <div class="hero-section" id="intro">
+                <!-- Product Description -->
+                <p class="hero-desc">
+                    BOSS1 智能手表 · 轻盈设计 · 强劲续航
+                </p>
+                
+                <!-- Product Video/Image -->
+                <div class="hero-media" id="hero">
+                    <div class="media-placeholder">
+                        <svg viewBox="0 0 120 120" fill="none">
+                            <rect x="20" y="30" width="80" height="70" rx="12" stroke="currentColor" stroke-width="2" fill="none"/>
+                            <circle cx="60" cy="65" r="15" stroke="currentColor" stroke-width="2" fill="none"/>
+                            <circle cx="60" cy="65" r="5" fill="currentColor"/>
+                            <path d="M45 45 L80 55" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <rect x="30" y="85" width="60" height="4" rx="2" fill="currentColor" opacity="0.3"/>
+                        </svg>
+                        <p class="media-tip">产品展示区域</p>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label class="form-label" for="password">密码</label>
-                    <input type="password" id="password" class="form-input" placeholder="请输入密码" required>
-                </div>
-                <button type="submit" class="btn btn-primary btn-large" id="submit-btn">
-                    确认
-                </button>
-            </form>
-        </div>
-
-        <!-- About Me (Accordion) -->
-        <div class="card accordion-card">
-            <div class="accordion-header" id="about-toggle">
-                <span>关于我</span>
-                <svg class="accordion-arrow" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M6 8l4 4 4-4"/>
-                </svg>
             </div>
-            <div class="accordion-content" id="about-content">
-                <div class="about-info">
-                    <p>BOSS1 是一款专为运动爱好者和健康管理者设计的智能手表。</p>
-                    <p>采用先进的传感技术和低功耗芯片，为您提供全天候的健康监测和运动追踪功能。</p>
-                    <div class="about-features">
-                        <div class="feature-item">
-                            <span class="feature-icon">❤️</span>
-                            <span>心率监测</span>
+
+            <div class="divider"></div>
+
+            <!-- Auth Form -->
+            <div class="card auth-card" id="auth">
+                <h2 class="auth-title">认证</h2>
+                <div id="error-msg" class="message message-error" style="display: none;"></div>
+                <div id="success-msg" class="message message-success" style="display: none;"></div>
+                <form id="auth-form">
+                    <div class="form-group">
+                        <label class="form-label" for="username">账号</label>
+                        <input type="text" id="username" class="form-input" placeholder="请输入账号" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="password">密码</label>
+                        <input type="password" id="password" class="form-input" placeholder="请输入密码" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-large" id="submit-btn">
+                        进入
+                    </button>
+                </form>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- Help Guide (Accordion) -->
+            <div class="card accordion-card" id="help">
+                <div class="accordion-header" id="help-toggle">
+                    <span>使用帮助</span>
+                    <svg class="accordion-arrow" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 8l4 4 4-4"/>
+                    </svg>
+                </div>
+                <div class="accordion-content" id="help-content">
+                    <div class="help-list">
+                        <div class="help-item">
+                            <div class="help-step">1</div>
+                            <div class="help-content">
+                                <p class="help-label">注册账号</p>
+                                <p class="help-desc">在下方输入账号和密码，点击"确认"即可注册新账号。</p>
+                            </div>
                         </div>
-                        <div class="feature-item">
-                            <span class="feature-icon">💪</span>
-                            <span>运动追踪</span>
+                        <div class="help-item">
+                            <div class="help-step">2</div>
+                            <div class="help-content">
+                                <p class="help-label">登录系统</p>
+                                <p class="help-desc">已注册用户直接输入账号密码登录，认证成功后即可上网。</p>
+                            </div>
                         </div>
-                        <div class="feature-item">
-                            <span class="feature-icon">😴</span>
-                            <span>睡眠分析</span>
-                        </div>
-                        <div class="feature-item">
-                            <span class="feature-icon">🔋</span>
-                            <span>超长续航</span>
+                        <div class="help-item">
+                            <div class="help-step">3</div>
+                            <div class="help-content">
+                                <p class="help-label">连接 WiFi</p>
+                                <p class="help-desc">认证成功后，手表将自动连接 WiFi，开始使用网络服务。</p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Statement (Always Visible) -->
-        <div class="card statement-card">
-            <h3 class="statement-title">声明</h3>
-            <div class="statement-content">
-                <p>本页面为 BOSS1 智能手表 WiFi 认证系统。</p>
-                <p>未经授权，任何单位或个人不得擅自复制、转载或使用本页面内容。</p>
-                <p>BOSS1 保留对本声明的最终解释权。</p>
-                <p class="copyright">&copy; 2024 BOSS1. All rights reserved.</p>
+            <div class="divider"></div>
+
+            <!-- About Me (Accordion) -->
+            <div class="card accordion-card" id="about">
+                <div class="accordion-header" id="about-toggle">
+                    <span>关于我</span>
+                    <svg class="accordion-arrow" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 8l4 4 4-4"/>
+                    </svg>
+                </div>
+                <div class="accordion-content" id="about-content">
+                    <div class="about-info">
+                        <p>BOSS1 是一款专为运动爱好者和健康管理者设计的智能手表。</p>
+                        <p>采用先进的传感技术和低功耗芯片，为您提供全天候的健康监测和运动追踪功能。</p>
+                        <div class="about-features">
+                            <div class="feature-item">
+                                <span class="feature-icon">❤️</span>
+                                <span>心率监测</span>
+                            </div>
+                            <div class="feature-item">
+                                <span class="feature-icon">💪</span>
+                                <span>运动追踪</span>
+                            </div>
+                            <div class="feature-item">
+                                <span class="feature-icon">😴</span>
+                                <span>睡眠分析</span>
+                            </div>
+                            <div class="feature-item">
+                                <span class="feature-icon">🔋</span>
+                                <span>超长续航</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+
+            <div class="divider"></div>
+
+            <!-- Statement -->
+            <div class="card statement-card" id="statement">
+                <h3 class="statement-title">声明</h3>
+                <div class="statement-content">
+                    <p>本页面为 BOSS1 智能手表 WiFi 认证系统。</p>
+                    <p>未经授权，任何单位或个人不得擅自复制、转载或使用本页面内容。</p>
+                    <p>BOSS1 保留对本声明的最终解释权。</p>
+                    <p class="copyright">&copy; 2024 BOSS1. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Menu Panel -->
+    <div class="menu-panel" id="menu-panel">
+        <div class="menu-panel-header">
+            <span>菜单</span>
+            <button class="menu-close" id="menu-close">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 6L6 18M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+        <div class="menu-panel-content">
+            <a href="#intro" class="menu-item">
+                <span>介绍</span>
+            </a>
+            <a href="#auth" class="menu-item">
+                <span>认证</span>
+            </a>
+            <a href="#help" class="menu-item">
+                <span>使用帮助</span>
+            </a>
+            <a href="#about" class="menu-item">
+                <span>关于我</span>
+            </a>
+            <a href="#statement" class="menu-item">
+                <span>声明</span>
+            </a>
         </div>
     </div>
 
     <script src="/js/main.js"></script>
-    <script>
-        // Flash animation - hide after animation completes
-        window.addEventListener('load', function() {
-            setTimeout(function() {
-                document.getElementById('flash').classList.add('hide');
-            }, 2500);
-        });
-
-        // Accordion - About Me
-        (function() {
-            const toggle = document.getElementById('about-toggle');
-            const content = document.getElementById('about-content');
-            
-            toggle.addEventListener('click', function() {
-                content.classList.toggle('expanded');
-                toggle.classList.toggle('expanded');
-            });
-        })();
-
-        // Auth Form Handler
-        (function() {
-            const form = document.getElementById('auth-form');
-            const errorMsg = document.getElementById('error-msg');
-            const successMsg = document.getElementById('success-msg');
-            const submitBtn = document.getElementById('submit-btn');
-            const usernameInput = document.getElementById('username');
-            const passwordInput = document.getElementById('password');
-
-            // Check if user is already registered
-            let isRegistered = false;
-            let registeredUsername = '';
-
-            form.addEventListener('submit', async function(e) {
-                e.preventDefault();
-                
-                const username = usernameInput.value.trim();
-                const password = passwordInput.value;
-
-                if (!username || !password) {
-                    showError('请输入账号和密码');
-                    return;
-                }
-
-                // Show loading
-                submitBtn.disabled = true;
-                submitBtn.textContent = '处理中...';
-                hideMessages();
-
-                try {
-                    // Try to login first
-                    const loginResp = await fetch('/cgi-bin/cgi/login', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ username, password })
-                    });
-                    
-                    const loginData = await loginResp.json();
-
-                    if (loginData.success) {
-                        showSuccess('登录成功！欢迎回来，' + username);
-                        isRegistered = true;
-                        registeredUsername = username;
-                        return;
-                    }
-
-                    // If login failed, try to register
-                    // Note: In real implementation, server should handle this
-                    // For now, we show the logic
-                    if (loginData.error === 'user_not_found' || loginData.error === 'invalid_password') {
-                        // This would be a registration attempt
-                        // In real system, you'd have a separate register endpoint
-                        const registerResp = await fetch('/cgi-bin/cgi/register', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ username, password })
-                        });
-                        
-                        const registerData = await registerResp.json();
-                        
-                        if (registerData.success) {
-                            showSuccess('注册成功！欢迎加入 BOSS1');
-                            isRegistered = true;
-                            registeredUsername = username;
-                        } else {
-                            showError(registerData.error || '操作失败');
-                        }
-                    } else {
-                        showError(loginData.error || '操作失败');
-                    }
-                } catch (err) {
-                    console.error('Auth error:', err);
-                    // For demo, simulate success
-                    showSuccess('操作成功');
-                    isRegistered = true;
-                    registeredUsername = username;
-                }
-
-                submitBtn.disabled = false;
-                submitBtn.textContent = '确认';
-            });
-
-            function showError(msg) {
-                errorMsg.textContent = msg;
-                errorMsg.style.display = 'block';
-                successMsg.style.display = 'none';
-            }
-
-            function showSuccess(msg) {
-                successMsg.textContent = msg;
-                successMsg.style.display = 'block';
-                errorMsg.style.display = 'none';
-            }
-
-            function hideMessages() {
-                errorMsg.style.display = 'none';
-                successMsg.style.display = 'none';
-            }
-        })();
-    </script>
 </body>
 </html>
