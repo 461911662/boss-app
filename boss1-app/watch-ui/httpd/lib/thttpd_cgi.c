@@ -894,7 +894,7 @@ static int cgi_child(int argc, char **argv)
     {
       /* Something went wrong. */
 
-      nerr("ERROR: execve %s: %d\n", hc->expnfilename, errno);
+      nerr("ERROR: execve %s failed: %d\n", hc->expnfilename, errno);
       goto errout_with_watch;
     }
 

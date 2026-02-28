@@ -314,6 +314,25 @@ int fdwatch(struct fdwatch_s *fw, long timeout_msecs)
   return ret;
 }
 
+/* Check if connection has error or hangup */
+
+bool fdwatch_check_error(struct fdwatch_s *fw, int fd)
+{
+  int pollndx;
+
+  pollndx = fdwatch_pollndx(fw, fd);
+  if (pollndx >= 0)
+    {
+      /* Check for error or hangup */
+      if (fw->pollfds[pollndx].revents & (POLLERR | POLLHUP | POLLNVAL))
+        {
+          return true;
+        }
+    }
+
+  return false;
+}
+
 /* Check if a descriptor was ready. */
 
 int fdwatch_check_fd(struct fdwatch_s *fw, int fd)

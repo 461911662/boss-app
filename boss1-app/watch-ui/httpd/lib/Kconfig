@@ -80,15 +80,6 @@ config MY_HTTPD_CGI_PATTERN
 		fact, if this value is not defined then no CGI logic will be built.
 		Default: "/cgi/*"
 
-config MY_HTTPD_CGI_BIN
-	string "CGI binary path (for BINFS routing)"
-	default "/cgi"
-	---help---
-		For BINFS, this specifies the CGI binary to execute. When set,
-		all CGI requests matching the pattern will be routed to this
-		binary. The original URL path is passed via PATH_INFO.
-		Default: "/cgi"
-
 config MY_HTTPD_CGI_PRIORITY
 	int "CGI child priority"
 	default 100
@@ -364,12 +355,5 @@ config MY_HTTPD_CAPTIVE_PORTAL
 		Enable captive portal mode. When enabled, all HTTP requests
 		will be redirected to /index.html until the client is authenticated.
 		Use captive_portal_authenticate() to authenticate clients.
-
-config MY_HTTPD_CGI_MAIN
-	tristate "My HTTPD CGI programs"
-	default n
-	depends on FS_BINFS && MY_THTTPD
-	---help---
-		Enable CGI programs for captive portal
 
 endif # MY_THTTPD

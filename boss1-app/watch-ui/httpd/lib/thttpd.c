@@ -53,6 +53,7 @@
 #include <signal.h>
 #include <errno.h>
 #include <debug.h>
+#include <poll.h>
 
 #include <arpa/inet.h>
 
@@ -197,7 +198,18 @@ static int handle_newconnect(FAR struct timeval *tv, int listen_fd)
            * back here.
            */
 
-          nerr("ERROR: No free connections\n");
+          nerr("ERROR: No free connections, dumping all connections:\n");
+          for (int i = 0; i < AVAILABLE_FDS; i++)
+            {
+              struct connect_s *c = &connects[i];
+              if (c->conn_state != 0 && c->hc)
+                {
+                  nerr("  conn[%d] state=%d, fd=%d, client=%s, active_at=%ld\n",
+                       i, c->conn_state, c->hc->conn_fd,
+                       httpd_ntoa(&c->hc->client_addr),
+                       (long)c->active_at);
+                }
+            }
           tmr_run(tv);
           return -1;
         }
@@ -482,6 +494,7 @@ static void handle_send(struct connect_s *conn, struct timeval *tv)
 
   /* The file transfer is complete -- finish the connection */
 
+  nerr("Finish connection\n");
   ninfo("Finish connection\n");
   finish_connection(conn, tv);
   return;
@@ -824,6 +837,12 @@ int thttpd_main(int argc, char **argv)
           if (conn)
             {
               hc = conn->hc;
+              if (fdwatch_check_error(fw, hc->conn_fd))
+                {
+                  nwarn("Connection error/hangup, closing fd %d\n", hc->conn_fd);
+                  clear_connection(conn, &tv);
+                  continue;
+                }
               if (fdwatch_check_fd(fw, hc->conn_fd))
                 {
                   ninfo("Handle conn_state %d\n", conn->conn_state);

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>产品介绍 - BOSS1</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="content-header">
+            <a href="/index.html" class="back-link">
+                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 4l-6 6 6 6"/>
+                </svg>
+                返回首页
+            </a>
+        </div>
+
+        <!-- Main Content -->
+        <div class="card">
+            <div id="content-area">
+                <!-- Content will be loaded dynamically based on URL parameter -->
+                <h2>BOSS1 智能手表</h2>
+                <div class="content-section">
+                    <h3>产品概述</h3>
+                    <p>
+                        BOSS1 是一款专为运动爱好者和健康管理者设计的智能手表。
+                        采用先进的传感技术和低功耗芯片，为您提供全天候的健康监测和运动追踪功能。
+                    </p>
+                </div>
+                <div class="content-section">
+                    <h3>核心功能</h3>
+                    <ul class="feature-list">
+                        <li>心率监测 · 24小时实时监测</li>
+                        <li>血氧检测 · 随时了解身体状态</li>
+                        <li>睡眠分析 · 科学改善睡眠质量</li>
+                        <li>运动模式 · 多种运动类型支持</li>
+                        <li>消息提醒 · 不错过重要通知</li>
+                        <li>超长续航 · 一次充电用一周</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Action -->
+        <div class="card">
+            <a href="/login.html" class="btn btn-primary btn-large">
+                立即连接 WiFi
+            </a>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <a href="/index.html">返回首页</a>
+            <p>&copy; 2024 BOSS1. All rights reserved.</p>
+        </div>
+    </div>
+
+    <script src="/js/main.js"></script>
+    <script>
+        // Load content based on URL parameter
+        (function() {
+            const params = new URLSearchParams(window.location.search);
+            const page = params.get('page');
+
+            const contentArea = document.getElementById('content-area');
+            const titles = {
+                'about': '关于我们',
+                'statement': '法律声明'
+            };
+
+            if (page && titles[page]) {
+                document.title = titles[page] + ' - BOSS1';
+                
+                const content = {
+                    'about': '<h2>关于我们</h2><div class="content-section"><p>BOSS1 致力于智能穿戴设备的创新与发展。我们相信科技可以让生活更美好，健康管理更轻松。</p><p>团队由一群热爱科技、关注健康的工程师和设计师组成，致力于为用户提供最优质的智能穿戴体验。</p></div>',
+                    'statement': '<h2>法律声明</h2><div class="content-section"><p>本页面展示的所有内容，包括但不限于文字、图片、标识等，均受知识产权法保护。</p><p>未经授权，任何单位或个人不得擅自复制、转载或使用本页面内容。</p><p>BOSS1 保留对本声明的最终解释权。</p></div>'
+                };
+                
+                contentArea.innerHTML = content[page];
+            }
+        })();
+    </script>
+</body>
+</html>

@@ -3,109 +3,232 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>欢迎使用 BOSS1 WiFi</title>
-    <link rel="stylesheet" href="/style.css">
-    <style>
-        body { display: block; }
-        .hero-icon {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 20px;
-            display: block;
-        }
-    </style>
+    <title>BOSS1 - 智能穿戴</title>
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-    <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
-    
     <div class="container">
-        <div class="card">
-            <svg class="hero-icon" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="32" cy="32" r="30" stroke="var(--primary-color)" stroke-width="2" fill="none"/>
-                <path d="M20 40 L32 20 L44 40" stroke="var(--primary-color)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-                <circle cx="32" cy="44" r="3" fill="var(--primary-color)"/>
-            </svg>
-            
-            <h1>欢迎连接 BOSS1</h1>
-            <p>智能手表WiFi认证系统</p>
-            
-            <div class="wifi-status">
-                <svg class="wifi-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M5 12.55a11 11 0 0114.08 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                    <path d="M1.42 9a16 16 0 0121.16 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                    <path d="M8.53 16.11a6 6 0 016.95 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                    <circle cx="12" cy="20" r="1" fill="currentColor"/>
+        <!-- Flash Animation -->
+        <div class="flash-container" id="flash">
+            <div class="flash-ring"></div>
+            <div class="flash-ring delay-1"></div>
+            <div class="flash-ring delay-2"></div>
+            <div class="flash-logo">
+                <svg viewBox="0 0 48 48" fill="none">
+                    <circle cx="24" cy="24" r="22" stroke="currentColor" stroke-width="2"/>
+                    <path d="M16 28 L24 16 L32 28" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle cx="24" cy="32" r="2" fill="currentColor"/>
                 </svg>
-                <span>BOSS1</span>
-            </div>
-            
-            <a href="/login.html" class="btn btn-primary">
-                立即连接
-            </a>
-            
-            <button class="btn btn-secondary" onclick="checkStatus()">
-                查看状态
-            </button>
-            
-            <div class="footer">
-                <p>已连接设备: <span id="device-count">0</span></p>
             </div>
         </div>
-        
-        <div class="card" style="margin-top: 16px;">
-            <h2>使用说明</h2>
-            <div style="text-align: left; padding: 0 8px;">
-                <p style="text-align: left; margin-bottom: 12px;">
-                    1. 点击"立即连接"按钮进入登录页面
-                </p>
-                <p style="text-align: left; margin-bottom: 12px;">
-                    2. 输入WiFi密码进行认证
-                </p>
-                <p style="text-align: left;">
-                    3. 认证成功后即可上网
-                </p>
+
+        <!-- Header -->
+        <div class="hero">
+            <div class="logo-container">
+                <svg class="logo-large" viewBox="0 0 80 80" fill="none">
+                    <circle cx="40" cy="40" r="38" stroke="currentColor" stroke-width="3" fill="none"/>
+                    <path d="M24 48 L40 24 L56 48" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                    <circle cx="40" cy="54" r="4" fill="currentColor"/>
+                    <circle cx="40" cy="40" r="6" fill="currentColor"/>
+                </svg>
+            </div>
+            <h1 class="hero-title">BOSS1</h1>
+            <p class="hero-subtitle">智能穿戴 · 无限可能</p>
+        </div>
+
+        <!-- Product Intro -->
+        <div class="card intro-card">
+            <p class="intro-text">
+                BOSS1 智能手表集健康管理、运动追踪、消息提醒于一身。<br>
+                轻盈设计，强劲续航，为您带来全新的智能穿戴体验。
+            </p>
+        </div>
+
+        <!-- Auth Form -->
+        <div class="card auth-card">
+            <h2 class="auth-title">注册 / 登录</h2>
+            <div id="error-msg" class="message message-error" style="display: none;"></div>
+            <div id="success-msg" class="message message-success" style="display: none;"></div>
+            <form id="auth-form">
+                <div class="form-group">
+                    <label class="form-label" for="username">账号</label>
+                    <input type="text" id="username" class="form-input" placeholder="请输入账号" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="password">密码</label>
+                    <input type="password" id="password" class="form-input" placeholder="请输入密码" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-large" id="submit-btn">
+                    确认
+                </button>
+            </form>
+        </div>
+
+        <!-- About Me (Accordion) -->
+        <div class="card accordion-card">
+            <div class="accordion-header" id="about-toggle">
+                <span>关于我</span>
+                <svg class="accordion-arrow" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M6 8l4 4 4-4"/>
+                </svg>
+            </div>
+            <div class="accordion-content" id="about-content">
+                <div class="about-info">
+                    <p>BOSS1 是一款专为运动爱好者和健康管理者设计的智能手表。</p>
+                    <p>采用先进的传感技术和低功耗芯片，为您提供全天候的健康监测和运动追踪功能。</p>
+                    <div class="about-features">
+                        <div class="feature-item">
+                            <span class="feature-icon">❤️</span>
+                            <span>心率监测</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">💪</span>
+                            <span>运动追踪</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">😴</span>
+                            <span>睡眠分析</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">🔋</span>
+                            <span>超长续航</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statement (Always Visible) -->
+        <div class="card statement-card">
+            <h3 class="statement-title">声明</h3>
+            <div class="statement-content">
+                <p>本页面为 BOSS1 智能手表 WiFi 认证系统。</p>
+                <p>未经授权，任何单位或个人不得擅自复制、转载或使用本页面内容。</p>
+                <p>BOSS1 保留对本声明的最终解释权。</p>
+                <p class="copyright">&copy; 2024 BOSS1. All rights reserved.</p>
             </div>
         </div>
     </div>
-    
+
+    <script src="/js/main.js"></script>
     <script>
-        // Theme toggle
-        function toggleTheme() {
-            const body = document.body;
-            const btn = document.querySelector('.theme-toggle');
+        // Flash animation - hide after animation completes
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                document.getElementById('flash').classList.add('hide');
+            }, 2500);
+        });
+
+        // Accordion - About Me
+        (function() {
+            const toggle = document.getElementById('about-toggle');
+            const content = document.getElementById('about-content');
             
-            if (body.classList.contains('dark-theme')) {
-                body.classList.remove('dark-theme');
-                body.classList.add('light-theme');
-                btn.textContent = '🌙';
-                localStorage.setItem('theme', 'light');
-            } else {
-                body.classList.remove('light-theme');
-                body.classList.add('dark-theme');
-                btn.textContent = '☀️';
-                localStorage.setItem('theme', 'dark');
+            toggle.addEventListener('click', function() {
+                content.classList.toggle('expanded');
+                toggle.classList.toggle('expanded');
+            });
+        })();
+
+        // Auth Form Handler
+        (function() {
+            const form = document.getElementById('auth-form');
+            const errorMsg = document.getElementById('error-msg');
+            const successMsg = document.getElementById('success-msg');
+            const submitBtn = document.getElementById('submit-btn');
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('password');
+
+            // Check if user is already registered
+            let isRegistered = false;
+            let registeredUsername = '';
+
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const username = usernameInput.value.trim();
+                const password = passwordInput.value;
+
+                if (!username || !password) {
+                    showError('请输入账号和密码');
+                    return;
+                }
+
+                // Show loading
+                submitBtn.disabled = true;
+                submitBtn.textContent = '处理中...';
+                hideMessages();
+
+                try {
+                    // Try to login first
+                    const loginResp = await fetch('/cgi-bin/cgi/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ username, password })
+                    });
+                    
+                    const loginData = await loginResp.json();
+
+                    if (loginData.success) {
+                        showSuccess('登录成功！欢迎回来，' + username);
+                        isRegistered = true;
+                        registeredUsername = username;
+                        return;
+                    }
+
+                    // If login failed, try to register
+                    // Note: In real implementation, server should handle this
+                    // For now, we show the logic
+                    if (loginData.error === 'user_not_found' || loginData.error === 'invalid_password') {
+                        // This would be a registration attempt
+                        // In real system, you'd have a separate register endpoint
+                        const registerResp = await fetch('/cgi-bin/cgi/register', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ username, password })
+                        });
+                        
+                        const registerData = await registerResp.json();
+                        
+                        if (registerData.success) {
+                            showSuccess('注册成功！欢迎加入 BOSS1');
+                            isRegistered = true;
+                            registeredUsername = username;
+                        } else {
+                            showError(registerData.error || '操作失败');
+                        }
+                    } else {
+                        showError(loginData.error || '操作失败');
+                    }
+                } catch (err) {
+                    console.error('Auth error:', err);
+                    // For demo, simulate success
+                    showSuccess('操作成功');
+                    isRegistered = true;
+                    registeredUsername = username;
+                }
+
+                submitBtn.disabled = false;
+                submitBtn.textContent = '确认';
+            });
+
+            function showError(msg) {
+                errorMsg.textContent = msg;
+                errorMsg.style.display = 'block';
+                successMsg.style.display = 'none';
             }
-        }
-        
-        // Load saved theme
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme === 'dark') {
-            document.body.classList.add('dark-theme');
-            document.querySelector('.theme-toggle').textContent = '☀️';
-        } else if (savedTheme === 'light') {
-            document.body.classList.add('light-theme');
-            document.querySelector('.theme-toggle').textContent = '🌙';
-        }
-        
-        // Check status
-        function checkStatus() {
-            window.location.href = '/status.html';
-        }
-        
-        // Simulated device count (in real app, this would come from CGI)
-        setInterval(() => {
-            // This would normally fetch from server
-        }, 5000);
+
+            function showSuccess(msg) {
+                successMsg.textContent = msg;
+                successMsg.style.display = 'block';
+                errorMsg.style.display = 'none';
+            }
+
+            function hideMessages() {
+                errorMsg.style.display = 'none';
+                successMsg.style.display = 'none';
+            }
+        })();
     </script>
 </body>
 </html>

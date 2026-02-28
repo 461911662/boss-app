@@ -97,6 +97,10 @@ extern void fdwatch_del_fd(struct fdwatch_s *fw, int fd);
 
 extern int fdwatch(struct fdwatch_s *fw, long timeout_msecs);
 
+/* Check if connection has error or hangup */
+
+extern bool fdwatch_check_error(struct fdwatch_s *fw, int fd);
+
 /* Check if a descriptor was ready. */
 
 extern int fdwatch_check_fd(struct fdwatch_s *fw, int fd);

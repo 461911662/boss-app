@@ -1,0 +1,29 @@
+/**
+ * @file light.css
+ * @brief Light theme
+ * @author BOSS1
+ * @version 1.0
+ * @date 2024
+ */
+
+:root,
+[data-theme="light"] {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f6f8fa;
+    --bg-tertiary: #f1f3f5;
+    --text-primary: #1f2328;
+    --text-secondary: #656d76;
+    --text-tertiary: #8b949e;
+    --border-color: #d0d7de;
+    --border-focus: #0969da;
+    --accent-color: #0969da;
+    --accent-hover: #0550ae;
+    --accent-bg: rgba(9, 105, 218, 0.1);
+    --success-color: #1a7f37;
+    --success-bg: rgba(26, 127, 55, 0.1);
+    --warning-color: #9a6700;
+    --warning-bg: rgba(154, 103, 0, 0.1);
+    --error-color: #cf222e;
+    --error-bg: rgba(207, 34, 46, 0.1);
+    --code-bg: #f6f8fa;
+}

@@ -12,7 +12,7 @@ HTML_DIR    := $(CONTENT_DIR)/html
 ROMFS_DIR   := $(CONTENT_DIR)/romfs
 ROMFS_IMG   := $(CONTENT_DIR)/romfs.img
 ROMFS_SRC   := $(CONTENT_DIR)/romfs.c
-ROMFS_FILES := $(wildcard $(HTML_DIR)/*)
+ROMFS_FILES := $(shell find $(HTML_DIR) -type f)
 ROMFS_TARGETS := $(patsubst $(HTML_DIR)/%,$(ROMFS_DIR)/%,$(ROMFS_FILES))
 
 CSRCS = $(ROMFS_SRC)
@@ -25,6 +25,7 @@ $(ROMFS_DIR):
 	$(Q) mkdir -p $@
 
 $(ROMFS_DIR)/%: $(HTML_DIR)/% |$(ROMFS_DIR)
+	$(Q) mkdir -p $(dir $@)
 	$(Q) cp -a $< $@
 
 $(ROMFS_IMG): $(ROMFS_TARGETS)

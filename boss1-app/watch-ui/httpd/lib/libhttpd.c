@@ -172,6 +172,10 @@ static int  sockaddr_check(httpd_sockaddr *sap);
 #endif
 static size_t sockaddr_len(httpd_sockaddr *sap);
 
+#ifdef CONFIG_MY_HTTPD_CAPTIVE_PORTAL
+static bool is_captive_portal_detection_url(const char *url);
+#endif
+
 /****************************************************************************
  * Private Data
  ****************************************************************************/
@@ -2188,6 +2192,17 @@ static size_t sockaddr_len(httpd_sockaddr *sap)
   return 0;
 }
 
+#ifdef CONFIG_MY_HTTPD_CAPTIVE_PORTAL
+static bool is_captive_portal_detection_url(const char *url)
+{
+  return strcmp(url, "/generate_204") == 0 ||
+         strcmp(url, "/hotspot-detect.html") == 0 ||
+         strcmp(url, "/connecttest.html") == 0 ||
+         strcmp(url, "/ncsi.txt") == 0 ||
+         strcmp(url, "/library/test/success.html") == 0;
+}
+#endif
+
 /****************************************************************************
  * Public Functions
  ****************************************************************************/
@@ -3176,8 +3191,39 @@ int httpd_parse_request(httpd_conn *hc)
 
   httpd_realloc_str(&hc->expnfilename, &hc->maxexpnfilename, strlen(cp));
   strlcpy(hc->expnfilename, cp, hc->maxexpnfilename + 1);
-  httpd_realloc_str(&hc->pathinfo, &hc->maxpathinfo, strlen(pi));
-  strlcpy(hc->pathinfo, pi, hc->maxpathinfo + 1);
+
+#ifdef CONFIG_MY_HTTPD_CAPTIVE_PORTAL
+  bool is_captive = is_captive_portal_detection_url(hc->encodedurl);
+#else
+  bool is_captive = false;
+#endif
+
+  if (!is_captive && (stat(hc->expnfilename, &hc->sb) != 0))
+  {
+    /* Try to split pathinfo from expnfilename - find the CGI directory */
+    char *p = hc->expnfilename;
+    char *pathinfo = NULL;
+    while (*p)
+    {
+      p++;
+      if (*p == '/') {
+        *p = '\0';
+        if (stat(hc->expnfilename, &hc->sb) == 0) {
+          pathinfo = p;
+        }
+        *p = '/';
+      }
+    }
+
+    if (pathinfo != NULL) {
+      *pathinfo = '\0';
+      pathinfo++;
+      httpd_realloc_str(&hc->pathinfo, &hc->maxpathinfo, strlen(pathinfo)+1);
+      strlcpy(hc->pathinfo, pathinfo, hc->maxpathinfo + 1);
+    } else {
+      nerr("split pathinfo from expnfilename=%s failed!\n", hc->expnfilename);
+    }
+  }
   ninfo("expnfilename: \"%s\" pathinfo: \"%s\"\n",
          hc->expnfilename, hc->pathinfo);
 
@@ -3279,7 +3325,8 @@ int httpd_start_request(httpd_conn *hc, struct timeval *nowp)
   char *pi;
   int i;
 
-  ninfo("File: \"%s\"\n", hc->expnfilename);
+  ninfo("httpd_start_request: orig=%s expn=%s pathinfo=%s\n", 
+         hc->origfilename, hc->expnfilename, hc->pathinfo);
 
 #ifdef CONFIG_MY_HTTPD_CAPTIVE_PORTAL
   /* Captive Portal authentication check */
@@ -3289,26 +3336,13 @@ int httpd_start_request(httpd_conn *hc, struct timeval *nowp)
     /* Check if client is authenticated */
     if (!captive_portal_is_authenticated(client_ip)) {
       /* Check if URL is a standard captive portal detection URL */
-      bool is_detection_url = false;
-      
-      /* Standard captive portal detection URLs - return index.html
-       * /generate_204           - Android devices
-       * /hotspot-detect.html   - Apple iOS devices
-       * /connecttest.html      - Apple macOS devices
-       * /ncsi.txt             - Windows devices
-       * /library/test/success.html - Apple devices (legacy)
-       */
-      if (strcmp(hc->encodedurl, "/generate_204") == 0 ||
-          strcmp(hc->encodedurl, "/hotspot-detect.html") == 0 ||
-          strcmp(hc->encodedurl, "/connecttest.html") == 0 ||
-          strcmp(hc->encodedurl, "/ncsi.txt") == 0 ||
-          strcmp(hc->encodedurl, "/library/test/success.html") == 0) {
-        is_detection_url = true;
-      }
-      
+      bool is_detection_url = is_captive_portal_detection_url(hc->encodedurl);
+
       if (is_detection_url) {
         /* Serve index.html for captive portal detection URLs */
         ninfo("Captive Portal: client %s requested: %s, serving /index.html\n", 
+              httpd_ntoa(&hc->client_addr), hc->encodedurl);
+        nerr("Captive Portal: client %s requested: %s, serving /index.html\n", 
               httpd_ntoa(&hc->client_addr), hc->encodedurl);
         
         /* Change the requested file to index.html */
@@ -3319,7 +3353,9 @@ int httpd_start_request(httpd_conn *hc, struct timeval *nowp)
         /* For all other URLs, just return directly */
         ninfo("Captive Portal: client %s requested: %s, returning directly\n", 
               httpd_ntoa(&hc->client_addr), hc->encodedurl);
-        return -1;
+        nerr("Captive Portal: client %s requested: %s, returning directly\n", 
+              httpd_ntoa(&hc->client_addr), hc->encodedurl);
+        // return -1;
       }
     }
   }
@@ -3333,6 +3369,7 @@ int httpd_start_request(httpd_conn *hc, struct timeval *nowp)
       NOTIMPLEMENTED("start");
       httpd_send_err(hc, 501, err501title, "", err501form,
                      httpd_method_str(hc->method));
+      nerr("501 %s %s\n", httpd_method_str(hc->method), hc->encodedurl);
       return -1;
     }
 
@@ -3342,6 +3379,7 @@ int httpd_start_request(httpd_conn *hc, struct timeval *nowp)
     {
       INTERNALERROR(hc->expnfilename);
       httpd_send_err(hc, 500, err500title, "", err500form, hc->encodedurl);
+      nerr("500 encodedurl:%s expanfilename:%s\n", hc->encodedurl, hc->expnfilename);
       return -1;
     }
 
@@ -3565,6 +3603,8 @@ int httpd_start_request(httpd_conn *hc, struct timeval *nowp)
   /* Is it in the CGI area? */
 
 #ifdef CONFIG_MY_HTTPD_CGI_PATTERN
+  ninfo("CGI check: origfilename=%s, expnfilename=%s, pathinfo=%s, pattern=%s\n", 
+        hc->origfilename, hc->expnfilename, hc->pathinfo, CONFIG_MY_HTTPD_CGI_PATTERN);
   if (!fnmatch(CONFIG_MY_HTTPD_CGI_PATTERN, hc->expnfilename, 0))
     {
       return cgi(hc);
