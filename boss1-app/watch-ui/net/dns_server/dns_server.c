@@ -48,6 +48,42 @@
 #define DNS_CLASS_IN    1
 #define DNS_TTL         300
 
+/* Captive portal detection domains */
+static const char *g_captive_domains[] = {
+    /* Google */
+    "clients3.google.com",
+    "connectivitycheck.gstatic.com",
+    "connectivitycheck.android.com",
+    "google.com",
+    /* Apple */
+    "apple.com",
+    "www.apple.com",
+    "icloud.com",
+    /* Microsoft */
+    "microsoft.com",
+    "www.microsoft.com",
+    "windows.com",
+    /* Xiaomi */
+    "connect.rom.miui.com",
+    /* General */
+    // "baidu.com",
+    // "qq.com",
+    // "weixin.qq.com",
+    NULL
+};
+
+static bool is_captive_portal_domain(const char *domain)
+{
+    int i = 0;
+    while (g_captive_domains[i] != NULL) {
+        if (strstr(domain, g_captive_domains[i]) != NULL) {
+            return true;
+        }
+        i++;
+    }
+    return false;
+}
+
 /* Logging macros */
 #define dnsinfo(fmt, ...)    appinfo("[DNS] " fmt, ##__VA_ARGS__)
 #define dnsdbg(fmt, ...)     appdbg("[DNS] " fmt, ##__VA_ARGS__)
@@ -235,6 +271,15 @@ static int dns_process_request(const uint8_t *req, int req_len,
         
         /* Only answer A records (IPv4) */
         if (qtype == DNS_TYPE_A && qclass == DNS_CLASS_IN) {
+            /* Check if this is a captive portal detection domain */
+            bool is_captive = is_captive_portal_domain(name);
+            
+            if (!is_captive) {
+                dnsdbg("Domain %s not in captive list, skip", name);
+                qoffset = name_end + sizeof(dns_question_t);
+                continue;
+            }
+            
             /* Check if we have room for answer */
             if (resp_len + (int)sizeof(dns_answer_t) > resp_max) {
                 dnserr("Response buffer full");
@@ -254,7 +299,7 @@ static int dns_process_request(const uint8_t *req, int req_len,
             answer_count++;
             
             struct in_addr addr = {.s_addr = g_dns_ctx.portal_ip};
-            dnsinfo("Reply: %s -> %s", name, inet_ntoa(addr));
+            dnsinfo("Reply: %s -> %s (captive)", name, inet_ntoa(addr));
         }
         
         qoffset = name_end + sizeof(dns_question_t);
