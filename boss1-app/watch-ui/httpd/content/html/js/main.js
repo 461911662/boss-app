@@ -9,6 +9,9 @@
 (function() {
     'use strict';
 
+    /* ========================================
+       1. API Module
+       ======================================== */
     window.WatchUI = window.WatchUI || {};
 
     WatchUI.api = {
@@ -39,6 +42,9 @@
         }
     };
 
+    /* ========================================
+       2. Utilities
+       ======================================== */
     WatchUI.utils = {
         showError(message) {
             const errorEl = document.getElementById('error-message');
@@ -73,8 +79,235 @@
         }
     };
 
-    document.addEventListener('DOMContentLoaded', function() {
-        // Flash animation - hide after animation completes
+    /* ========================================
+       3. Helper Functions
+       ======================================== */
+    function expandAccordion(element) {
+        if (element && element.classList.contains('accordion-card')) {
+            const content = element.querySelector('.accordion-content');
+            const header = element.querySelector('.accordion-header');
+            if (content && header && !content.classList.contains('expanded')) {
+                content.classList.add('expanded');
+                header.classList.add('expanded');
+            }
+        }
+    }
+
+    function scrollToSection(targetId) {
+        const targetEl = document.getElementById(targetId);
+        if (targetEl) {
+            targetEl.scrollIntoView({ behavior: 'smooth' });
+            setTimeout(function() {
+                expandAccordion(targetEl);
+            }, 300);
+        }
+    }
+
+    /* ========================================
+       4. Initialize Mobile TOC Panel
+       ======================================== */
+    function initMobileTocPanel() {
+        const tocPanel = document.getElementById('toc-panel');
+        if (tocPanel) return;
+
+        const panel = document.createElement('div');
+        panel.id = 'toc-panel';
+        panel.innerHTML =
+            '<div class="toc-header">' +
+                '<span>目录</span>' +
+                '<button class="toc-close" id="toc-close">' +
+                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' +
+                        '<path d="M18 6L6 18M6 6l12 12"/>' +
+                    '</svg>' +
+                '</button>' +
+            '</div>' +
+            '<div style="flex:1;overflow-y:auto;padding:8px;">' +
+                '<a href="#intro" class="toc-item">介绍</a>' +
+                '<a href="#auth" class="toc-item">认证</a>' +
+                '<a href="#help" class="toc-item">使用帮助</a>' +
+                '<a href="#about" class="toc-item">关于我</a>' +
+                '<a href="#statement" class="toc-item">声明</a>' +
+            '</div>';
+        document.body.appendChild(panel);
+
+        const menuToggle = document.getElementById('menu-toggle');
+        const closeBtn = document.getElementById('toc-close');
+
+        if (menuToggle) {
+            menuToggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                panel.classList.add('active');
+            });
+        }
+
+        if (closeBtn) {
+            closeBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                panel.classList.remove('active');
+            });
+        }
+
+        panel.addEventListener('click', function(e) {
+            if (e.target === panel) {
+                panel.classList.remove('active');
+            }
+        });
+
+        panel.querySelectorAll('.toc-item').forEach(function(item) {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                const href = this.getAttribute('href');
+                if (href && href.startsWith('#')) {
+                    const targetId = href.substring(1);
+                    scrollToSection(targetId);
+                }
+                panel.classList.remove('active');
+            });
+        });
+    }
+
+    /* ========================================
+       5. Theme Toggle
+       ======================================== */
+    function initThemeToggle() {
+        const toggle = document.getElementById('theme-toggle');
+        const html = document.documentElement;
+
+        if (!toggle) return;
+
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        html.setAttribute('data-theme', savedTheme);
+
+        toggle.addEventListener('click', function() {
+            const current = html.getAttribute('data-theme');
+            const next = current === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+        });
+    }
+
+    /* ========================================
+       6. Accordion Components
+       ======================================== */
+    function initAccordion(toggleId, contentId) {
+        const toggle = document.getElementById(toggleId);
+        const content = document.getElementById(contentId);
+
+        if (toggle && content) {
+            toggle.addEventListener('click', function() {
+                content.classList.toggle('expanded');
+                toggle.classList.toggle('expanded');
+            });
+        }
+    }
+
+    /* ========================================
+       7. TOC Item Clicks (Desktop)
+       ======================================== */
+    function initTocLinks() {
+        const tocItems = document.querySelectorAll('.toc-item');
+        tocItems.forEach(function(item) {
+            item.addEventListener('click', function(e) {
+                const href = this.getAttribute('href');
+                if (href && href.startsWith('#')) {
+                    e.preventDefault();
+                    const targetId = href.substring(1);
+                    scrollToSection(targetId);
+                }
+            });
+        });
+    }
+
+    /* ========================================
+       8. Auth Form Handler
+       ======================================== */
+    function initAuthForm() {
+        const form = document.getElementById('auth-form');
+        const errorMsg = document.getElementById('error-msg');
+        const successMsg = document.getElementById('success-msg');
+        const submitBtn = document.getElementById('submit-btn');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+
+        if (!form) return;
+
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value;
+
+            if (!username || !password) {
+                showError('请输入账号和密码');
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = '处理中...';
+            hideMessages();
+
+            try {
+                const loginResp = await fetch('/cgi-bin/cgi/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const loginData = await loginResp.json();
+
+                if (loginData.success) {
+                    showSuccess('登录成功！欢迎回来，' + username);
+                    return;
+                }
+
+                if (loginData.error === 'user_not_found' || loginData.error === 'invalid_password') {
+                    const registerResp = await fetch('/cgi-bin/cgi/register', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ username, password })
+                    });
+
+                    const registerData = await registerResp.json();
+
+                    if (registerData.success) {
+                        showSuccess('注册成功！欢迎加入 BOSS1');
+                    } else {
+                        showError(registerData.error || '操作失败');
+                    }
+                } else {
+                    showError(loginData.error || '操作失败');
+                }
+            } catch (err) {
+                console.error('Auth error:', err);
+                showSuccess('操作成功');
+            }
+
+            submitBtn.disabled = false;
+            submitBtn.textContent = '进入';
+        });
+
+        function showError(msg) {
+            errorMsg.textContent = msg;
+            errorMsg.style.display = 'block';
+            successMsg.style.display = 'none';
+        }
+
+        function showSuccess(msg) {
+            successMsg.textContent = msg;
+            successMsg.style.display = 'block';
+            errorMsg.style.display = 'none';
+        }
+
+        function hideMessages() {
+            errorMsg.style.display = 'none';
+            successMsg.style.display = 'none';
+        }
+    }
+
+    /* ========================================
+       9. Flash Animation
+       ======================================== */
+    function initFlashAnimation() {
         window.addEventListener('load', function() {
             setTimeout(function() {
                 const flash = document.getElementById('flash');
@@ -83,237 +316,19 @@
                 }
             }, 2500);
         });
+    }
 
-        // Theme toggle
-        (function() {
-            const toggle = document.getElementById('theme-toggle');
-            const html = document.documentElement;
-            
-            if (!toggle) return;
-            
-            const savedTheme = localStorage.getItem('theme') || 'light';
-            html.setAttribute('data-theme', savedTheme);
-            
-            toggle.addEventListener('click', function() {
-                const current = html.getAttribute('data-theme');
-                const next = current === 'light' ? 'dark' : 'light';
-                html.setAttribute('data-theme', next);
-                localStorage.setItem('theme', next);
-            });
-        })();
-
-        // Menu toggle
-        (function() {
-            const menuToggle = document.getElementById('menu-toggle');
-            const menuPanel = document.getElementById('menu-panel');
-            const menuClose = document.getElementById('menu-close');
-            
-            if (!menuToggle || !menuPanel) return;
-            
-            menuToggle.addEventListener('click', function() {
-                menuPanel.classList.add('active');
-            });
-            
-            if (menuClose) {
-                menuClose.addEventListener('click', function() {
-                    menuPanel.classList.remove('active');
-                });
-            }
-            
-            menuPanel.addEventListener('click', function(e) {
-                if (e.target === menuPanel) {
-                    menuPanel.classList.remove('active');
-                }
-            });
-        })();
-
-        // Accordion - Help
-        (function() {
-            const toggle = document.getElementById('help-toggle');
-            const content = document.getElementById('help-content');
-            
-            if (toggle && content) {
-                toggle.addEventListener('click', function() {
-                    content.classList.toggle('expanded');
-                    toggle.classList.toggle('expanded');
-                });
-            }
-        })();
-
-        // Accordion - About Me
-        (function() {
-            const toggle = document.getElementById('about-toggle');
-            const content = document.getElementById('about-content');
-            
-            if (toggle && content) {
-                toggle.addEventListener('click', function() {
-                    content.classList.toggle('expanded');
-                    toggle.classList.toggle('expanded');
-                });
-            }
-        })();
-
-        // Auth Form Handler
-        (function() {
-            const form = document.getElementById('auth-form');
-            const errorMsg = document.getElementById('error-msg');
-            const successMsg = document.getElementById('success-msg');
-            const submitBtn = document.getElementById('submit-btn');
-            const usernameInput = document.getElementById('username');
-            const passwordInput = document.getElementById('password');
-
-            if (!form) return;
-
-            form.addEventListener('submit', async function(e) {
-                e.preventDefault();
-                
-                const username = usernameInput.value.trim();
-                const password = passwordInput.value;
-
-                if (!username || !password) {
-                    showError('请输入账号和密码');
-                    return;
-                }
-
-                submitBtn.disabled = true;
-                submitBtn.textContent = '处理中...';
-                hideMessages();
-
-                try {
-                    const loginResp = await fetch('/cgi-bin/cgi/login', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ username, password })
-                    });
-                    
-                    const loginData = await loginResp.json();
-
-                    if (loginData.success) {
-                        showSuccess('登录成功！欢迎回来，' + username);
-                        return;
-                    }
-
-                    if (loginData.error === 'user_not_found' || loginData.error === 'invalid_password') {
-                        const registerResp = await fetch('/cgi-bin/cgi/register', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ username, password })
-                        });
-                        
-                        const registerData = await registerResp.json();
-                        
-                        if (registerData.success) {
-                            showSuccess('注册成功！欢迎加入 BOSS1');
-                        } else {
-                            showError(registerData.error || '操作失败');
-                        }
-                    } else {
-                        showError(loginData.error || '操作失败');
-                    }
-                } catch (err) {
-                    console.error('Auth error:', err);
-                    showSuccess('操作成功');
-                }
-
-                submitBtn.disabled = false;
-                submitBtn.textContent = '进入';
-            });
-
-            function showError(msg) {
-                errorMsg.textContent = msg;
-                errorMsg.style.display = 'block';
-                successMsg.style.display = 'none';
-            }
-
-            function showSuccess(msg) {
-                successMsg.textContent = msg;
-                successMsg.style.display = 'block';
-                errorMsg.style.display = 'none';
-            }
-
-            function hideMessages() {
-                errorMsg.style.display = 'none';
-                successMsg.style.display = 'none';
-            }
-        })();
-
-        // Menu panel handling
-        const menuPanel = document.getElementById('menu-panel');
-        const menuToggle = document.getElementById('menu-toggle');
-        const menuClose = document.getElementById('menu-close');
-
-        function openMenu() {
-            if (menuPanel) {
-                menuPanel.classList.add('active');
-                document.body.style.overflow = 'hidden';
-            }
-        }
-
-        function closeMenu() {
-            if (menuPanel) {
-                menuPanel.classList.remove('active');
-                document.body.style.overflow = '';
-            }
-        }
-
-        if (menuToggle) {
-            menuToggle.addEventListener('click', openMenu);
-        }
-
-        if (menuClose) {
-            menuClose.addEventListener('click', closeMenu);
-        }
-
-        // Handle TOC item clicks
-        const tocItems = document.querySelectorAll('.toc-item');
-        tocItems.forEach(function(item) {
-            item.addEventListener('click', function(e) {
-                const href = this.getAttribute('href');
-                if (href && href.startsWith('#')) {
-                    e.preventDefault();
-                    const targetId = href.substring(1);
-                    const targetEl = document.getElementById(targetId);
-                    if (targetEl) {
-                        targetEl.scrollIntoView({ behavior: 'smooth' });
-                        setTimeout(function() {
-                            expandAccordion(targetEl);
-                        }, 300);
-                    }
-                }
-            });
-        });
-
-        // Handle menu item clicks
-        const menuItems = document.querySelectorAll('.menu-item');
-        menuItems.forEach(function(item) {
-            item.addEventListener('click', function(e) {
-                const href = this.getAttribute('href');
-                if (href && href.startsWith('#')) {
-                    e.preventDefault();
-                    const targetId = href.substring(1);
-                    const targetEl = document.getElementById(targetId);
-                    if (targetEl) {
-                        targetEl.scrollIntoView({ behavior: 'smooth' });
-                        setTimeout(function() {
-                            expandAccordion(targetEl);
-                        }, 300);
-                    }
-                    closeMenu();
-                }
-            });
-        });
-
-        // Expand accordion function
-        function expandAccordion(element) {
-            if (element.classList.contains('accordion-card')) {
-                const content = element.querySelector('.accordion-content');
-                const header = element.querySelector('.accordion-header');
-                if (content && header && !content.classList.contains('expanded')) {
-                    content.classList.add('expanded');
-                    header.classList.add('expanded');
-                }
-            }
-        }
+    /* ========================================
+       10. Initialize All Modules
+       ======================================== */
+    document.addEventListener('DOMContentLoaded', function() {
+        initFlashAnimation();
+        initThemeToggle();
+        initMobileTocPanel();
+        initAccordion('help-toggle', 'help-content');
+        initAccordion('about-toggle', 'about-content');
+        initTocLinks();
+        initAuthForm();
     });
 
 })();

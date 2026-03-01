@@ -6,22 +6,25 @@
  * @date 2024
  */
 
-/* Theme variables */
+/* ========================================
+   1. Theme & Variables
+   ======================================== */
 @import url("themes/light.css");
 @import url("themes/dark.css");
 
-/* Default to light theme if no preference */
 :root {
     color-scheme: light;
 }
 
-/* Use dark theme if system prefers */
 @media (prefers-color-scheme: dark) {
     :root {
         color-scheme: dark;
     }
 }
 
+/* ========================================
+   2. Base Styles
+   ======================================== */
 * {
     margin: 0;
     padding: 0;
@@ -40,7 +43,9 @@ body {
     min-height: 100vh;
 }
 
-/* Header / Navbar */
+/* ========================================
+   3. Header / Navbar
+   ======================================== */
 .header {
     position: fixed;
     top: 0;
@@ -60,20 +65,6 @@ body {
 .header-left {
     display: flex;
     align-items: center;
-}
-
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    text-decoration: none;
-    color: var(--text-primary);
-}
-
-.logo-icon {
-    width: 28px;
-    height: 28px;
-    color: var(--accent-color);
 }
 
 .logo-text {
@@ -130,7 +121,9 @@ body {
     display: block;
 }
 
-/* Main content */
+/* ========================================
+   4. Main Layout
+   ======================================== */
 .main {
     padding-top: 60px;
     min-height: 100vh;
@@ -146,36 +139,37 @@ body {
     background: var(--bg-primary);
 }
 
-/* Table of Contents */
-.toc {
-    display: none;
-}
-
-/* Divider */
 .divider {
     display: none;
 }
 
-/* Menu Panel */
-.menu-panel {
+/* ========================================
+   5. Table of Contents (Desktop)
+   ======================================== */
+.toc {
+    display: none;
+}
+
+/* TOC Panel (Mobile slide-out) */
+#toc-panel {
+    display: flex;
     position: fixed;
     top: 0;
-    right: -100%;
+    right: -280px;
     width: 280px;
     height: 100vh;
     background-color: var(--bg-primary);
-    border-left: 1px solid var(--border-color);
     z-index: 200;
-    transition: right 0.3s ease;
-    display: flex;
     flex-direction: column;
+    box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+    transition: right 0.3s ease;
 }
 
-.menu-panel.active {
-    right: 0;
+#toc-panel.active {
+    right: 0 !important;
 }
 
-.menu-panel-header {
+#toc-panel .toc-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -184,35 +178,7 @@ body {
     font-weight: 600;
 }
 
-.menu-close {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    border: none;
-    background: transparent;
-    color: var(--text-secondary);
-    cursor: pointer;
-    border-radius: 6px;
-}
-
-.menu-close:hover {
-    background-color: var(--bg-tertiary);
-}
-
-.menu-close svg {
-    width: 18px;
-    height: 18px;
-}
-
-.menu-panel-content {
-    flex: 1;
-    overflow-y: auto;
-    padding: 8px;
-}
-
-.menu-panel-content .menu-item {
+#toc-panel .toc-item {
     display: block;
     padding: 12px 16px;
     color: var(--text-primary);
@@ -221,11 +187,33 @@ body {
     transition: background-color 0.2s;
 }
 
-.menu-panel-content .menu-item:hover {
+#toc-panel .toc-item:hover {
     background-color: var(--bg-tertiary);
 }
 
-/* Hero */
+#toc-panel .toc-close {
+    background: none;
+    border: none;
+    padding: 4px;
+    cursor: pointer;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#toc-panel .toc-close:hover {
+    background-color: var(--bg-tertiary);
+}
+
+#toc-panel .toc-close svg {
+    width: 18px;
+    height: 18px;
+}
+
+/* ========================================
+   6. Hero Section
+   ======================================== */
 .hero-section {
     text-align: center;
     padding: 20px 0;
@@ -236,6 +224,7 @@ body {
     color: var(--text-secondary);
     margin-bottom: 20px;
     font-weight: 500;
+    text-align: center;
 }
 
 .hero-media {
@@ -267,23 +256,14 @@ body {
     opacity: 0.6;
 }
 
-.hero h1 {
-    font-size: 24px;
-    font-weight: 600;
-    margin-bottom: 8px;
-}
-
-.hero p {
-    color: var(--text-secondary);
-    font-size: 14px;
-}
-
-/* Card */
+/* ========================================
+   7. Card Components
+   ======================================== */
 .card {
     background: var(--bg-secondary);
     border-radius: 12px;
     padding: 20px;
-    margin-bottom: 0;
+    margin-bottom: 16px;
 }
 
 .card-header {
@@ -293,7 +273,9 @@ body {
     color: var(--text-primary);
 }
 
-/* Button */
+/* ========================================
+   8. Buttons
+   ======================================== */
 .btn {
     display: block;
     width: 100%;
@@ -340,7 +322,14 @@ body {
     background-color: var(--bg-tertiary);
 }
 
-/* Form */
+.btn-large {
+    padding: 14px 20px;
+    font-size: 16px;
+}
+
+/* ========================================
+   9. Form Elements
+   ======================================== */
 .form-group {
     margin-bottom: 12px;
 }
@@ -374,51 +363,208 @@ body {
     color: var(--text-tertiary);
 }
 
-/* Menu List */
-.menu-list {
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    overflow: hidden;
+/* ========================================
+   10. Auth Form
+   ======================================== */
+.auth-card {
+    margin-top: 0;
+    margin-bottom: 0;
 }
 
-.menu-item {
+.auth-title {
+    font-size: 18px;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+/* ========================================
+   11. Accordion
+   ======================================== */
+.accordion-card {
+    padding: 0;
+    overflow: hidden;
+    position: relative;
+    background: var(--bg-secondary);
+    border-radius: 12px;
+}
+
+.accordion-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 12px 16px;
-    background: var(--bg-secondary);
-    border-bottom: 1px solid var(--border-color);
-    text-decoration: none;
-    color: var(--text-primary);
+    padding: 14px 16px;
+    cursor: pointer;
+    font-weight: 500;
     transition: background-color 0.2s;
 }
 
-.menu-item:last-child {
-    border-bottom: none;
-}
-
-.menu-item:hover {
+.accordion-header:hover {
     background-color: var(--bg-tertiary);
 }
 
-.menu-item-left {
-    display: flex;
-    align-items: center;
-    gap: 12px;
+.accordion-header:focus,
+.accordion-header:focus-visible {
+    outline: none;
+    box-shadow: none;
 }
 
-.menu-icon {
+.accordion-arrow {
     width: 20px;
     height: 20px;
+    transition: transform 0.3s;
     color: var(--text-secondary);
 }
 
-.menu-arrow {
-    color: var(--text-tertiary);
-    font-size: 12px;
+.accordion-header.expanded .accordion-arrow {
+    transform: rotate(180deg);
 }
 
-/* Status */
+.accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+}
+
+.accordion-content.expanded {
+    max-height: 600px;
+}
+
+.accordion-content > * {
+    display: none;
+}
+
+.accordion-content.expanded > * {
+    display: block;
+}
+
+/* ========================================
+   12. Help Guide
+   ======================================== */
+.help-list {
+    padding: 0 16px 16px;
+}
+
+.help-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.help-item:last-child {
+    margin-bottom: 0;
+}
+
+.help-step {
+    flex-shrink: 0;
+    font-size: 12px;
+    font-weight: 600;
+    margin-top: 2px;
+}
+
+.help-content {
+    flex: 1;
+}
+
+.help-label {
+    font-weight: 500;
+    margin-bottom: 4px;
+    color: var(--text-primary);
+}
+
+.help-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+/* ========================================
+   13. About Section
+   ======================================== */
+.about-info {
+    padding: 0 16px 16px;
+}
+
+.about-info p {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+}
+
+.about-features {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px;
+    background: var(--bg-primary);
+    border-radius: 6px;
+    font-size: 13px;
+}
+
+.feature-icon {
+    font-size: 16px;
+}
+
+/* ========================================
+   14. Statement
+   ======================================== */
+.statement-card {
+    margin-top: 0;
+}
+
+.statement-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+.statement-content {
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--text-tertiary);
+}
+
+.statement-content p {
+    margin-bottom: 8px;
+}
+
+.copyright {
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border-color);
+}
+
+/* ========================================
+   15. Messages & Status
+   ======================================== */
+.message {
+    padding: 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    margin-bottom: 12px;
+}
+
+.message-error {
+    background-color: rgba(207, 34, 46, 0.1);
+    color: var(--error-color);
+    border: 1px solid var(--error-color);
+}
+
+.message-success {
+    background-color: rgba(26, 127, 55, 0.1);
+    color: var(--success-color);
+    border: 1px solid var(--success-color);
+}
+
 .status-badge {
     display: inline-flex;
     align-items: center;
@@ -443,80 +589,9 @@ body {
     color: var(--error-color);
 }
 
-/* Info Row */
-.info-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 8px 0;
-    font-size: 13px;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.info-row:last-child {
-    border-bottom: none;
-}
-
-.info-label {
-    color: var(--text-secondary);
-}
-
-.info-value {
-    color: var(--text-primary);
-    font-weight: 500;
-}
-
-/* Footer */
-.footer {
-    text-align: center;
-    padding: 16px;
-    color: var(--text-tertiary);
-    font-size: 12px;
-}
-
-/* Logo */
-.logo {
-    width: 48px;
-    height: 48px;
-    margin: 0 auto 16px;
-    display: block;
-}
-
-/* Message */
-.message {
-    padding: 12px;
-    border-radius: 6px;
-    font-size: 13px;
-    margin-bottom: 12px;
-}
-
-.message-error {
-    background-color: rgba(207, 34, 46, 0.1);
-    color: var(--error-color);
-    border: 1px solid var(--error-color);
-}
-
-.message-success {
-    background-color: rgba(26, 127, 55, 0.1);
-    color: var(--success-color);
-    border: 1px solid var(--success-color);
-}
-
-/* Loading */
-.loading {
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-    border: 2px solid var(--border-color);
-    border-top-color: var(--accent-color);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-
-/* Flash Animation */
+/* ========================================
+   16. Flash Animation
+   ======================================== */
 .flash-container {
     position: fixed;
     top: 0;
@@ -577,243 +652,52 @@ body {
     100% { opacity: 0; transform: scale(1.1); }
 }
 
-/* Hero Section */
-.hero {
-    text-align: center;
-    padding: 32px 0;
-}
-
-.logo-container {
-    margin-bottom: 16px;
-}
-
-.logo-large {
-    width: 80px;
-    height: 80px;
-    color: var(--accent-color);
-}
-
-/* Button Large */
-.btn-large {
-    padding: 14px 20px;
-    font-size: 16px;
-}
-
-/* Content Page */
-.content-header {
-    margin-bottom: 16px;
-}
-
-.back-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    color: var(--text-secondary);
-    text-decoration: none;
-    font-size: 14px;
-}
-
-.back-link:hover {
-    color: var(--accent-color);
-}
-
-.back-link svg {
+/* ========================================
+   17. Loading
+   ======================================== */
+.loading {
+    display: inline-block;
     width: 16px;
     height: 16px;
+    border: 2px solid var(--border-color);
+    border-top-color: var(--accent-color);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
 }
 
-.content-section {
-    margin-bottom: 20px;
-}
-
-.content-section h3 {
-    font-size: 16px;
-    font-weight: 600;
-    margin-bottom: 10px;
-    color: var(--text-primary);
-}
-
-.content-section p {
-    font-size: 14px;
-    line-height: 1.7;
-    color: var(--text-secondary);
-}
-
-.content-section ul {
-    list-style: none;
-}
-
-.content-section li {
-    padding: 10px 0;
-    font-size: 14px;
-    color: var(--text-secondary);
-    border-bottom: 1px solid var(--border-color);
-}
-
-.content-section li:last-child {
-    border-bottom: none;
-}
-
-.feature-list li {
-    position: padding-left: 24px;
-}
-
-.feature-list li::before {
-    content: "✓";
-    color: var(--success-color);
-    margin-right: 10px;
-    font-weight: 600;
-}
-
-.footer-version {
-    margin-top: 4px;
-    font-size: 11px;
-}
-
-.footer a {
-    color: var(--text-secondary);
-    text-decoration: none;
-    margin: 0 8px;
-}
-
-.footer a:hover {
-    color: var(--accent-color);
-}
-
-/* Auth Form */
-.auth-card {
-    margin-top: 20px;
-    margin-bottom: 20px;
-}
-
-.auth-title {
-    font-size: 18px;
-    font-weight: 600;
-    text-align: center;
-    margin-bottom: 16px;
-}
-
-/* Accordion - About Me */
-.accordion-card {
-    padding: 0;
-    overflow: hidden;
-    position: relative;
-    background: var(--bg-secondary);
-    border-radius: 12px;
-}
-
-.accordion-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 16px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: background-color 0.2s;
-}
-
-.accordion-header:hover {
-    background-color: var(--bg-tertiary);
-}
-
-.accordion-header:focus,
-.accordion-header:focus-visible {
-    outline: none;
-    box-shadow: none;
-}
-
-.accordion-arrow {
-    width: 20px;
-    height: 20px;
-    transition: transform 0.3s;
-    color: var(--text-secondary);
-}
-
-.accordion-header.expanded .accordion-arrow {
-    transform: rotate(180deg);
-}
-
-.accordion-content {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease-out, padding 0.3s ease-out;
-}
-
-.accordion-content.expanded {
-    max-height: 600px;
-}
-
-.accordion-content > * {
-    display: none;
-}
-
-.accordion-content.expanded > * {
-    display: block;
-}
-
-.accordion-content .about-info {
-    padding: 0 16px 16px;
-}
-
-.accordion-content p {
-    font-size: 14px;
-    line-height: 1.7;
-    color: var(--text-secondary);
-    margin-bottom: 12px;
-}
-
-.about-features {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-top: 16px;
-}
-
-.feature-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px;
-    background: var(--bg-primary);
-    border-radius: 6px;
-    font-size: 13px;
-}
-
-.feature-icon {
-    font-size: 16px;
-}
-
-/* Statement */
-.statement-card {
-    margin-top: 12px;
-}
-
-.statement-title {
-    font-size: 16px;
-    font-weight: 600;
-    margin-bottom: 12px;
-}
-
-.statement-content {
-    font-size: 12px;
-    line-height: 1.7;
-    color: var(--text-tertiary);
-}
-
-.statement-content p {
-    margin-bottom: 8px;
-}
-
-.copyright {
-    margin-top: 16px;
-    padding-top: 12px;
-    border-top: 1px solid var(--border-color);
+@keyframes spin {
+    to { transform: rotate(360deg); }
 }
 
 /* ========================================
-   Responsive Design - Desktop (宽屏分栏设计)
+   18. Info Row
+   ======================================== */
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    font-size: 13px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.info-label {
+    color: var(--text-secondary);
+}
+
+.info-value {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+/* ========================================
+   19. Responsive - Desktop (≥900px)
    ======================================== */
 @media (min-width: 900px) {
+    /* Layout */
     .main {
         padding-top: 20px;
         display: flex;
@@ -830,7 +714,7 @@ body {
         background: transparent;
     }
 
-    /* 右侧目录 */
+    /* Desktop TOC */
     .toc {
         order: 2;
         display: block !important;
@@ -866,7 +750,15 @@ body {
         color: var(--accent-color);
     }
 
-    /* 标题样式 */
+    /* Divider */
+    .divider {
+        display: block;
+        height: 1px;
+        background: var(--border-color);
+        margin: 0 16px;
+    }
+
+    /* Typography */
     .hero-desc {
         font-size: 18px;
     }
@@ -875,10 +767,7 @@ body {
         font-size: 24px;
     }
 
-    .help-title {
-        font-size: 18px;
-    }
-
+    /* Cards */
     .card,
     .hero-section,
     #intro,
@@ -895,21 +784,9 @@ body {
     .auth-card {
         padding: 14px 16px !important;
         margin: 20px 0 !important;
-        background: transparent !important;
-        border: none !important;
-        border-radius: 0 !important;
-        width: 100% !important;
-        box-sizing: border-box;
     }
 
-    /* 分割线 - 只在桌面显示 */
-    .divider {
-        display: block;
-        height: 1px;
-        background: var(--border-color);
-        margin: 0 16px;
-    }
-
+    /* Form */
     .form-input {
         padding: 12px 16px;
         font-size: 15px;
@@ -920,12 +797,14 @@ body {
         font-size: 15px;
     }
 
+    /* Help */
     .help-step {
         width: 28px;
         height: 28px;
         font-size: 14px;
     }
 
+    /* Accordion */
     .accordion-card {
         width: 100%;
         overflow: hidden;
@@ -938,7 +817,6 @@ body {
     .accordion-content {
         max-height: 0;
         overflow: hidden;
-        transition: max-height 0.3s ease-out;
     }
 
     .accordion-content.expanded {
@@ -953,7 +831,7 @@ body {
         display: block;
     }
 
-    /* 内容对齐 */
+    /* About */
     .accordion-content .about-info,
     .help-list {
         padding: 0;
@@ -967,151 +845,13 @@ body {
         font-size: 20px;
     }
 
-    #menu-toggle {
+    /* Hide mobile TOC panel */
+    #toc-panel {
         display: none;
     }
-}
 
-    .container {
-        max-width: 700px !important;
-        padding: 32px 40px !important;
-    }
-
-    /* 右侧目录 */
-    .toc {
-        display: block !important;
-        position: sticky;
-        top: 90px;
-        height: fit-content;
-        padding: 32px 0;
-        width: 180px;
-        flex-shrink: 0;
-    }
-
-    .toc-header {
-        font-size: 12px;
-        font-weight: 600;
-        color: var(--text-secondary);
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        margin-bottom: 12px;
-        padding-bottom: 8px;
-        border-bottom: 1px solid var(--border-color);
-    }
-
-    .toc-item {
-        display: block;
-        padding: 6px 0;
-        font-size: 13px;
-        color: var(--text-secondary);
-        text-decoration: none;
-        transition: color 0.2s;
-    }
-
-    .toc-item:hover {
-        color: var(--accent-color);
-    }
-
-    /* 标题样式 */
-    .hero-desc {
-        font-size: 18px;
-    }
-
-    .auth-title {
-        font-size: 24px;
-    }
-
-    .help-title {
-        font-size: 18px;
-    }
-
-    /* 卡片样式 */
-    .card {
-        padding: 20px;
-        margin-bottom: 0;
-        border-radius: 8px;
-    }
-
-    /* 输入框和按钮 */
-    .form-input {
-        padding: 12px 16px;
-        font-size: 15px;
-    }
-
-    .btn-large {
-        padding: 12px 24px;
-        font-size: 15px;
-    }
-
-    /* 帮助步骤 */
-    .help-step {
-        width: 28px;
-        height: 28px;
-        font-size: 14px;
-    }
-
-    /* 手风琴 */
-    .accordion-card {
-        grid-column: 1;
-    }
-
-    .accordion-header {
-        padding: 14px 16px;
-    }
-
-    .accordion-content {
-        padding: 0 16px 16px;
-    }
-
-    /* 特性图标 */
-    .feature-item {
-        padding: 10px;
-    }
-
-    .feature-icon {
-        font-size: 20px;
-    }
-
-    /* 隐藏导航栏菜单按钮 */
+    /* Hide menu toggle button */
     #menu-toggle {
         display: none;
-    }
-}
-
-/* ========================================
-   窄屏模式 (平板) - 居中单栏
-   ======================================== */
-@media (min-width: 768px) and (max-width: 899px) {
-    .container {
-        max-width: 560px;
-        padding: 32px 24px;
-    }
-
-    .main {
-        padding-top: 16px;
-    }
-
-    .hero-desc {
-        font-size: 18px;
-    }
-
-    .auth-title {
-        font-size: 24px;
-    }
-
-    .card {
-        padding: 24px;
-        margin-bottom: 0;
-        border-radius: 10px;
-    }
-
-    .form-input {
-        padding: 14px 16px;
-        font-size: 16px;
-    }
-
-    .btn-large {
-        padding: 14px 24px;
-        font-size: 16px;
     }
 }
