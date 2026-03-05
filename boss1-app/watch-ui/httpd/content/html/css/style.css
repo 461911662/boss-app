@@ -387,6 +387,7 @@ body {
     position: relative;
     background: var(--bg-secondary);
     border-radius: 12px;
+    margin-top: 16px;
 }
 
 .accordion-header {
@@ -808,6 +809,7 @@ body {
     .accordion-card {
         width: 100%;
         overflow: hidden;
+        margin-top: 0;
     }
 
     .accordion-header {
