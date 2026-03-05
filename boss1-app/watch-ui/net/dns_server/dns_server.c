@@ -85,10 +85,17 @@ static bool is_captive_portal_domain(const char *domain)
 }
 
 /* Logging macros */
+#if 1
 #define dnsinfo(fmt, ...)    appinfo("[DNS] " fmt, ##__VA_ARGS__)
 #define dnsdbg(fmt, ...)     appdbg("[DNS] " fmt, ##__VA_ARGS__)
 #define dnswarn(fmt, ...)    appwarn("[DNS] " fmt, ##__VA_ARGS__)
 #define dnserr(fmt, ...)     apperr("[DNS] " fmt, ##__VA_ARGS__)
+#else
+#define dnsinfo(fmt, ...)
+#define dnsdbg(fmt, ...)
+#define dnswarn(fmt, ...)
+#define dnserr(fmt, ...)
+#endif
 
 /* Private typedefs ----------------------------------------------------------*/
 
@@ -305,6 +312,12 @@ static int dns_process_request(const uint8_t *req, int req_len,
         qoffset = name_end + sizeof(dns_question_t);
     }
     
+    /* If no answer was added, return 0 to skip sending response */
+    if (answer_count == 0) {
+        dnsdbg("No captive portal domain found, skip response");
+        return 0;
+    }
+    
     resp_hdr->ancount = htons(answer_count);
     return resp_len;
 }
@@ -364,12 +377,15 @@ static void dns_poll_cb(uv_poll_t *handle, int status, int events)
     
     if (resp_len > 0) {
         /* Send response */
+        dnsinfo("Sending DNS response: %d bytes", resp_len);
         ssize_t sent = sendto(g_dns_ctx.sock, g_dns_ctx.resp_buf, resp_len, 0,
                               (struct sockaddr *)&client_addr, addr_len);
         
         if (sent < 0) {
             dnserr("sendto failed: %d", errno);
         }
+    } else {
+        dnsdbg("DNS request skipped, resp_len=%d", resp_len);
     }
 }
 

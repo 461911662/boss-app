@@ -32,10 +32,15 @@
 #include <sys/boardctl.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <fcntl.h>
 
 #include "nshlib/nshlib.h"
 #include "watchui/log.h"
 #include "watchui_c2cxx.h"
+
+#ifdef CONFIG_FSUTILS_PASSWD
+#include "fsutils/passwd.h"
+#endif
 
 
 /****************************************************************************
@@ -71,6 +76,38 @@ int main(int argc, FAR char *argv[])
   /* Initialize the NSH library */
 
   nsh_initialize();
+
+#ifdef CONFIG_FSUTILS_PASSWD
+  /* Create default user if passwd file doesn't exist */
+
+  appinfo("Checking passwd file: %s\n", CONFIG_FSUTILS_PASSWD_PATH);
+  if (access(CONFIG_FSUTILS_PASSWD_PATH, F_OK) != 0)
+    {
+      appinfo("Passwd file not found, creating default user...\n");
+      int ret = passwd_adduser("boss1", "666666");
+      if (ret == 0)
+        {
+          appinfo("passwd_adduser returned success\n");
+          /* Verify file was created */
+          if (access(CONFIG_FSUTILS_PASSWD_PATH, F_OK) == 0)
+            {
+              appinfo("Default user created successfully\n");
+            }
+          else
+            {
+              apperr("passwd_adduser returned success but file not found!\n");
+            }
+        }
+      else
+        {
+          apperr("Failed to create default user: %d\n", ret);
+        }
+    }
+  else
+    {
+      appinfo("Passwd file already exists\n");
+    }
+#endif
 
   /* go application */
 #ifdef CONFIG_WATCHUI
