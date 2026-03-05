@@ -1,3 +1,4 @@
+Kconfig
 *.kconfig
 *.built
 *.depend
@@ -5,3 +6,8 @@
 *.su
 *.hobj
 *.dep
+*.context
+*.dirlinks
+libapps.a
+libapps.a.lock
+

@@ -3327,6 +3327,8 @@ int httpd_start_request(httpd_conn *hc, struct timeval *nowp)
 
   ninfo("httpd_start_request: orig=%s expn=%s pathinfo=%s\n", 
          hc->origfilename, hc->expnfilename, hc->pathinfo);
+  nerr("httpd_start_request: orig=%s expn=%s pathinfo=%s\n", 
+         hc->origfilename, hc->expnfilename, hc->pathinfo);
 
 #ifdef CONFIG_MY_HTTPD_CAPTIVE_PORTAL
   /* Captive Portal authentication check */

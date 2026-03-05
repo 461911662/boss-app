@@ -449,6 +449,10 @@ static void handle_send(struct connect_s *conn, struct timeval *tv)
             (intmax_t)conn->offset,
             (intmax_t)conn->end_offset,
             (intmax_t)conn->hc->bytes_sent);
+      nerr("offset: %jd end_offset: %jd bytes_sent: %jd\n",
+            (intmax_t)conn->offset,
+            (intmax_t)conn->end_offset,
+            (intmax_t)conn->hc->bytes_sent);
 
       /* Fill the rest of the response buffer with file data */
 
@@ -460,6 +464,7 @@ static void handle_send(struct connect_s *conn, struct timeval *tv)
         }
 
       ninfo("Read %d bytes, buflen %d\n", nread, hc->buflen);
+      nerr("Read %d bytes, buflen %d\n", nread, hc->buflen);
 
       /* Send the buffer */
 
@@ -489,6 +494,7 @@ static void handle_send(struct connect_s *conn, struct timeval *tv)
           conn->offset         += nread;
           conn->hc->bytes_sent += nwritten;
           ninfo("Wrote %d bytes\n", nwritten);
+          nerr("Wrote %d bytes\n", nwritten);
         }
     }
 
@@ -501,6 +507,7 @@ static void handle_send(struct connect_s *conn, struct timeval *tv)
 
 errout_clear_connection:
   ninfo("Clear connection\n");
+  nerr("Clear connection\n");
   clear_connection(conn, tv);
 }
 

@@ -56,6 +56,8 @@
  *   current console device.
  *
  ****************************************************************************/
+#include "arch/chip/xtensa_attr.h"
+uint8_t test_array[1024] EXT_RAM_ATTR;
 
 int main(int argc, FAR char *argv[])
 {
@@ -78,34 +80,20 @@ int main(int argc, FAR char *argv[])
   nsh_initialize();
 
 #ifdef CONFIG_FSUTILS_PASSWD
-  /* Create default user if passwd file doesn't exist */
+  /* Check if default boss1 user exists */
 
-  appinfo("Checking passwd file: %s\n", CONFIG_FSUTILS_PASSWD_PATH);
-  if (access(CONFIG_FSUTILS_PASSWD_PATH, F_OK) != 0)
+  ret = passwd_adduser("boss1", "123456");
+  if (ret == OK)
     {
-      appinfo("Passwd file not found, creating default user...\n");
-      int ret = passwd_adduser("boss1", "666666");
-      if (ret == 0)
-        {
-          appinfo("passwd_adduser returned success\n");
-          /* Verify file was created */
-          if (access(CONFIG_FSUTILS_PASSWD_PATH, F_OK) == 0)
-            {
-              appinfo("Default user created successfully\n");
-            }
-          else
-            {
-              apperr("passwd_adduser returned success but file not found!\n");
-            }
-        }
-      else
-        {
-          apperr("Failed to create default user: %d\n", ret);
-        }
+      appinfo("Default boss1 user created\n");
+    }
+  else if (ret == -EEXIST)
+    {
+      appinfo("boss1 user already exists, skipping\n");
     }
   else
     {
-      appinfo("Passwd file already exists\n");
+      apperr("Failed to create default boss1 user: %d\n", ret);
     }
 #endif
 

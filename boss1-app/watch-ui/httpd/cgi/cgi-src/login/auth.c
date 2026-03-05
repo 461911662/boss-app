@@ -1,19 +1,31 @@
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
+#include <nuttx/config.h>
 #include "auth.h"
 
-static const char *g_password = DEFAULT_PASSWORD;
+#ifdef CONFIG_WIFI_PORTAL_USE_PASSWD
+#include "fsutils/passwd.h"
+#endif
+
+static const char *g_username = "boss1";
 
 int auth_check_password(const char *password)
 {
     if (!password)
         return AUTH_INVALID_PASS;
 
-    if (strcmp(password, g_password) == 0)
+#ifdef CONFIG_WIFI_PORTAL_USE_PASSWD
+    int ret = passwd_verify(g_username, password);
+    if (ret == 1)
         return AUTH_OK;
-
-    return AUTH_INVALID_PASS;
+    else if (ret == 0)
+        return AUTH_INVALID_PASS;
+    else
+        return AUTH_ERROR;
+#else
+    return AUTH_OK;
+#endif
 }
 
 void auth_log_attempt(const char *ip, int result)

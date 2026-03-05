@@ -32,6 +32,7 @@ CFLAGS += ${INCDIR_PREFIX}$(APPDIR)/watch-ui/httpd/cgi/cgi-src/common
 CFLAGS += ${INCDIR_PREFIX}$(APPDIR)/watch-ui/httpd/cgi/cgi-src/login
 CFLAGS += ${INCDIR_PREFIX}$(APPDIR)/watch-ui/httpd/cgi/cgi-src/status
 CFLAGS += ${INCDIR_PREFIX}$(APPDIR)/watch-ui/httpd/cgi/cgi-src/router
+CFLAGS += ${INCDIR_PREFIX}$(APPDIR)/../nuttx-apps/include
 
 DEPPATH += --dep-path cgi-src
 DEPPATH += --dep-path cgi-src/login

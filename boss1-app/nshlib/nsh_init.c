@@ -158,7 +158,7 @@ void nsh_initialize(void)
 #ifdef CONFIG_NSH_NETINIT
   /* Bring up the network */
 
-  netinit_bringup();
+  //netinit_bringup();
 #endif
 
 #if defined(CONFIG_NSH_ARCHINIT) && defined(CONFIG_BOARDCTL_FINALINIT)
