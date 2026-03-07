@@ -325,9 +325,11 @@ static void handle_read(struct connect_s *conn, struct timeval *tv)
   switch (httpd_got_request(hc))
     {
     case GR_NO_REQUEST:
+      nerr("ERROR: No request, fd:%d\n", hc->conn_fd);
       return;
     case GR_BAD_REQUEST:
-     BADREQUEST("httpd_got_request");
+     BADREQUEST("ERROR: Bad request\n");
+     nerr("httpd_got_request, fd:%d\n", hc->conn_fd);
      goto errout_with_400;
     }
 
@@ -335,6 +337,7 @@ static void handle_read(struct connect_s *conn, struct timeval *tv)
 
   if (httpd_parse_request(hc) < 0)
     {
+      nerr("ERROR: httpd_parse_request failed, fd:%d\n", hc->conn_fd);
       goto errout_with_connection;
     }
 
@@ -343,7 +346,7 @@ static void handle_read(struct connect_s *conn, struct timeval *tv)
   if (httpd_start_request(hc, tv) < 0)
     {
       /* Something went wrong.  Close down the connection */
-
+      nerr("ERROR: httpd_start_request failed, fd:%d\n", hc->conn_fd);
       goto errout_with_connection;
     }
 
@@ -375,6 +378,7 @@ static void handle_read(struct connect_s *conn, struct timeval *tv)
       /* No file descriptor means someone else is handling it */
 
       conn->offset = hc->bytes_sent;
+      nerr("ERROR: conn->offset = hc->bytes_sent, fd:%d\n", hc->conn_fd);
       goto errout_with_connection;
     }
 
@@ -382,6 +386,7 @@ static void handle_read(struct connect_s *conn, struct timeval *tv)
     {
       /* There's nothing to send */
 
+      nerr("ERROR: conn->offset >= conn->end_offset, fd:%d\n", hc->conn_fd);
       goto errout_with_connection;
     }
 
@@ -404,9 +409,11 @@ static void handle_read(struct connect_s *conn, struct timeval *tv)
 
 errout_with_400:
   BADREQUEST("errout");
+  nerr("ERROR: errout_with_400, fd:%d\n", hc->conn_fd);
   httpd_send_err(hc, 400, httpd_err400title, "", httpd_err400form, "");
 
 errout_with_connection:
+  nerr("ERROR: errout_with_connection, fd:%d\n", hc->conn_fd);
   finish_connection(conn, tv);
 }
 
@@ -526,6 +533,7 @@ static void handle_linger(struct connect_s *conn, struct timeval *tv)
       return;
     }
 
+  nerr("buf:%s, len:%d\n", hc->buffer, ret);
   if (ret <= 0)
     {
       really_clear_connection(conn);
@@ -853,6 +861,7 @@ int thttpd_main(int argc, char **argv)
               if (fdwatch_check_fd(fw, hc->conn_fd))
                 {
                   ninfo("Handle conn_state %d\n", conn->conn_state);
+                  nerr("Handle conn_state %d, conn_fd:%d\n", conn->conn_state, hc->conn_fd);
                   switch (conn->conn_state)
                     {
                       case CNST_NEW:

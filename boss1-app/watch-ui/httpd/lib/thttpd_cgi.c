@@ -53,6 +53,7 @@
 #include <libgen.h>
 #include <assert.h>
 #include <errno.h>
+#include <fcntl.h>
 #include <debug.h>
 
 #include <nuttx/binfmt/binfmt.h>
@@ -220,6 +221,7 @@ static void create_environment(httpd_conn *hc)
         {
           snprintf(cp2, l, "%s%s", httpd_root, hc->pathinfo);
           setenv("PATH_TRANSLATED", cp2, TRUE);
+          httpd_free(cp2);
         }
     }
 
@@ -738,6 +740,7 @@ static int cgi_child(int argc, char **argv)
    */
 
   ninfo("Started: %s\n", argv[1]);
+  nerr("Started: %s\n", argv[1]);
 
   /* Allocate memory and initialize memory for interposing */
 
@@ -885,10 +888,10 @@ static int cgi_child(int argc, char **argv)
   ninfo("Starting CGI: %s\n", hc->expnfilename);
 
 #ifdef CONFIG_MY_HTTPD_NXFLAT
-  child = exec(hc->expnfilename, argp, NULL,
-               g_thttpdsymtab, g_thttpdnsymbols);
+  child = exec_spawn(hc->expnfilename, argp, NULL,
+               g_thttpdsymtab, g_thttpdnsymbols, NULL, NULL);
 #else
-  child = exec(hc->expnfilename, argp, NULL, NULL, 0);
+  child = exec_spawn(hc->expnfilename, argp, NULL, NULL, 0, NULL, NULL);
 #endif
   if (child < 0)
     {
@@ -1004,6 +1007,8 @@ errout_with_cgiconn:
   close(cc->connfd);
   httpd_free(cc);
 
+  httpd_free(argp);
+
 errout:
   ninfo("Return %d\n", errcode);
   if (errcode != 0)
@@ -1051,6 +1056,14 @@ int cgi(httpd_conn *hc)
       ++hc->hs->cgi_count;
       httpd_clear_ndelay(hc->conn_fd);
 
+      /* 
+       * Clear CLOEXEC flag to allow child process to inherit conn_fd.
+       * accept4() uses SOCK_CLOEXEC, so we need to clear it.
+       */
+
+      int flags = fcntl(hc->conn_fd, F_GETFD);
+      fcntl(hc->conn_fd, F_SETFD, flags & ~FD_CLOEXEC);
+
       /* Start the child task.  We use a trampoline task here so that we can
        * safely muck with the file descriptors before actually started the
        * CGI task.
@@ -1066,10 +1079,19 @@ int cgi(httpd_conn *hc)
         {
           nerr("ERROR: task_create: %d\n", errno);
           INTERNALERROR("task_create");
+
+          /* Restore original flags */
+
+          fcntl(hc->conn_fd, F_SETFD, flags);
+
           httpd_send_err(hc, 500, err500title, "", err500form,
                          hc->encodedurl);
           goto errout_with_sem;
         }
+
+      /* Restore CLOEXEC flag to prevent fd leak in parent process threads */
+
+      fcntl(hc->conn_fd, F_SETFD, flags);
 
       ninfo("Started CGI task %d for file '%s'\n", child, hc->expnfilename);
 

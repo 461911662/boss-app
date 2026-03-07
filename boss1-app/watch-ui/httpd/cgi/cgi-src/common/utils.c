@@ -6,6 +6,19 @@
 
 #define POST_BUF_SIZE 512
 
+static void trim_string(char *str)
+{
+    if (!str || !*str)
+        return;
+
+    while (*str == ' ')
+        str++;
+
+    char *end = str + strlen(str) - 1;
+    while (end > str && *end == ' ')
+        *end-- = '\0';
+}
+
 static void parse_form_data(cJSON *body, char *data)
 {
     if (!body || !data)
@@ -26,6 +39,9 @@ static void parse_form_data(cJSON *body, char *data)
         if (end)
             *end = '\0';
 
+        trim_string(key);
+        trim_string(value);
+
         cgi_url_decode(key, key, 256);
         cgi_url_decode(value, value, 256);
 
@@ -38,38 +54,49 @@ static void parse_form_data(cJSON *body, char *data)
     }
 }
 
-void cgi_request_init(cgi_request_t *req, const char *path_info,
-                      const char *query_string, const char *method,
-                      const char *remote_ip)
+void cgi_request_init(cgi_request_t *req)
 {
     memset(req, 0, sizeof(cgi_request_t));
 
-    req->path_info = path_info;
-    req->query_string = query_string;
-    req->method = method;
-    req->remote_ip = remote_ip ? remote_ip : "unknown";
+    req->path_info = getenv("PATH_INFO");
+    req->query_string = getenv("QUERY_STRING");
+    req->method = getenv("REQUEST_METHOD");
+    req->remote_ip = getenv("REMOTE_ADDR");
+    req->content_length = atoi(getenv("CONTENT_LENGTH") ? getenv("CONTENT_LENGTH") : "0");
+    req->content_type = cgi_get_content_type(getenv("CONTENT_TYPE"));
 
     req->body = cJSON_CreateObject();
 
-    if (query_string && strlen(query_string) > 0)
+    const char *protocol = getenv("SERVER_PROTOCOL");
+    const char *content_type = getenv("CONTENT_TYPE");
+    CGI_LOG("%s %s %s from %s", req->method ? req->method : "GET",
+            req->path_info ? req->path_info : "/",
+            protocol ? protocol : "HTTP/1.1", req->remote_ip ? req->remote_ip : "null");
+    if (req->content_length > 0)
     {
-        char buf[POST_BUF_SIZE];
-        strncpy(buf, query_string, sizeof(buf) - 1);
-        buf[sizeof(buf) - 1] = '\0';
-        parse_form_data(req->body, buf);
+        CGI_LOG("Content-Type: %s", content_type ? content_type : "");
     }
 
-    if (method && strcmp(method, "POST") == 0)
+    const char *query_string = req->query_string;
+    if (query_string && strlen(query_string) > 0)
     {
-        const char *content_len_str = getenv("CONTENT_LENGTH");
-        int content_length = content_len_str ? atoi(content_len_str) : 0;
-
-        if (content_length > 0 && content_length < POST_BUF_SIZE)
+        char *buf = strndup(query_string, 256);
+        if (buf)
         {
-            char buf[POST_BUF_SIZE];
+            parse_form_data(req->body, buf);
+            free(buf);
+        }
+    }
+
+    CGI_LOG("Body:");
+    if (req->method && strcmp(req->method, "POST") == 0 && req->content_length > 0)
+    {
+        char *buf = malloc(req->content_length + 1);
+        if (buf)
+        {
             int len = 0;
             int ch;
-            while (len < content_length)
+            while (len < req->content_length)
             {
                 ch = getchar();
                 if (ch == EOF)
@@ -77,7 +104,36 @@ void cgi_request_init(cgi_request_t *req, const char *path_info,
                 buf[len++] = (char)ch;
             }
             buf[len] = '\0';
-            parse_form_data(req->body, buf);
+
+            if (len != req->content_length)
+            {
+                CGI_LOG("WARN: content_length mismatch, expected %d, got %d", req->content_length, len);
+            } else {
+                if (req->content_type == CGI_CONTENT_TYPE_JSON)
+                {
+                    cJSON *json = cJSON_Parse(buf);
+                    if (json)
+                    {
+                        cJSON_Delete(req->body);
+                        req->body = json;
+                    }
+                }
+                else if (req->content_type == CGI_CONTENT_TYPE_FORM_URLENCODED)
+                {
+                    parse_form_data(req->body, buf);
+                }
+
+                if (req->body)
+                {
+                    char *json_str = cJSON_Print(req->body);
+                    if (json_str)
+                    {
+                        CGI_LOG("\t%s", json_str);
+                        free(json_str);
+                    }
+                }
+            }
+            free(buf);
         }
     }
 }

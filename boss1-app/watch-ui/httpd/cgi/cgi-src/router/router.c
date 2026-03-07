@@ -1,11 +1,8 @@
-#include <stdio.h>
 #include <string.h>
 #include "router.h"
 #include "utils.h"
 #include "handle_login.h"
 #include "handle_status.h"
-
-#define CGI_LOG(fmt, ...) fprintf(stderr, "[CGI] " fmt "\n", ##__VA_ARGS__)
 
 static cgi_route_t g_cgi_routes[] = {
     { "/login",  handle_login },

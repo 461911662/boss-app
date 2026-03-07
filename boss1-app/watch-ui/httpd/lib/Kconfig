@@ -117,6 +117,12 @@ config MY_HTTPD_CGI_TIMELIMIT
 		How many seconds to allow CGI programs to run before killing them.
 		Default: 0 (no time limit)
 
+config MY_HTTPD_CGIDUMP
+	bool "Enable CGI dump"
+	default n
+	---help---
+		Dump the contents of each transfer to and from the CGI task.
+
 config MY_HTTPD_CHARSET
 	string "Default character set"
 	default "utf-8"

@@ -1,12 +1,9 @@
 #include <string.h>
 #include "utils.h"
 #include "auth.h"
-#include "session.h"
 
 int handle_login(cgi_request_t *req, cgi_response_t *resp)
 {
-    session_init();
-
     const char *method = req->method;
     if (!method || strcmp(method, "POST") != 0)
     {
@@ -23,7 +20,6 @@ int handle_login(cgi_request_t *req, cgi_response_t *resp)
 
     if (auth_result == AUTH_OK)
     {
-        session_add(req->remote_ip);
         auth_log_attempt(req->remote_ip, AUTH_OK);
 
         resp->data = cJSON_CreateObject();

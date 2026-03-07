@@ -3,6 +3,8 @@
 
 #include <stddef.h>
 #include <stdbool.h>
+#include <stdio.h>
+#include <string.h>
 
 #ifdef CONFIG_MY_HTTPD_CGI_USE_CJSON
 #include <netutils/cJSON.h>
@@ -14,8 +16,28 @@
 #define CGI_LOG(fmt, ...)
 #endif
 
+typedef enum {
+    CGI_CONTENT_TYPE_UNKNOWN = 0,
+    CGI_CONTENT_TYPE_JSON,
+    CGI_CONTENT_TYPE_FORM_URLENCODED,
+    CGI_CONTENT_TYPE_MULTIPART_FORM_DATA,
+} cgi_content_type_t;
+
+static inline cgi_content_type_t cgi_get_content_type(const char *content_type)
+{
+    if (content_type == NULL)
+        return CGI_CONTENT_TYPE_UNKNOWN;
+    if (strstr(content_type, "application/json"))
+        return CGI_CONTENT_TYPE_JSON;
+    if (strstr(content_type, "application/x-www-form-urlencoded"))
+        return CGI_CONTENT_TYPE_FORM_URLENCODED;
+    if (strstr(content_type, "multipart/form-data"))
+        return CGI_CONTENT_TYPE_MULTIPART_FORM_DATA;
+    return CGI_CONTENT_TYPE_UNKNOWN;
+}
+
 #ifdef CONFIG_MY_HTTPD_CGI_USE_CJSON
-struct cgi_request { const char *path_info; const char *query_string; const char *method; const char *remote_ip; cJSON *body; };
+struct cgi_request { const char *path_info; const char *query_string; const char *method; const char *remote_ip; int content_length; cgi_content_type_t content_type; cJSON *body; };
 struct cgi_response { int status_code; cJSON *data; char *redirect; };
 #else
 struct cgi_request { const char *path_info; const char *query_string; const char *method; const char *remote_ip; };
@@ -27,9 +49,7 @@ typedef struct cgi_response cgi_response_t;
 
 typedef int (*cgi_handler_t)(cgi_request_t *req, cgi_response_t *resp);
 
-void cgi_request_init(cgi_request_t *req, const char *path_info,
-                      const char *query_string, const char *method,
-                      const char *remote_ip);
+void cgi_request_init(cgi_request_t *req);
 void cgi_request_free(cgi_request_t *req);
 
 void cgi_response_free(cgi_response_t *resp);

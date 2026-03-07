@@ -10,7 +10,6 @@ include $(APPDIR)/Make.defs
 MAINSRC = cgi_main.c
 
 CSRCS += auth.c
-CSRCS += session.c
 CSRCS += utils.c
 CSRCS += router.c
 CSRCS += wifi_status.c
