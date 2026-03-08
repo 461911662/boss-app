@@ -219,7 +219,26 @@
     }
 
     /* ========================================
-       8. Auth Form Handler
+       8. Auth Form Validation
+       ======================================== */
+    function validateAuthForm(username, password) {
+        // 账号验证：3-20位，只允许字母、数字、下划线
+        const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
+        if (!username || !usernameRegex.test(username)) {
+            return { valid: false, message: "账号只能包含字母、数字、下划线，长度3-20位" };
+        }
+        
+        // 密码验证：6-20位，必须包含字母和数字
+        const passwordRegex = /^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]{6,20}$/;
+        if (!password || !passwordRegex.test(password)) {
+            return { valid: false, message: "密码必须包含字母和数字，长度6-20位" };
+        }
+        
+        return { valid: true };
+    }
+
+    /* ========================================
+       9. Auth Form Handler
        ======================================== */
     function initAuthForm() {
         const form = document.getElementById('auth-form');
@@ -237,8 +256,10 @@
             const username = usernameInput.value.trim();
             const password = passwordInput.value;
 
-            if (!username || !password) {
-                showError('请输入账号和密码');
+            // 客户端验证
+            const validation = validateAuthForm(username, password);
+            if (!validation.valid) {
+                showError(validation.message);
                 return;
             }
 
@@ -305,7 +326,7 @@
     }
 
     /* ========================================
-       9. Flash Animation
+       10. Flash Animation
        ======================================== */
     function initFlashAnimation() {
         window.addEventListener('load', function() {
@@ -319,7 +340,7 @@
     }
 
     /* ========================================
-       10. Initialize All Modules
+       11. Initialize All Modules
        ======================================== */
     document.addEventListener('DOMContentLoaded', function() {
         initFlashAnimation();

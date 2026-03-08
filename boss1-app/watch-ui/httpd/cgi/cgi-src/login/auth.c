@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
+#include <stdbool.h>
 #include <nuttx/config.h>
 #include "auth.h"
 #include "utils.h"
@@ -16,6 +17,35 @@
 int auth_verify_user(const char *username, const char *password)
 {
     if (!username || !password)
+        return AUTH_INVALID_PASS;
+
+    // 客户端验证：账号 3-20位，只允许字母、数字、下划线
+    size_t username_len = strlen(username);
+    if (username_len < 3 || username_len > 20)
+        return AUTH_INVALID_USER;
+    for (size_t i = 0; username[i]; i++)
+    {
+        char c = username[i];
+        if (!((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || 
+              (c >= '0' && c <= '9') || c == '_'))
+            return AUTH_INVALID_USER;
+    }
+
+    // 客户端验证：密码 6-20位，必须包含字母和数字
+    size_t password_len = strlen(password);
+    if (password_len < 6 || password_len > 20)
+        return AUTH_INVALID_PASS;
+    bool has_letter = false;
+    bool has_digit = false;
+    for (size_t i = 0; password[i]; i++)
+    {
+        char c = password[i];
+        if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'))
+            has_letter = true;
+        if (c >= '0' && c <= '9')
+            has_digit = true;
+    }
+    if (!has_letter || !has_digit)
         return AUTH_INVALID_PASS;
 
 #ifdef WIFI_PORTAL_USE_PASSWD
