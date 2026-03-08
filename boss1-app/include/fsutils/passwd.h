@@ -28,6 +28,9 @@
 #include <nuttx/config.h>
 #include <nuttx/compiler.h>
 
+#include <sys/types.h>
+#include <stdbool.h>
+
 /****************************************************************************
  * Pre-processor Definitions
  ****************************************************************************/
@@ -120,5 +123,37 @@ int passwd_update(FAR const char *username, FAR const char *password);
  ****************************************************************************/
 
 int passwd_verify(FAR const char *username, FAR const char *password);
+
+/****************************************************************************
+ * Name: passwd_find_user
+ *
+ * Description:
+ *   Check if a user exists in the password file
+ *
+ * Input Parameters:
+ *   username - The username to check
+ *
+ * Returned Value:
+ *   true if user exists, false otherwise
+ *
+ ****************************************************************************/
+
+bool passwd_finduser(FAR const char *username);
+
+/****************************************************************************
+ * Name: passwd_get_user_count
+ *
+ * Description:
+ *   Get the number of users in the password file
+ *
+ * Input Parameters:
+ *
+ * Returned Value:
+ *   Number of users on success; a negated errno value is returned on
+ *   failure.
+ *
+ ****************************************************************************/
+
+int passwd_get_user_count(void);
 
 #endif /* __APPS_INCLUDE_FSUTILS_PASSWD_H */
