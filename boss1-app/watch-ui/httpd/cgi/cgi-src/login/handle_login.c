@@ -5,6 +5,8 @@
 
 int handle_login(cgi_request_t *req, cgi_response_t *resp)
 {
+    resp->data = NULL;
+    resp->redirect = NULL;
     const char *method = req->method;
     if (!method || strcmp(method, "POST") != 0)
     {
@@ -32,10 +34,9 @@ int handle_login(cgi_request_t *req, cgi_response_t *resp)
         resp->data = cJSON_CreateObject();
         cJSON_AddBoolToObject(resp->data, "success", true);
         cJSON_AddStringToObject(resp->data, "message", "Login successful");
-        resp->redirect = strdup("/content.html");
+        cJSON_AddStringToObject(resp->data, "redirect", "/content.html");
 
-        cgi_response_send_json(resp);
-        return cgi_response_send_redirect(resp);
+        return cgi_response_send_json(resp);
     }
     else
     {

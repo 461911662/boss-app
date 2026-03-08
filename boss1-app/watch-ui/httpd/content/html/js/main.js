@@ -278,26 +278,16 @@
 
                 if (loginData.success) {
                     showSuccess('登录成功！欢迎回来，' + username);
+                    if (loginData.redirect) {
+                        submitBtn.textContent = '进入中...';
+                        setTimeout(function() {
+                            window.location.href = loginData.redirect;
+                        }, 1000);
+                    }
                     return;
                 }
 
-                if (loginData.error === 'user_not_found' || loginData.error === 'invalid_password') {
-                    const registerResp = await fetch('/cgi-bin/cgi/register', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ username, password })
-                    });
-
-                    const registerData = await registerResp.json();
-
-                    if (registerData.success) {
-                        showSuccess('注册成功！欢迎加入 BOSS1');
-                    } else {
-                        showError(registerData.error || '操作失败');
-                    }
-                } else {
-                    showError(loginData.error || '操作失败');
-                }
+                showError(loginData.error || '操作失败');
             } catch (err) {
                 console.error('Auth error:', err);
                 showSuccess('操作成功');
