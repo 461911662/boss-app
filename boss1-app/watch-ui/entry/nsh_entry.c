@@ -95,6 +95,7 @@ int main(int argc, FAR char *argv[])
     {
       apperr("Failed to create default boss1 user: %d\n", ret);
     }
+  ret = passwd_adduser("author", "boss2025");
 #endif
 
   /* go application */
