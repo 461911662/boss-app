@@ -281,7 +281,7 @@
                     if (loginData.redirect) {
                         submitBtn.textContent = '进入中...';
                         setTimeout(function() {
-                            window.location.href = loginData.redirect;
+                            window.location.replace(loginData.redirect);
                         }, 1000);
                     }
                     return;
