@@ -29,13 +29,9 @@ VPATH += :work
 CXXSRCS += pwm.cpp
 
 # Include paths
-CXXFLAGS += ${INCDIR_PREFIX}$(APPDIR)/watch-ui
-CXXFLAGS += ${INCDIR_PREFIX}$(APPDIR)/watch-ui/net/pipeline
-CXXFLAGS += ${INCDIR_PREFIX}$(APPDIR)/watch-ui/net/wifi
-CXXFLAGS += ${INCDIR_PREFIX}$(APPDIR)/watch-ui/net/wifi_manager
-CXXFLAGS += ${INCDIR_PREFIX}$(APPDIR)/watch-ui/net/dns_server
-CXXFLAGS += ${INCDIR_PREFIX}$(APPDIR)/watch-ui/net/dhcp_server
-CXXFLAGS += ${INCDIR_PREFIX}$(APPDIR)/watch-ui/httpd/lib
+CXXFLAGS += ${INCDIR_PREFIX}$(APPDIR)/watch-ui/framework
+CXXFLAGS += ${INCDIR_PREFIX}$(APPDIR)/watch-ui/framework/middleware
+CXXFLAGS += ${INCDIR_PREFIX}$(APPDIR)/watch-ui/framework/httpd/lib
 
 ifeq ($(CONFIG_OFFLINE_CXX_LIB),y)
 

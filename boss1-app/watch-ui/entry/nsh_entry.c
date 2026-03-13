@@ -56,8 +56,6 @@
  *   current console device.
  *
  ****************************************************************************/
-#include "arch/chip/xtensa_attr.h"
-uint8_t test_array[1024] EXT_RAM_ATTR;
 
 int main(int argc, FAR char *argv[])
 {

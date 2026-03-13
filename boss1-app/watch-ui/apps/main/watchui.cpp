@@ -18,16 +18,20 @@
 
 #include "include/pwm.h"
 
+#include "config/config_manager.h"
+#include "ipc/ipc_server.h"
+
 #ifdef CONFIG_WIRELESS_WAPI
+#include <arpa/inet.h>
 #include <net/wifi/wifi.h>
 #include <net/wifi_manager/wifi_manager.h>
-#include <arpa/inet.h>
-#include "dns_server.h"
-#include "dhcp_server.h"
+#include "net/dns_server/dns_server.h"
+#include "net/dhcp_server/dhcp_server.h"
 #include "httpd_server.h"
 #endif
 
 static std::unique_ptr<WatchUI> _watchui_instance = nullptr;
+static void *g_config_handler = nullptr;
 
 /**
  * @brief watchui 主线程异步触发
@@ -69,8 +73,8 @@ static void setSignalHandler() {
         appinfo("signal[%d] received, exiting", sig);
         if (_watchui_instance) {
             _watchui_instance->_destory();
+            _watchui_instance.reset();
         }
-        DestroyWatchUI();
         exit(0);
     };
 
@@ -91,36 +95,44 @@ WatchUI& GetWatchUI() {
 }
 
 /**
- * @brief 销毁 WatchUI 单例
- */
-void DestroyWatchUI() {
-    appinfo("destory");
-    if (_watchui_instance) {
-        _watchui_instance.reset();
-    }
-}
-
-/**
  * @brief watchui_main 应用入口函数
  */
 int watchui_main(int argc, char *argv[]) {
     appdbg("Entry");
     setSignalHandler();
     GetWatchUI().run(); // forever
-    DestroyWatchUI();
     return 0;
 }
 
 void WatchUI::setup() {
     appdbg("setup");
+    int ret = 0;
 
     // install breath led
     get_mooncake().createExtension(std::make_unique<PwmWorker>());
 
+    /* Initialize pipeline manager */
+    ret = pipeline_manager_init(get_loop());
+    if (ret < 0) {
+        appwarn("pipeline_manager_init failed: %d", ret);
+    }
+
+    /* Initialize config */
+    g_config_handler = config_load();
+    if (!g_config_handler) {
+        appwarn("config_load failed");
+    }
+
+    /* Initialize IPC server */
+    ret = ipc_server_init();
+    if (ret < 0) {
+        appwarn("ipc_server_init failed: %d", ret);
+    }
+
 #ifdef CONFIG_WIRELESS_WAPI
     // Initialize WiFi Manager with Pipeline
     appinfo("Initializing WiFi Manager...");
-    int ret = wifi_manager_init(get_loop());
+    ret = wifi_manager_init(get_loop());
     if (ret < 0) {
         appwarn("wifi_manager_init failed: %d", ret);
     } else {
@@ -215,14 +227,26 @@ void WatchUI::test_wifi_sta_connect() {
 #endif
 
 void WatchUI::update() {
+    ipc_server_poll();
 }
 
 void WatchUI::destroy() {
     appinfo("destroy - cleaning up extensions");
+
 #ifdef CONFIG_WIRELESS_WAPI
     wifi_manager_deinit();
     dns_server_stop();
 #endif
+
+    ipc_server_deinit();
+
+    // TODO: destory pipeline
+
+    if (g_config_handler) {
+        config_save(g_config_handler);
+        config_free(g_config_handler);
+        g_config_handler = nullptr;
+    }
 
     get_mooncake().resetExtensionManager();
 }

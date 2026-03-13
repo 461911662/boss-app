@@ -40,11 +40,6 @@ class WatchUI;
  */
 WatchUI& GetWatchUI();
 
-/**
- * @brief 销毁 WatchUI 单例
- */
-void DestroyWatchUI();
-
 class WatchUI {
 public:
     WatchUI() {
