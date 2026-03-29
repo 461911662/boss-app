@@ -1,0 +1,58 @@
+#
+# For a description of the syntax of this configuration file,
+# see the file kconfig-language.txt in the NuttX tools repository.
+#
+
+config TESTING_I2STEST
+    bool "i2stest"
+    default n
+    depends on AUDIO_I2SCHAR
+    ---help---
+        Enable I2S test (PDM microphone and speaker playback)
+
+if TESTING_I2STEST
+
+config TESTING_I2STEST_PROGNAME
+    string "Program name"
+    default "i2stest"
+    ---help---
+        This is the name of the program that will be used when the NSH ELF
+        program is installed.
+
+config TESTING_I2STEST_PRIORITY
+    int "I2S test task priority"
+    default 100
+
+config TESTING_I2STEST_STACKSIZE
+    int "I2S test stack size"
+    default DEFAULT_TASK_STACKSIZE
+
+config TESTING_I2STEST_TX
+    bool "Enable I2S TX (playback) mode"
+    default n
+    ---help---
+        Enable TX mode for I2S speaker playback testing
+
+if TESTING_I2STEST_TX
+
+config TESTING_I2STEST_TX_BUFFERS
+    int "Number of TX buffers to send"
+    default 5
+    ---help---
+        Number of audio buffers to send during TX test
+
+config TESTING_I2STEST_TX_BUFSIZE
+    int "TX buffer size in bytes"
+    default 512
+    ---help---
+        Size of each TX buffer in bytes
+
+config TESTING_I2STEST_FREQUENCY
+    int "Sine wave frequency in Hz"
+    default 440
+    ---help---
+        Frequency of the sine wave for TX playback test
+
+endif # TESTING_I2STEST_TX
+
+endif # TESTING_I2STEST
