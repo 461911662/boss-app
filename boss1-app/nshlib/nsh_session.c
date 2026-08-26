@@ -185,6 +185,19 @@ int nsh_session(FAR struct console_stdio_s *pstate,
     }
 #endif
 
+  /* Disable ICANON to let Readline handle line editing (e.g., backspace) */
+
+  if (isatty(INFD(pstate)))
+    {
+      struct termios cfg;
+
+      if (tcgetattr(INFD(pstate), &cfg) == 0)
+        {
+          cfg.c_lflag &= ~ICANON;
+          tcsetattr(INFD(pstate), TCSANOW, &cfg);
+        }
+    }
+
   /* Then enter the command line parsing loop */
 
   for (; ; )
