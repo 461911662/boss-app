@@ -1,0 +1,65 @@
+<!-- 账号管理页面 -->
+<div class="card" id="account">
+    <h2>账号管理</h2>
+    
+    <!-- 当前账号 -->
+    <div class="account-section">
+        <h3>当前账号</h3>
+        <div class="account-info">
+            <div class="account-avatar">
+                <svg viewBox="0 0 48 48" fill="none">
+                    <circle cx="24" cy="18" r="10" stroke="currentColor" stroke-width="2"/>
+                    <path d="M12 42c0-8 4-12 12-12s12 4 12 12" stroke="currentColor" stroke-width="2"/>
+                </svg>
+            </div>
+            <div class="account-detail">
+                <p class="account-name" id="current-username">admin</p>
+                <p class="account-role">管理员</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="divider"></div>
+    
+    <!-- 账号列表 -->
+    <div class="account-section">
+        <h3>账号列表</h3>
+        <div class="account-list" id="account-list">
+            <div class="account-item">
+                <div class="account-avatar small">
+                    <svg viewBox="0 0 48 48" fill="none">
+                        <circle cx="24" cy="18" r="10" stroke="currentColor" stroke-width="2"/>
+                        <path d="M12 42c0-8 4-12 12-12s12 4 12 12" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                </div>
+                <div class="account-detail">
+                    <p class="account-name">admin</p>
+                    <p class="account-role">管理员</p>
+                </div>
+                <button class="btn btn-small btn-danger" onclick="deleteAccount('admin')">删除</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="divider"></div>
+    
+    <!-- 添加账号 -->
+    <div class="account-section">
+        <h3>添加账号</h3>
+        <form id="add-account-form">
+            <div class="form-group">
+                <label class="form-label" for="new-username">账号</label>
+                <input type="text" id="new-username" class="form-input" placeholder="请输入账号" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="new-password">密码</label>
+                <input type="password" id="new-password" class="form-input" placeholder="请输入密码" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="confirm-password">确认密码</label>
+                <input type="password" id="confirm-password" class="form-input" placeholder="请再次输入密码" required>
+            </div>
+            <button type="submit" class="btn btn-primary">添加账号</button>
+        </form>
+    </div>
+</div>
